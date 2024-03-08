@@ -18,7 +18,7 @@ namespace APO_Mateusz_Marek_20456
 {
     public partial class MainWindow : Window
     {
-        public Mat ?selectedImageMat;
+        public Mat? selectedImageMat;
         public ImageWindow? activeImageWindow;
 
         public MainWindow()
@@ -68,8 +68,8 @@ namespace APO_Mateusz_Marek_20456
         private void UpdateSelectedImageMat(Mat imageMat, string fileName)
         {
             this.selectedImageMat = imageMat;
-            labelSelectedImage.Content = $"Selected Image: {fileName}";
-            activeImageWindow = Application.Current.Windows
+            this.labelSelectedImage.Content = $"Selected Image: {fileName}";
+            this.activeImageWindow = Application.Current.Windows
                 .OfType<ImageWindow>()
                 .FirstOrDefault(window => window.imageMat == imageMat);
         }
@@ -82,7 +82,53 @@ namespace APO_Mateusz_Marek_20456
 
         private void CreateHistogram_Click(object sender, RoutedEventArgs e)
         {
-            activeImageWindow?.ShowHistogram();
+            if(this.selectedImageMat != null)
+            {
+                this.activeImageWindow?.ShowHistogram();
+            }
+            else
+            {
+                MessageBox.Show("No image selected");
+            }
+        }
+
+        private void NegateImage()
+        {
+            unsafe
+            {
+                byte* dataPtr = (byte*)selectedImageMat.DataPointer;
+                int width = selectedImageMat.Width;
+                int height = selectedImageMat.Height;
+                int step = selectedImageMat.Step;
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte* pixelPtr = dataPtr + (y * step) + x;
+                        *pixelPtr = (byte)(255 - *pixelPtr);
+                    }
+                }
+            }
+
+            activeImageWindow?.UpdateImage(this.selectedImageMat);
+            activeImageWindow?.UpdateHistogram();
+        }
+
+        private void Negate_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat != null && this.selectedImageMat.NumberOfChannels == 1)
+            {
+                NegateImage();
+            }
+            else if (this.selectedImageMat != null)
+            {
+                MessageBox.Show("Negation can only be applied to grayscale images.");
+            }
+            else
+            {
+                MessageBox.Show("No image selected");
+            }
         }
 
     }

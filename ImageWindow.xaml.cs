@@ -33,7 +33,7 @@ namespace APO_Mateusz_Marek_20456
             {
                 if (histogramWindow == null)
                 {
-                    histogramWindow = new HistogramWindow(shortFileName + " - histogram");
+                    histogramWindow = new HistogramWindow($"histogram - {shortFileName}");
                     histogramWindow.Closed += (sender, e) => histogramWindow = null;
                     histogramWindow.DisplayHistogram(imageMat);
                 }
@@ -42,6 +42,12 @@ namespace APO_Mateusz_Marek_20456
                     histogramWindow.Focus();
                 }
             }
+        }
+
+        public void UpdateImage(Mat imageMat)
+        {
+            BitmapSource imageSource = BitmapSourceConverter.ToBitmapSource(imageMat);
+            imageControl.Source = imageSource;
         }
 
         public void UpdateHistogram()
