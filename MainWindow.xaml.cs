@@ -67,12 +67,44 @@ namespace APO_Mateusz_Marek_20456
 
         private void Negate_Click(object sender, RoutedEventArgs e)
         {
-            NegateImage();
+            if (this.selectedImageMat == null)
+            {
+                MessageBox.Show("Negation can only be applied to grayscale images.");
+                return;
+            }
+            else if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            else
+            {
+                this.selectedImageMat = ImageOperarions.NegateImage(this.selectedImageMat);
+                activeImageWindow?.UpdateImage(this.selectedImageMat);
+                activeImageWindow?.UpdateHistogram();
+            }
+
         }
 
         private void StretchContrast_Click(object sender, RoutedEventArgs e)
         {
-            StretchContrast();
+            if (this.selectedImageMat == null)
+            {
+                MessageBox.Show("Contrast stretching can only be applied to grayscale images.");
+                return;
+            }
+            else if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            else
+            {
+                this.selectedImageMat = ImageOperarions.StretchContrast(this.selectedImageMat);
+                activeImageWindow?.UpdateImage(this.selectedImageMat);
+                activeImageWindow?.UpdateHistogram();
+            }
+
         }
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
@@ -110,97 +142,6 @@ namespace APO_Mateusz_Marek_20456
         {
             this.selectedImageMat = null;
             labelSelectedImage.Content = "Selected Image: Null";
-        }
-
-        private void NegateImage()
-        {
-            if (this.selectedImageMat == null)
-            {
-                MessageBox.Show("Negation can only be applied to grayscale images.");
-                return;
-            }
-            else if(this.selectedImageMat.NumberOfChannels != 1)
-            {
-                MessageBox.Show("No image selected");
-                return;
-            }
-
-            unsafe
-            {
-                byte* dataPtr = (byte*)selectedImageMat.DataPointer;
-                int width = selectedImageMat.Width;
-                int height = selectedImageMat.Height;
-                int step = selectedImageMat.Step;
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        byte* pixelPtr = dataPtr + (y * step) + x;
-                        *pixelPtr = (byte)(255 - *pixelPtr);
-                    }
-                }
-            }
-
-            activeImageWindow?.UpdateImage(this.selectedImageMat);
-            activeImageWindow?.UpdateHistogram();
-        }
-
-        private void StretchContrast()
-        {
-            if (this.selectedImageMat == null)
-            {
-                MessageBox.Show("Contrast stretching can only be applied to grayscale images.");
-                return;
-            }
-            else if (this.selectedImageMat.NumberOfChannels != 1)
-            {
-                MessageBox.Show("No image selected");
-                return;
-            }
-
-            double minVal = 0, maxVal = 0;
-            int[]? minIdx = null;
-            int[]? maxIdx = null;
-            CvInvoke.MinMaxIdx(this.selectedImageMat, out minVal, out maxVal, minIdx, maxIdx);
-
-            byte p1 = (byte)minVal;
-            byte p2 = (byte)maxVal;
-            byte q3 = 0;
-            byte q4 = 255;
-
-            unsafe
-            {
-                byte* dataPtr = (byte*)this.selectedImageMat.DataPointer;
-                int width = this.selectedImageMat.Width;
-                int height = this.selectedImageMat.Height;
-                int step = this.selectedImageMat.Step;
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        byte* pixelPtr = dataPtr + (y * step) + x;
-                        byte pixelValue = *pixelPtr;
-
-                        if (pixelValue < p1)
-                        {
-                            *pixelPtr = q3;
-                        }
-                        else if (pixelValue > p2)
-                        {
-                            *pixelPtr = q4;
-                        }
-                        else
-                        {
-                            *pixelPtr = (byte)(((pixelValue - p1) * (q4 - q3)) / (p2 - p1) + q3);
-                        }
-                    }
-                }
-            }
-
-            this.activeImageWindow?.UpdateImage(this.selectedImageMat);
-            this.activeImageWindow?.UpdateHistogram();
         }
 
     }
