@@ -1,0 +1,9 @@
+﻿<Window x:Class="APO_Mateusz_Marek_20456.ImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Image Window"
+        Closing="ImageWindow_Closing">
+    <Grid>
+        <Image x:Name="imageControl" Stretch="Uniform"/>
+    </Grid>
+</Window>
