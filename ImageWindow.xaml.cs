@@ -10,7 +10,7 @@ namespace APO_Mateusz_Marek_20456
         public static event Action<Mat, string>? ImageWindowFocused;
         public static event Action? ImageWindowClosing;
 
-        private HistogramWindow? histogramWindow;
+        public HistogramWindow? histogramWindow;
         public Mat ?imageMat;
         public string fileName;
         public string shortFileName;
@@ -24,6 +24,24 @@ namespace APO_Mateusz_Marek_20456
             this.shortFileName = shortFileName;
 
             Activated += (sender, e) => ImageWindowFocused?.Invoke(imageMat, shortFileName);
+            Closing += ImageWindow_Closing;
+        }
+
+        public void ShowHistogram()
+        {
+            if (imageMat != null)
+            {
+                if (histogramWindow == null)
+                {
+                    histogramWindow = new HistogramWindow(shortFileName + " - histogram");
+                    histogramWindow.Closed += (sender, e) => histogramWindow = null;
+                    histogramWindow.DisplayHistogram(imageMat);
+                }
+                else
+                {
+                    histogramWindow.Focus();
+                }
+            }
         }
 
         public void UpdateHistogram()
@@ -34,16 +52,20 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
-        private void ImageWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        public void ClearHistogramWindowReference()
         {
-            System.Diagnostics.Debug.WriteLine("Window is closing");
+            histogramWindow = null;
+        }
+
+        public void ImageWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
             ImageWindowClosing?.Invoke();
-            if(imageMat  != null)
+            if (imageMat != null)
             {
                 imageMat.Dispose();
                 imageMat = null;
             }
-
+            histogramWindow?.Close();
         }
     }
 }

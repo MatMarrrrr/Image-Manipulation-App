@@ -1,9 +1,16 @@
 ﻿<Window x:Class="APO_Mateusz_Marek_20456.HistogramWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
         Title="Histogram" Height="450" Width="800">
     <Grid>
-        <lvc:CartesianChart  x:Name="histogramChart"/>
+        <TabControl>
+            <TabItem Header="Plot">
+                <lvc:CartesianChart x:Name="histogramChart"/>
+            </TabItem>
+            <TabItem Header="Table">
+                <DataGrid x:Name="pixelDataTable"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

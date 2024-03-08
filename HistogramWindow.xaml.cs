@@ -21,9 +21,10 @@ namespace APO_Mateusz_Marek_20456
 {
     public partial class HistogramWindow : Window
     {
-        public HistogramWindow()
+        public HistogramWindow(string title)
         {
             InitializeComponent();
+            this.Title = title;
         }
 
         public void DisplayHistogram(Mat imageMat)
@@ -44,6 +45,14 @@ namespace APO_Mateusz_Marek_20456
 
 
             histogramChart.Series = new ISeries[] { series };
+
+            var histogramTableData = new List<HistogramDataRow>();
+            for (int i = 0; i < histogramData.Length; i++)
+            {
+                histogramTableData.Add(new HistogramDataRow { Intensity = i, Count = histogramData[i] });
+            }
+
+            pixelDataTable.ItemsSource = histogramTableData;
 
             Show();
         }
@@ -85,6 +94,12 @@ namespace APO_Mateusz_Marek_20456
 
             string[] newTextArr = oldText.Replace("(", "").Replace(")", "").Trim().Split(",");
             return $"Value: {newTextArr[0]}{Environment.NewLine}Count: {newTextArr[1]}";
+        }
+
+        public class HistogramDataRow
+        {
+            public int Intensity { get; set; }
+            public int Count { get; set; }
         }
     }
 }

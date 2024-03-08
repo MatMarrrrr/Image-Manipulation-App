@@ -12,12 +12,14 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace APO_Mateusz_Marek_20456
 {
     public partial class MainWindow : Window
     {
         public Mat ?selectedImageMat;
+        public ImageWindow? activeImageWindow;
 
         public MainWindow()
         {
@@ -67,6 +69,9 @@ namespace APO_Mateusz_Marek_20456
         {
             this.selectedImageMat = imageMat;
             labelSelectedImage.Content = $"Selected Image: {fileName}";
+            activeImageWindow = Application.Current.Windows
+                .OfType<ImageWindow>()
+                .FirstOrDefault(window => window.imageMat == imageMat);
         }
 
         private void ClearSelectedImageMat()
@@ -77,15 +82,7 @@ namespace APO_Mateusz_Marek_20456
 
         private void CreateHistogram_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedImageMat != null)
-            {
-                HistogramWindow histogramWindow = new HistogramWindow();
-                histogramWindow.DisplayHistogram(selectedImageMat);
-            }
-            else
-            {
-                MessageBox.Show("No image selected");
-            }
+            activeImageWindow?.ShowHistogram();
         }
 
     }
