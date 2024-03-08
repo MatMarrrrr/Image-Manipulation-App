@@ -107,6 +107,11 @@ namespace APO_Mateusz_Marek_20456
 
         }
 
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");
+        }
+
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
             foreach (var window in Application.Current.Windows.OfType<ImageWindow>())
