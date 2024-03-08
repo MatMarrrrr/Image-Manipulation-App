@@ -73,3 +73,78 @@ C:\Users\MatMar\Desktop\APO\APO Mateusz Marek 20456\bin\Debug\net7.0-windows\run
 C:\Users\MatMar\Desktop\APO\APO Mateusz Marek 20456\bin\Debug\net7.0-windows\runtimes\win-arm64\native\libSkiaSharp.dll
 C:\Users\MatMar\Desktop\APO\APO Mateusz Marek 20456\bin\Debug\net7.0-windows\runtimes\win-x64\native\libSkiaSharp.dll
 C:\Users\MatMar\Desktop\APO\APO Mateusz Marek 20456\bin\Debug\net7.0-windows\runtimes\win-x86\native\libSkiaSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\APO Mateusz Marek 20456.exe
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\APO Mateusz Marek 20456.deps.json
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\APO Mateusz Marek 20456.runtimeconfig.json
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\APO Mateusz Marek 20456.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\APO Mateusz Marek 20456.pdb
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\Emgu.CV.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\Emgu.CV.Bitmap.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\HarfBuzzSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\LiveChartsCore.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\LiveChartsCore.SkiaSharpView.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\LiveChartsCore.SkiaSharpView.WPF.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\Microsoft.Win32.SystemEvents.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\SkiaSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\SkiaSharp.HarfBuzz.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\SkiaSharp.Views.Desktop.Common.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\SkiaSharp.Views.WPF.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\System.Drawing.Common.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\cvextern.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\cvextern.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\opencv_videoio_ffmpeg481_64.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\cvextern.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\opencv_videoio_ffmpeg481.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\concrt140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\msvcp140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\msvcp140_1.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\msvcp140_2.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\msvcp140_atomic_wait.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\msvcp140_codecvt_ids.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\vcruntime140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\vcruntime140_1.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\concrt140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\msvcp140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\msvcp140_1.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\msvcp140_2.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\msvcp140_atomic_wait.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\msvcp140_codecvt_ids.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\vcruntime140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\vcruntime140_1.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\concrt140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\msvcp140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\msvcp140_1.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\msvcp140_2.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\msvcp140_atomic_wait.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\msvcp140_codecvt_ids.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\vcruntime140.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\osx\native\libHarfBuzzSharp.dylib
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\libHarfBuzzSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\libHarfBuzzSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\libHarfBuzzSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\osx\native\libSkiaSharp.dylib
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-arm64\native\libSkiaSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x64\native\libSkiaSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\bin\Debug\net7.0-windows\runtimes\win-x86\native\libSkiaSharp.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.csproj.AssemblyReference.cache
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\HistogramWindow.baml
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\ImageWindow.baml
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\HistogramWindow.g.cs
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\ImageWindow.g.cs
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\MainWindow.g.cs
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\App.g.cs
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456_MarkupCompile.cache
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456_MarkupCompile.lref
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\MainWindow.baml
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.g.resources
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.AssemblyInfoInputs.cache
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.AssemblyInfo.cs
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.csproj.CoreCompileInputs.cache
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.csproj.CopyComplete
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\refint\APO Mateusz Marek 20456.dll
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.pdb
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\APO Mateusz Marek 20456.genruntimeconfig.cache
+C:\Users\MatMar\Desktop\APO\Github\Image-Manipulation-App\obj\Debug\net7.0-windows\ref\APO Mateusz Marek 20456.dll

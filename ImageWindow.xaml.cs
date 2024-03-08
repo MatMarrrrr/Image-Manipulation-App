@@ -26,17 +26,6 @@ namespace APO_Mateusz_Marek_20456
             Activated += (sender, e) => ImageWindowFocused?.Invoke(imageMat, shortFileName);
         }
 
-        public void ShowHistogram(Mat image)
-        {
-            if (histogramWindow == null || !histogramWindow.IsVisible)
-            {
-                histogramWindow = new HistogramWindow();
-            }
-
-            histogramWindow.DisplayHistogram(image);
-            histogramWindow.Show();
-        }
-
         public void UpdateHistogram()
         {
             if (imageMat != null)
