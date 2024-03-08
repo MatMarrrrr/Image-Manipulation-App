@@ -40,6 +40,7 @@ namespace APO_Mateusz_Marek_20456
             {
                 Values = histogramData,
                 Fill = new SolidColorPaint(SKColors.Black),
+                Padding = 0,
                 YToolTipLabelFormatter = (chartPoint) => FormatHistogramTooltip(chartPoint.Coordinate.ToString())
             };
 

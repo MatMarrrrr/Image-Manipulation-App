@@ -13,6 +13,7 @@
                 <MenuItem Header="Open Monochrome" Click="OpenMonochrome_Click"/>
                 <MenuItem Header="Create Histogram" Click="CreateHistogram_Click"/>
                 <MenuItem Header="Negate" Click="Negate_Click"/>
+                <MenuItem Header="Stretch Contrast" Click="StretchContrast_Click"/>
             </MenuItem>
             <Label x:Name="labelSelectedImage" Content="Selected Image: Null"/>
         </Menu>
