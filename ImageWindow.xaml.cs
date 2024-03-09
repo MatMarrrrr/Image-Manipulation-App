@@ -49,6 +49,9 @@ namespace APO_Mateusz_Marek_20456
 
         public void UpdateImage(Mat imageMat)
         {
+            string imageType = imageMat.NumberOfChannels == 1 ? "GrayScale" : "Color";
+
+            this.Title = $"({imageType}) {shortFileName}";
             this.imageMat = imageMat;
             BitmapSource imageSource = BitmapSourceConverter.ToBitmapSource(imageMat);
             imageControl.Source = imageSource;

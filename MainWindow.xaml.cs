@@ -143,7 +143,7 @@ namespace APO_Mateusz_Marek_20456
         private void DisplayImageInNewWindow(Mat img, string fileName)
         {
             string shortFileName = Path.GetFileName(fileName);
-            string imageType = img.NumberOfChannels == 1 ? "Monochrome" : "Color";
+            string imageType = img.NumberOfChannels == 1 ? "GrayScale" : "Color";
             string windowTitle = $"({imageType}) {shortFileName}";
             BitmapSource imageSource = BitmapSourceConverter.ToBitmapSource(img);
             ImageWindow imageWindow = new ImageWindow(imageSource, img, fileName, shortFileName)
