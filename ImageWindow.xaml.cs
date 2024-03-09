@@ -31,7 +31,7 @@ namespace APO_Mateusz_Marek_20456
         {
             if (imageMat == null || imageMat.NumberOfChannels != 1)
             {
-                MessageBox.Show("Histogram can only be displayed for monochrome images.");
+                MessageBox.Show("Histogram can only be displayed for grayscale images.");
                 return;
             }
 

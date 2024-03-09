@@ -10,7 +10,7 @@ namespace APO_Mateusz_Marek_20456
 {
     internal static class ImageOperarions
     {
-        public static Mat ConvertToMonochrome(Mat image)
+        public static Mat ConvertToGrayScale(Mat image)
         {
             Mat grayImage = new Mat();
             CvInvoke.CvtColor(image, grayImage, ColorConversion.Bgr2Gray);

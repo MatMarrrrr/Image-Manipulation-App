@@ -10,9 +10,9 @@
         <Menu>
             <MenuItem Header="Lab1">
                 <MenuItem Header="Open Color" Click="OpenColor_Click"/>
-                <MenuItem Header="Open Monochrome" Click="OpenMonochrome_Click"/>
+                <MenuItem Header="Open Gray Scale" Click="OpenGrayScale_Click"/>
                 <MenuItem Header="Create Histogram" Click="CreateHistogram_Click"/>
-                <MenuItem Header="Convert To Monochrome" Click="ConvertToMonochrome_Click"/>
+                <MenuItem Header="Convert To Gray Scale" Click="ConvertToGrayScale_Click"/>
                 <MenuItem Header="Negate" Click="Negate_Click"/>
                 <MenuItem Header="Stretch Contrast" Click="StretchContrast_Click"/>
             </MenuItem>

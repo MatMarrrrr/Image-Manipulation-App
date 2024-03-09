@@ -48,7 +48,7 @@ namespace APO_Mateusz_Marek_20456
             OpenImage_Click(sender, e, true);
         }
 
-        private void OpenMonochrome_Click(object sender, RoutedEventArgs e)
+        private void OpenGrayScale_Click(object sender, RoutedEventArgs e)
         {
             OpenImage_Click(sender, e, false);
         }
@@ -65,7 +65,7 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
-        private void ConvertToMonochrome_Click(object sender, RoutedEventArgs e)
+        private void ConvertToGrayScale_Click(object sender, RoutedEventArgs e)
         {
             if (this.selectedImageMat == null)
             {
@@ -74,12 +74,12 @@ namespace APO_Mateusz_Marek_20456
             }
             else if (this.selectedImageMat.NumberOfChannels == 1)
             {
-                MessageBox.Show("Image is already monochromatic");
+                MessageBox.Show("Image is already gray scale");
                 return;
             }
             else
             {
-                this.selectedImageMat = ImageOperarions.ConvertToMonochrome(this.selectedImageMat);
+                this.selectedImageMat = ImageOperarions.ConvertToGrayScale(this.selectedImageMat);
                 activeImageWindow?.UpdateImage(this.selectedImageMat);
                 activeImageWindow?.UpdateHistogram();
             }
