@@ -14,11 +14,13 @@ using System.IO;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace APO_Mateusz_Marek_20456
 {
     public partial class MainWindow : Window
     {
+        private List<ImageWindow> imageWindows = new List<ImageWindow>();
         public Mat? selectedImageMat;
         public ImageWindow? activeImageWindow;
 
@@ -132,9 +134,20 @@ namespace APO_Mateusz_Marek_20456
             MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");
         }
 
+        /*
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
             foreach (var window in Application.Current.Windows.OfType<ImageWindow>())
+            {
+                window.Close();
+            }
+        }
+        */
+
+        private void MainWindow_Closing(object? sender, CancelEventArgs e)
+        {
+            var windowsToClose = imageWindows.ToList();
+            foreach (var window in windowsToClose)
             {
                 window.Close();
             }
@@ -152,6 +165,9 @@ namespace APO_Mateusz_Marek_20456
                 Width = Math.Min(700, img.Width),
                 Height = Math.Min(700, img.Height + 38),
             };
+
+            imageWindows.Add(imageWindow);
+            imageWindow.Closing += (s, e) => imageWindows.Remove(imageWindow);
 
             imageWindow.Show();
         }
