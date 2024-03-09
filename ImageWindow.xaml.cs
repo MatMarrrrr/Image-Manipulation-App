@@ -29,23 +29,27 @@ namespace APO_Mateusz_Marek_20456
 
         public void ShowHistogram()
         {
-            if (imageMat != null)
+            if (imageMat == null || imageMat.NumberOfChannels != 1)
             {
-                if (histogramWindow == null)
-                {
-                    histogramWindow = new HistogramWindow($"histogram - {shortFileName}");
-                    histogramWindow.Closed += (sender, e) => histogramWindow = null;
-                    histogramWindow.DisplayHistogram(imageMat);
-                }
-                else
-                {
-                    histogramWindow.Focus();
-                }
+                MessageBox.Show("Histogram can only be displayed for monochrome images.");
+                return;
+            }
+
+            if (histogramWindow == null)
+            {
+                histogramWindow = new HistogramWindow($"histogram - {shortFileName}");
+                histogramWindow.Closed += (sender, e) => histogramWindow = null;
+                histogramWindow.DisplayHistogram(imageMat);
+            }
+            else
+            {
+                histogramWindow.Focus();
             }
         }
 
         public void UpdateImage(Mat imageMat)
         {
+            this.imageMat = imageMat;
             BitmapSource imageSource = BitmapSourceConverter.ToBitmapSource(imageMat);
             imageControl.Source = imageSource;
         }

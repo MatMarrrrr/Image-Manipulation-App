@@ -29,12 +29,6 @@ namespace APO_Mateusz_Marek_20456
 
         public void DisplayHistogram(Mat imageMat)
         {
-            if (imageMat.NumberOfChannels != 1)
-            {
-                MessageBox.Show("Histogram can only be displayed for monochrome images.");
-                return;
-            }
-
             var histogramData = CalculateHistogram(imageMat);
             var series = new ColumnSeries<int>
             {

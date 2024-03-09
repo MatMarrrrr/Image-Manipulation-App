@@ -1,4 +1,5 @@
 ﻿using Emgu.CV;
+using Emgu.CV.CvEnum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,14 @@ namespace APO_Mateusz_Marek_20456
 {
     internal static class ImageOperarions
     {
+        public static Mat ConvertToMonochrome(Mat image)
+        {
+            Mat grayImage = new Mat();
+            CvInvoke.CvtColor(image, grayImage, ColorConversion.Bgr2Gray);
+
+            return grayImage;
+        }
+
         public static Mat NegateImage(Mat image)
         {
             unsafe

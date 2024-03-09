@@ -65,16 +65,36 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
+        private void ConvertToMonochrome_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            else if (this.selectedImageMat.NumberOfChannels == 1)
+            {
+                MessageBox.Show("Image is already monochromatic");
+                return;
+            }
+            else
+            {
+                this.selectedImageMat = ImageOperarions.ConvertToMonochrome(this.selectedImageMat);
+                activeImageWindow?.UpdateImage(this.selectedImageMat);
+                activeImageWindow?.UpdateHistogram();
+            }
+        }
+
         private void Negate_Click(object sender, RoutedEventArgs e)
         {
             if (this.selectedImageMat == null)
             {
-                MessageBox.Show("Negation can only be applied to grayscale images.");
+                MessageBox.Show("No image selected");
                 return;
             }
             else if (this.selectedImageMat.NumberOfChannels != 1)
             {
-                MessageBox.Show("No image selected");
+                MessageBox.Show("Negation can only be applied to grayscale images.");
                 return;
             }
             else
@@ -90,12 +110,12 @@ namespace APO_Mateusz_Marek_20456
         {
             if (this.selectedImageMat == null)
             {
-                MessageBox.Show("Contrast stretching can only be applied to grayscale images.");
+                MessageBox.Show("No image selected");
                 return;
             }
             else if (this.selectedImageMat.NumberOfChannels != 1)
             {
-                MessageBox.Show("No image selected");
+                MessageBox.Show("Contrast stretching can only be applied to grayscale images.");
                 return;
             }
             else
@@ -123,10 +143,12 @@ namespace APO_Mateusz_Marek_20456
         private void DisplayImageInNewWindow(Mat img, string fileName)
         {
             string shortFileName = Path.GetFileName(fileName);
+            string imageType = img.NumberOfChannels == 1 ? "Monochrome" : "Color";
+            string windowTitle = $"({imageType}) {shortFileName}";
             BitmapSource imageSource = BitmapSourceConverter.ToBitmapSource(img);
             ImageWindow imageWindow = new ImageWindow(imageSource, img, fileName, shortFileName)
             {
-                Title = shortFileName,
+                Title = windowTitle,
                 Width = Math.Min(700, img.Width),
                 Height = Math.Min(700, img.Height + 38),
             };
