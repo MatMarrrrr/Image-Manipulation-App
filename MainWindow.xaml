@@ -16,6 +16,8 @@
                 <MenuItem Header="Negate" Click="Negate_Click"/>
                 <MenuItem Header="Stretch Contrast" Click="StretchContrast_Click"/>
                 <MenuItem Header="Split Channels" Click="SplitChannels_Click"/>
+                <MenuItem Header="Convert to HSV and split channels" Click="ConvertToHSVAndSplitChannels_Click"/>
+                <MenuItem Header="Convert to Lab and split channels" Click="ConvertToLabAndSplitChannels_Click"/>
                 <MenuItem Header="Convert to HSV, Lab and split channels" Click="ConvertToHSVLabAndSplitChannels_Click"/>
             </MenuItem>
             <MenuItem Header="About" Click="About_Click"/>

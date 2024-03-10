@@ -109,8 +109,8 @@ namespace APO_Mateusz_Marek_20456
                     "Lab" => i switch
                     {
                         0 => "Lightness (L)",
-                        1 => "a* (Green-Red)",
-                        2 => "b* (Blue-Yellow)",
+                        1 => "Green-Red (a)",
+                        2 => "Blue-Yellow (b)",
                         _ => $"Channel {i}"
                     },
                     "RGB" => i switch
@@ -131,15 +131,22 @@ namespace APO_Mateusz_Marek_20456
 
         public static (List<(Mat image, string channelName)> hsv, List<(Mat image, string channelName)> lab) ConvertAndSplitRgbToHsvAndLab(Mat rgbImage)
         {
-            Mat hsvImage = new Mat();
-            CvInvoke.CvtColor(rgbImage, hsvImage, ColorConversion.Bgr2Hsv);
-            var hsvChannels = SplitChannels(hsvImage, "HSV");
-
-            Mat labImage = new Mat();
-            CvInvoke.CvtColor(rgbImage, labImage, ColorConversion.Bgr2Lab);
-            var labChannels = SplitChannels(labImage, "Lab");
+            var hsvChannels = ConvertAndSplitRgb(rgbImage, "HSV");
+            var labChannels = ConvertAndSplitRgb(rgbImage, "Lab");
 
             return (hsvChannels, labChannels);
         }
+
+        public static List<(Mat image, string channelName)> ConvertAndSplitRgb(Mat rgbImage, string output = "HSV")
+        {
+            ColorConversion conversion = output == "HSV" ? ColorConversion.Bgr2Hsv : ColorConversion.Bgr2Lab;
+            Mat Image = new Mat();
+            CvInvoke.CvtColor(rgbImage, Image, conversion);
+            var channels = SplitChannels(Image, output);
+
+            return channels;
+        }
+
+
     }
 }
