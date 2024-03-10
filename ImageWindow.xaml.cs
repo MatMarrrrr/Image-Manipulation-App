@@ -7,7 +7,7 @@ namespace APO_Mateusz_Marek_20456
 {
     public partial class ImageWindow : Window
     {
-        public static event Action<Mat, string>? ImageWindowFocused;
+        public static event Action<Mat, string, string>? ImageWindowFocused;
         public static event Action? ImageWindowClosing;
 
         public HistogramWindow? histogramWindow;
@@ -23,7 +23,7 @@ namespace APO_Mateusz_Marek_20456
             this.fileName = fileName;
             this.shortFileName = shortFileName;
 
-            Activated += (sender, e) => ImageWindowFocused?.Invoke(imageMat, shortFileName);
+            Activated += (sender, e) => ImageWindowFocused?.Invoke(imageMat, fileName, shortFileName);
             Closing += ImageWindow_Closing;
         }
 
@@ -37,7 +37,7 @@ namespace APO_Mateusz_Marek_20456
 
             if (histogramWindow == null)
             {
-                histogramWindow = new HistogramWindow($"histogram - {shortFileName}");
+                histogramWindow = new HistogramWindow($"histogram - {this.Title}");
                 histogramWindow.Closed += (sender, e) => histogramWindow = null;
                 histogramWindow.DisplayHistogram(imageMat);
             }

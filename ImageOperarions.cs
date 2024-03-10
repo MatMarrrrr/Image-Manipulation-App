@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,6 +83,32 @@ namespace APO_Mateusz_Marek_20456
             }
 
             return image;
+        }
+
+        public static List<(Mat image, string channelName)> SplitChannels(Mat image)
+        {
+            List<(Mat, string)> channelsWithNames = new List<(Mat, string)>();
+
+            VectorOfMat vector = new VectorOfMat();
+            CvInvoke.Split(image, vector);
+
+            for (int i = 0; i < vector.Size; i++)
+            {
+                Mat channel = vector[i];
+                Mat grayChannel = channel.Clone();
+
+                string name = i switch
+                {
+                    0 => "(Blue channel)",
+                    1 => "(Green channel)",
+                    2 => "(Red channel)",
+                    _ => $"({i} channel)"
+                };
+
+                channelsWithNames.Add((grayChannel, name));
+            }
+
+            return channelsWithNames;
         }
     }
 }

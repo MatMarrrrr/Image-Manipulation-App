@@ -8,11 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows.Interop;
+using System.Windows;
 
 namespace APO_Mateusz_Marek_20456
 {
     internal static class BitmapSourceConverter
     {
+        /*
         public static BitmapSource ToBitmapSource(Mat mat)
         {
             Bitmap bitmap = mat.ToBitmap();
@@ -29,6 +32,15 @@ namespace APO_Mateusz_Marek_20456
             bitmapImage.Freeze();
 
             return bitmapImage;
+        }
+        */
+        public static BitmapSource ToBitmapSource(Mat mat)
+        {
+            return Imaging.CreateBitmapSourceFromHBitmap(
+                mat.ToBitmap().GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
         }
     }
 }

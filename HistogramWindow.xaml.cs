@@ -52,7 +52,7 @@ namespace APO_Mateusz_Marek_20456
             }
             HistogramTable.ItemsSource = histogramTableData;
 
-
+            /*
             Bitmap imageBitmap = imageMat.ToBitmap();
             var pixelsData = new List<List<int>>();
 
@@ -74,8 +74,9 @@ namespace APO_Mateusz_Marek_20456
             }
 
             HistogramPixels.ItemsSource = pixelsData;
+            */
 
-            Show();
+            this.Show();
         }
 
 

@@ -22,6 +22,8 @@ namespace APO_Mateusz_Marek_20456
     {
         private List<ImageWindow> imageWindows = new List<ImageWindow>();
         public Mat? selectedImageMat;
+        public string selectedImageFileName;
+        public string selectedImageShortFileName;
         public ImageWindow? activeImageWindow;
 
         public MainWindow()
@@ -129,6 +131,32 @@ namespace APO_Mateusz_Marek_20456
 
         }
 
+        private void SplitChannels_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            else if (this.selectedImageMat.NumberOfChannels < 3)
+            {
+                MessageBox.Show("Splitting channels can only be applied to images with at least 3 channels");
+                return;
+            }
+            else
+            {
+                ImageWindow? imageWindowToClose = this.activeImageWindow;
+                var channels = ImageOperarions.SplitChannels(this.selectedImageMat);
+                for (int i = 0; i < channels.Count; ++i)
+                {
+                    string windowTitle = $"{channels[i].channelName} {this.selectedImageShortFileName}";
+                    DisplayImageInNewWindow(channels[i].image, this.selectedImageFileName, windowTitle);
+                }
+                imageWindowToClose?.Close();
+
+            }
+        }
+
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");
@@ -153,11 +181,21 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
-        private void DisplayImageInNewWindow(Mat img, string fileName)
+        private ImageWindow DisplayImageInNewWindow(Mat img, string fileName, string? customWindowTitle = null)
         {
             string shortFileName = Path.GetFileName(fileName);
-            string imageType = img.NumberOfChannels == 1 ? "GrayScale" : "Color";
-            string windowTitle = $"({imageType}) {shortFileName}";
+            string windowTitle = "";
+
+            if(customWindowTitle == null)
+            {
+                string imageType = img.NumberOfChannels == 1 ? "GrayScale" : "Color";
+                windowTitle = $"({imageType}) {shortFileName}";
+            }
+            else
+            {
+                windowTitle = customWindowTitle;
+            }
+
             BitmapSource imageSource = BitmapSourceConverter.ToBitmapSource(img);
             ImageWindow imageWindow = new ImageWindow(imageSource, img, fileName, shortFileName)
             {
@@ -170,15 +208,18 @@ namespace APO_Mateusz_Marek_20456
             imageWindow.Closing += (s, e) => imageWindows.Remove(imageWindow);
 
             imageWindow.Show();
+            return imageWindow;
         }
 
-        private void UpdateSelectedImageMat(Mat imageMat, string fileName)
+        private void UpdateSelectedImageMat(Mat imageMat, string fileName, string shortFileName)
         {
             this.selectedImageMat = imageMat;
-            this.labelSelectedImage.Content = $"Selected Image: {fileName}";
+            this.selectedImageFileName = fileName;
+            this.selectedImageShortFileName = shortFileName;
             this.activeImageWindow = Application.Current.Windows
                 .OfType<ImageWindow>()
                 .FirstOrDefault(window => window.imageMat == imageMat);
+            this.labelSelectedImage.Content = activeImageWindow?.Title;
         }
 
         private void ClearSelectedImageMat()
