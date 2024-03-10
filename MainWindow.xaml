@@ -16,6 +16,7 @@
                 <MenuItem Header="Negate" Click="Negate_Click"/>
                 <MenuItem Header="Stretch Contrast" Click="StretchContrast_Click"/>
                 <MenuItem Header="Split Channels" Click="SplitChannels_Click"/>
+                <MenuItem Header="Convert to HSV, Lab and split channels" Click="ConvertToHSVLabAndSplitChannels_Click"/>
             </MenuItem>
             <MenuItem Header="About" Click="About_Click"/>
             <Label x:Name="labelSelectedImage" Content="Selected Image: Null"/>

@@ -85,9 +85,9 @@ namespace APO_Mateusz_Marek_20456
             return image;
         }
 
-        public static List<(Mat image, string channelName)> SplitChannels(Mat image)
+        public static List<(Mat image, string channelName)> SplitChannels(Mat image, string type)
         {
-            List<(Mat, string)> channelsWithNames = new List<(Mat, string)>();
+            List<(Mat image, string channelName)> channelsWithNames = new List<(Mat image, string channelName)>();
 
             VectorOfMat vector = new VectorOfMat();
             CvInvoke.Split(image, vector);
@@ -97,18 +97,49 @@ namespace APO_Mateusz_Marek_20456
                 Mat channel = vector[i];
                 Mat grayChannel = channel.Clone();
 
-                string name = i switch
+                string name = type switch
                 {
-                    0 => "(Blue channel)",
-                    1 => "(Green channel)",
-                    2 => "(Red channel)",
-                    _ => $"({i} channel)"
+                    "HSV" => i switch
+                    {
+                        0 => "Hue (H)",
+                        1 => "Saturation (S)",
+                        2 => "Value (V)",
+                        _ => $"Channel {i}"
+                    },
+                    "Lab" => i switch
+                    {
+                        0 => "Lightness (L)",
+                        1 => "a* (Green-Red)",
+                        2 => "b* (Blue-Yellow)",
+                        _ => $"Channel {i}"
+                    },
+                    "RGB" => i switch
+                    {
+                        0 => "Blue (B)",
+                        1 => "Green (G)",
+                        2 => "Red (R)",
+                        _ => $"Channel {i}"
+                    },
+                    _ => $"Channel {i}"
                 };
 
-                channelsWithNames.Add((grayChannel, name));
+                channelsWithNames.Add((grayChannel, $"{name} - {type}"));
             }
 
             return channelsWithNames;
+        }
+
+        public static (List<(Mat image, string channelName)> hsv, List<(Mat image, string channelName)> lab) ConvertAndSplitRgbToHsvAndLab(Mat rgbImage)
+        {
+            Mat hsvImage = new Mat();
+            CvInvoke.CvtColor(rgbImage, hsvImage, ColorConversion.Bgr2Hsv);
+            var hsvChannels = SplitChannels(hsvImage, "HSV");
+
+            Mat labImage = new Mat();
+            CvInvoke.CvtColor(rgbImage, labImage, ColorConversion.Bgr2Lab);
+            var labChannels = SplitChannels(labImage, "Lab");
+
+            return (hsvChannels, labChannels);
         }
     }
 }

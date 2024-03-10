@@ -146,12 +146,46 @@ namespace APO_Mateusz_Marek_20456
             else
             {
                 ImageWindow? imageWindowToClose = this.activeImageWindow;
-                var channels = ImageOperarions.SplitChannels(this.selectedImageMat);
-                for (int i = 0; i < channels.Count; ++i)
+                var channels = ImageOperarions.SplitChannels(this.selectedImageMat, "RGB");
+                foreach(var channel in channels)
                 {
-                    string windowTitle = $"{channels[i].channelName} {this.selectedImageShortFileName}";
-                    DisplayImageInNewWindow(channels[i].image, this.selectedImageFileName, windowTitle);
+                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
+                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
                 }
+                imageWindowToClose?.Close();
+
+            }
+        }
+
+        private void ConvertToHSVLabAndSplitChannels_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            else if (this.selectedImageMat.NumberOfChannels < 3)
+            {
+                MessageBox.Show("Conversion to HSV, Lab and splitting channels can only be applied to images with at least 3 channels");
+                return;
+            }
+            else
+            {
+                ImageWindow? imageWindowToClose = this.activeImageWindow;
+                var (hsvChannels, labChannels) = ImageOperarions.ConvertAndSplitRgbToHsvAndLab(this.selectedImageMat);
+
+                foreach (var channel in hsvChannels)
+                {
+                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
+                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
+                }
+
+                foreach (var channel in labChannels)
+                {   
+                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
+                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
+                }
+
                 imageWindowToClose?.Close();
 
             }
