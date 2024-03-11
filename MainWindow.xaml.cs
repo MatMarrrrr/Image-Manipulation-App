@@ -124,9 +124,16 @@ namespace APO_Mateusz_Marek_20456
             }
             else
             {
-                this.selectedImageMat = ImageOperarions.StretchContrast(this.selectedImageMat);
-                activeImageWindow?.UpdateImage(this.selectedImageMat);
-                activeImageWindow?.UpdateHistogram();
+                var dialog = new StretchContrastParamsWindow();
+                if (dialog.ShowDialog() == true)
+                {
+                    int minValue = dialog.MinValue ?? 0;
+                    int maxValue = dialog.MaxValue ?? 255;
+
+                    this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat, (byte)minValue, (byte)maxValue);
+                    activeImageWindow?.UpdateImage(this.selectedImageMat);
+                    activeImageWindow?.UpdateHistogram();
+                }
             }
 
         }

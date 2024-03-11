@@ -1,0 +1,18 @@
+﻿<Window x:Class="APO_Mateusz_Marek_20456.StretchContrastParamsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:APO_Mateusz_Marek_20456"
+        mc:Ignorable="d"
+        Title="Stretch Params" Height="128" Width="300">
+    <StackPanel>
+        <TextBlock Text="Min value (q3):" />
+        <TextBox x:Name="MinValueTextBox" TextChanged="ValueTextBox_TextChanged"/>
+
+        <TextBlock Text="Max value (q4):" />
+        <TextBox x:Name="MaxValueTextBox" TextChanged="ValueTextBox_TextChanged"/>
+
+        <Button Content="Stretch" x:Name="OkButton" Click="OnOkClicked" IsEnabled="False" />
+    </StackPanel>
+</Window>
