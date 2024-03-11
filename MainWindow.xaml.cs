@@ -265,7 +265,7 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
-        private void StretcheHistogram_Click(object sender, RoutedEventArgs e)
+        private void StretchHistogram_Click(object sender, RoutedEventArgs e)
         {
             if (this.selectedImageMat == null)
             {
@@ -274,7 +274,7 @@ namespace APO_Mateusz_Marek_20456
             }
             else if (this.selectedImageMat.NumberOfChannels != 1)
             {
-                MessageBox.Show("Histogram equalization can only be applied to grayscale images.");
+                MessageBox.Show("Histogram stretching can only be applied to grayscale images.");
                 return;
             }
             else
