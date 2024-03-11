@@ -33,7 +33,7 @@ namespace APO_Mateusz_Marek_20456
 
         public void DisplayHistogram(Mat imageMat)
         {
-            var histogramData = CalculateHistogram(imageMat);
+            var histogramData = ImageOperarions.CalculateHistogram(imageMat);
             var series = new ColumnSeries<int>
             {
                 Values = histogramData,
@@ -77,36 +77,6 @@ namespace APO_Mateusz_Marek_20456
             */
 
             this.Show();
-        }
-
-
-        private int[] CalculateHistogram(Mat imageMat)
-        {
-            int[] histogramData = new int[256];
-
-            if (imageMat.NumberOfChannels == 1)
-            {
-                IntPtr scan0 = imageMat.DataPointer;
-
-                int step = imageMat.Step;
-                int width = imageMat.Width;
-                int height = imageMat.Height;
-
-                unsafe
-                {
-                    for (int i = 0; i < height; i++)
-                    {
-                        byte* row = (byte*)scan0.ToPointer() + (i * step);
-                        for (int j = 0; j < width; j++)
-                        {
-                            byte intensity = row[j];
-                            histogramData[intensity]++;
-                        }
-                    }
-                }
-            }
-
-            return histogramData;
         }
 
         private string FormatHistogramTooltip(string oldText)

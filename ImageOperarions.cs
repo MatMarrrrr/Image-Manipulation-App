@@ -19,6 +19,35 @@ namespace APO_Mateusz_Marek_20456
             return grayImage;
         }
 
+        public static int[] CalculateHistogram(Mat imageMat)
+        {
+            int[] histogramData = new int[256];
+
+            if (imageMat.NumberOfChannels == 1)
+            {
+                IntPtr scan0 = imageMat.DataPointer;
+
+                int step = imageMat.Step;
+                int width = imageMat.Width;
+                int height = imageMat.Height;
+
+                unsafe
+                {
+                    for (int i = 0; i < height; i++)
+                    {
+                        byte* row = (byte*)scan0.ToPointer() + (i * step);
+                        for (int j = 0; j < width; j++)
+                        {
+                            byte intensity = row[j];
+                            histogramData[intensity]++;
+                        }
+                    }
+                }
+            }
+
+            return histogramData;
+        }
+
         public static Mat NegateImage(Mat image)
         {
             unsafe
@@ -145,6 +174,43 @@ namespace APO_Mateusz_Marek_20456
             var channels = SplitChannels(Image, output);
 
             return channels;
+        }
+
+        public static Mat EqualizeHistogram(Mat image)
+        {
+
+            int[] histogram = CalculateHistogram(image);
+            int total = image.Width * image.Height;
+
+            int sum = 0;
+            float scale = 255.0f / total;
+            byte[] lut = new byte[256];
+            for (int i = 0; i < 256; i++)
+            {
+                sum += histogram[i];
+                lut[i] = (byte)(sum * scale);
+            }
+
+            Mat equalizedImage = new Mat(image.Size, DepthType.Cv8U, 1);
+            unsafe
+            {
+                byte* srcPtr = (byte*)image.DataPointer;
+                byte* dstPtr = (byte*)equalizedImage.DataPointer;
+                int width = image.Width;
+                int height = image.Height;
+                int step = image.Step;
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte val = srcPtr[y * step + x];
+                        dstPtr[y * step + x] = lut[val];
+                    }
+                }
+            }
+
+            return equalizedImage;
         }
 
 

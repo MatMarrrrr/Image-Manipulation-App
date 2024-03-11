@@ -19,6 +19,7 @@
                 <MenuItem Header="Convert to HSV and split channels" Click="ConvertToHSVAndSplitChannels_Click"/>
                 <MenuItem Header="Convert to Lab and split channels" Click="ConvertToLabAndSplitChannels_Click"/>
                 <MenuItem Header="Convert to HSV, Lab and split channels" Click="ConvertToHSVLabAndSplitChannels_Click"/>
+                <MenuItem Header="Equalize Histogram" Click="EqualizeHistogram_Click"/>
             </MenuItem>
             <MenuItem Header="About" Click="About_Click"/>
             <Label x:Name="labelSelectedImage" Content="Selected Image: Null"/>

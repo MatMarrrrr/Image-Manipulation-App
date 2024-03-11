@@ -245,6 +245,26 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
+        private void EqualizeHistogram_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            else if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Histogram equalization can only be applied to grayscale images.");
+                return;
+            }
+            else
+            {
+                this.selectedImageMat = ImageOperarions.EqualizeHistogram(this.selectedImageMat);
+                activeImageWindow?.UpdateImage(this.selectedImageMat);
+                activeImageWindow?.UpdateHistogram();
+            }
+        }
+
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");
