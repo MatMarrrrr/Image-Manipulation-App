@@ -69,7 +69,7 @@ namespace APO_Mateusz_Marek_20456
             return image;
         }
 
-        public static Mat StretchContrast(Mat image)
+        public static Mat StretchContrast(Mat image, byte q3 = 0, byte q4 = 255)
         {
             double minVal = 0, maxVal = 0;
             int[]? minIdx = null;
@@ -78,8 +78,6 @@ namespace APO_Mateusz_Marek_20456
 
             byte p1 = (byte)minVal;
             byte p2 = (byte)maxVal;
-            byte q3 = 0;
-            byte q4 = 255;
 
             unsafe
             {
@@ -175,6 +173,52 @@ namespace APO_Mateusz_Marek_20456
 
             return channels;
         }
+
+        public static Mat StretchHistogram(Mat image)
+        {
+            double minVal = 0, maxVal = 0;
+            int[]? minIdx = null;
+            int[]? maxIdx = null;
+            CvInvoke.MinMaxIdx(image, out minVal, out maxVal, minIdx, maxIdx);
+
+            byte p1 = (byte)minVal;
+            byte p2 = (byte)maxVal;
+            byte q3 = 0;
+            byte q4 = 255;
+
+            unsafe
+            {
+                byte* dataPtr = (byte*)image.DataPointer;
+                int width = image.Width;
+                int height = image.Height;
+                int step = image.Step;
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte* pixelPtr = dataPtr + (y * step) + x;
+                        byte pixelValue = *pixelPtr;
+
+                        if (pixelValue < p1)
+                        {
+                            *pixelPtr = q3;
+                        }
+                        else if (pixelValue > p2)
+                        {
+                            *pixelPtr = q4;
+                        }
+                        else
+                        {
+                            *pixelPtr = (byte)(((pixelValue - p1) * (q4 - q3)) / (p2 - p1) + q3);
+                        }
+                    }
+                }
+            }
+
+            return image;
+        }
+
 
         public static Mat EqualizeHistogram(Mat image)
         {
