@@ -46,7 +46,6 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
-
         private void OpenColor_Click(object sender, RoutedEventArgs e)
         {
             OpenImage_Click(sender, e, true);
@@ -309,31 +308,6 @@ namespace APO_Mateusz_Marek_20456
         {
             this.selectedImageMat = null;
             labelSelectedImage.Content = "Selected Image: Null";
-        }
-
-        private void ConvertAndSplitChannels(string conversionType)
-        {
-            if (this.selectedImageMat == null)
-            {
-                MessageBox.Show("No image selected");
-                return;
-            }
-            if (this.selectedImageMat.NumberOfChannels < 3)
-            {
-                MessageBox.Show($"Conversion to {conversionType} and splitting channels can only be applied to images with at least 3 channels");
-                return;
-            }
-
-            ImageWindow? imageWindowToClose = this.activeImageWindow;
-            var channels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, conversionType);
-
-            foreach (var channel in channels)
-            {
-                string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
-            }
-
-            imageWindowToClose?.Close();
         }
 
     }
