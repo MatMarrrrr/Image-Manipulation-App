@@ -20,6 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static APO_Mateusz_Marek_20456.ImageOperarions;
 
 namespace APO_Mateusz_Marek_20456
 {
@@ -33,8 +34,10 @@ namespace APO_Mateusz_Marek_20456
 
         public void DisplayHistogram(Mat imageMat)
         {
-            var histogramData = ImageOperarions.CalculateHistogram(imageMat);
-            var series = new ColumnSeries<int>
+            int[] histogramData = CalculateHistogram(imageMat);
+            List<HistogramTableDataRow> histogramTableData = CalculateTableHistogramData(histogramData);
+
+            ColumnSeries<int> series = new ColumnSeries<int>
             {
                 Values = histogramData,
                 Fill = new SolidColorPaint(SKColors.Black),
@@ -42,39 +45,8 @@ namespace APO_Mateusz_Marek_20456
                 YToolTipLabelFormatter = (chartPoint) => FormatHistogramTooltip(chartPoint.Coordinate.ToString())
             };
 
-
             histogramChart.Series = new ISeries[] { series };
-
-            var histogramTableData = new List<HistogramDataRow>();
-            for (int i = 0; i < histogramData.Length; i++)
-            {
-                histogramTableData.Add(new HistogramDataRow { Intensity = i, Count = histogramData[i] });
-            }
             HistogramTable.ItemsSource = histogramTableData;
-
-            /*
-            Bitmap imageBitmap = imageMat.ToBitmap();
-            var pixelsData = new List<List<int>>();
-
-            for (int y = 0; y < imageBitmap.Height; ++y)
-            {
-                var row = new List<int>();
-                for (int x = 0; x < imageBitmap.Width; ++x)
-                {
-                    System.Drawing.Color c = imageBitmap.GetPixel(x, y);
-                    int intensity = (int)(c.R * 0.3 + c.G * 0.59 + c.B * 0.11);
-                    row.Add(intensity);
-                }
-                pixelsData.Add(row);
-            }
-
-            for (int i = 0; i < imageBitmap.Width; i++)
-            {
-                HistogramPixels.Columns.Add(new DataGridTextColumn { Header = $"Col {i + 1}", Binding = new Binding($"[{i}]") });
-            }
-
-            HistogramPixels.ItemsSource = pixelsData;
-            */
 
             this.Show();
         }
@@ -85,13 +57,7 @@ namespace APO_Mateusz_Marek_20456
                 return oldText;
 
             string[] newTextArr = oldText.Replace("(", "").Replace(")", "").Trim().Split(",");
-            return $"Value: {newTextArr[0]}{Environment.NewLine}Count: {newTextArr[1]}";
-        }
-
-        public class HistogramDataRow
-        {
-            public int Intensity { get; set; }
-            public int Count { get; set; }
+            return $"Intensity: {newTextArr[0]}{Environment.NewLine}Count: {newTextArr[1]}";
         }
     }
 }

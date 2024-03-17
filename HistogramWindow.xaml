@@ -11,13 +11,6 @@
             <TabItem Header="Table">
                 <DataGrid x:Name="HistogramTable"/>
             </TabItem>
-            <TabItem Header="Pixels">
-                <DataGrid Name="HistogramPixels"
-                  EnableColumnVirtualization="True"
-                  EnableRowVirtualization="True"
-                  AutoGenerateColumns="False">
-                </DataGrid>
-            </TabItem>
         </TabControl>
     </Grid>
 </Window>

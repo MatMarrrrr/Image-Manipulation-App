@@ -1,16 +1,27 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace APO_Mateusz_Marek_20456
 {
     internal static class ImageOperarions
     {
+        public class HistogramTableDataRow
+        {
+            public int Intensity { get; set; }
+            public int Count { get; set; }
+        }
+
         public static Mat ConvertToGrayScale(Mat image)
         {
             Mat grayImage = new Mat();
@@ -46,6 +57,16 @@ namespace APO_Mateusz_Marek_20456
             }
 
             return histogramData;
+        }
+
+        public static List<HistogramTableDataRow> CalculateTableHistogramData(int[] histogramData)
+        {
+            var histogramTableData = new List<HistogramTableDataRow>();
+            for (int i = 0; i < histogramData.Length; i++)
+            {
+                histogramTableData.Add(new HistogramTableDataRow { Intensity = i, Count = histogramData[i] });
+            }
+            return histogramTableData;
         }
 
         public static Mat NegateImage(Mat image)
