@@ -22,8 +22,8 @@ namespace APO_Mateusz_Marek_20456
     {
         private List<ImageWindow> imageWindows = new List<ImageWindow>();
         public Mat? selectedImageMat;
-        public string selectedImageFileName;
-        public string selectedImageShortFileName;
+        public string? selectedImageFileName;
+        public string? selectedImageShortFileName;
         public ImageWindow? activeImageWindow;
 
         public MainWindow()
