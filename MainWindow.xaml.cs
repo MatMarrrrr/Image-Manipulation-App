@@ -84,6 +84,7 @@ namespace Image_Manipulation_App
             this.selectedImageMat = ImageOperarions.ConvertToGrayScale(this.selectedImageMat);
             activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
             activeImageWindow?.UpdateTitlePrefix("GrayScale");
+            this.labelSelectedImage.Content = $"Selected Image: {activeImageWindow?.Title}";
         }
 
         private void Negate_Click(object sender, RoutedEventArgs e)
@@ -294,13 +295,13 @@ namespace Image_Manipulation_App
             this.selectedImageFileName = fileName;
             this.selectedImageShortFileName = shortFileName;
             this.activeImageWindow = imageWindow;
-            this.labelSelectedImage.Content = activeImageWindow?.Title;
+            this.labelSelectedImage.Content = $"Selected Image: {activeImageWindow?.Title}";
         }
 
         private void ClearSelectedImageMat()
         {
             this.selectedImageMat = null;
-            labelSelectedImage.Content = "Selected Image: Null";
+            labelSelectedImage.Content = "Selected Image: None";
         }
 
     }
