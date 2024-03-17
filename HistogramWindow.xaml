@@ -5,7 +5,7 @@
         Title="Histogram" Height="450" Width="800">
     <Grid>
         <TabControl>
-            <TabItem Header="Plot">
+            <TabItem Header="Chart">
                 <lvc:CartesianChart x:Name="histogramChart"/>
             </TabItem>
             <TabItem Header="Table">
