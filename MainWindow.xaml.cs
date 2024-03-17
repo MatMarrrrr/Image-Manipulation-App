@@ -140,7 +140,7 @@ namespace APO_Mateusz_Marek_20456
 
         private void SplitChannels_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.selectedImageFileName == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -152,21 +152,19 @@ namespace APO_Mateusz_Marek_20456
             }
             else
             {
-                ImageWindow? imageWindowToClose = this.activeImageWindow;
                 var channels = ImageOperarions.SplitChannels(this.selectedImageMat, "RGB");
                 foreach(var channel in channels)
                 {
                     string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
                     DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
                 }
-                imageWindowToClose?.Close();
 
             }
         }
 
         private void ConvertToHSVAndSplitChannels_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.selectedImageFileName == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -178,7 +176,6 @@ namespace APO_Mateusz_Marek_20456
             }
             else
             {
-                ImageWindow? imageWindowToClose = this.activeImageWindow;
                 var hsvChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "HSV");
 
                 foreach (var channel in hsvChannels)
@@ -186,14 +183,12 @@ namespace APO_Mateusz_Marek_20456
                     string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
                     DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
                 }
-
-                imageWindowToClose?.Close();
             }
         }
 
         private void ConvertToLabAndSplitChannels_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.selectedImageFileName == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -205,7 +200,6 @@ namespace APO_Mateusz_Marek_20456
             }
             else
             {
-                ImageWindow? imageWindowToClose = this.activeImageWindow;
                 var labChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "Lab");
 
                 foreach (var channel in labChannels)
@@ -213,42 +207,6 @@ namespace APO_Mateusz_Marek_20456
                     string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
                     DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
                 }
-
-                imageWindowToClose?.Close();
-            }
-        }
-
-        private void ConvertToHSVLabAndSplitChannels_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.selectedImageMat == null)
-            {
-                MessageBox.Show("No image selected");
-                return;
-            }
-            else if (this.selectedImageMat.NumberOfChannels < 3)
-            {
-                MessageBox.Show("Conversion to HSV, Lab and splitting channels can only be applied to images with at least 3 channels");
-                return;
-            }
-            else
-            {
-                ImageWindow? imageWindowToClose = this.activeImageWindow;
-                var hsvChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "HSV");
-                var labChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "Lab");
-
-                foreach (var channel in hsvChannels)
-                {
-                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
-                }
-
-                foreach (var channel in labChannels)
-                {   
-                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
-                }
-
-                imageWindowToClose?.Close();
             }
         }
 

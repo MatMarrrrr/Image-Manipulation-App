@@ -9,18 +9,21 @@
     <Grid>
         <Menu>
             <MenuItem Header="Lab1">
-                <MenuItem Header="Open Color" Click="OpenColor_Click"/>
-                <MenuItem Header="Open Gray Scale" Click="OpenGrayScale_Click"/>
+                <MenuItem Header="Open">
+                    <MenuItem Header="Color" Click="OpenColor_Click"/>
+                    <MenuItem Header="Gray Scale" Click="OpenGrayScale_Click"/>
+                </MenuItem>
                 <MenuItem Header="Create Histogram" Click="CreateHistogram_Click"/>
                 <MenuItem Header="Convert">
                     <MenuItem Header="Gray Scale" Click="ConvertToGrayScale_Click"/>
                 </MenuItem>
+                <MenuItem Header="Convert and split channels">
+                    <MenuItem Header="HSV" Click="ConvertToHSVAndSplitChannels_Click"/>
+                    <MenuItem Header="Lab" Click="ConvertToLabAndSplitChannels_Click"/>
+                </MenuItem>
                 <MenuItem Header="Negate" Click="Negate_Click"/>
                 <MenuItem Header="Stretch Contrast" Click="StretchContrast_Click"/>
                 <MenuItem Header="Split Channels" Click="SplitChannels_Click"/>
-                <MenuItem Header="Convert to HSV and split channels" Click="ConvertToHSVAndSplitChannels_Click"/>
-                <MenuItem Header="Convert to Lab and split channels" Click="ConvertToLabAndSplitChannels_Click"/>
-                <MenuItem Header="Convert to HSV, Lab and split channels" Click="ConvertToHSVLabAndSplitChannels_Click"/>
                 <MenuItem Header="Stretch Histogram" Click="StretchHistogram_Click"/>
                 <MenuItem Header="Equalize Histogram" Click="EqualizeHistogram_Click"/>
             </MenuItem>
