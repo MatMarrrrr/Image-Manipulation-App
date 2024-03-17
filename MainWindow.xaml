@@ -10,11 +10,11 @@
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="25"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Background="#ECECED" FontSize="14" FontFamily="Arial">
-            <MenuItem Header="Lab1">
+            <MenuItem Header="Lab1" Padding="3">
                 <MenuItem Header="Open">
                     <MenuItem Header="Color" Click="OpenColor_Click"/>
                     <MenuItem Header="Gray Scale" Click="OpenGrayScale_Click"/>
@@ -33,7 +33,7 @@
                 <MenuItem Header="Stretch Histogram" Click="StretchHistogram_Click"/>
                 <MenuItem Header="Equalize Histogram" Click="EqualizeHistogram_Click"/>
             </MenuItem>
-            <MenuItem Header="About" Click="About_Click"/>
+            <MenuItem Header="About" Padding="3" Click="About_Click"/>
         </Menu>
         <Label Grid.Row="1" x:Name="labelSelectedImage" Content="Selected Image: None" FontSize="14" FontFamily="Arial Black"/>
     </Grid>
