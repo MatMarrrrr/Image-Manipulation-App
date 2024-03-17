@@ -21,6 +21,7 @@ namespace APO_Mateusz_Marek_20456
     public partial class MainWindow : Window
     {
         private List<ImageWindow> imageWindows = new List<ImageWindow>();
+        private List<String> imageWindowNames = new List<String>();
         public Mat? selectedImageMat;
         public string? selectedImageFileName;
         public string? selectedImageShortFileName;
@@ -58,14 +59,13 @@ namespace APO_Mateusz_Marek_20456
 
         private void CreateHistogram_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat != null)
-            {
-                this.activeImageWindow?.ShowHistogram();
-            }
-            else
+            if(this.selectedImageMat == null)
             {
                 MessageBox.Show("No image selected");
+                return;
             }
+
+            this.activeImageWindow?.ShowHistogram();
         }
 
         private void ConvertToGrayScale_Click(object sender, RoutedEventArgs e)
@@ -80,12 +80,11 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("Image is already gray scale");
                 return;
             }
-            else
-            {
-                this.selectedImageMat = ImageOperarions.ConvertToGrayScale(this.selectedImageMat);
-                activeImageWindow?.UpdateImage(this.selectedImageMat);
-                activeImageWindow?.UpdateHistogram();
-            }
+
+            this.selectedImageMat = ImageOperarions.ConvertToGrayScale(this.selectedImageMat);
+            activeImageWindow?.UpdateImage(this.selectedImageMat);
+            activeImageWindow?.UpdateTitlePrefix("GrayScale");
+            activeImageWindow?.UpdateHistogram();
         }
 
         private void Negate_Click(object sender, RoutedEventArgs e)
@@ -95,18 +94,16 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("No image selected");
                 return;
             }
-            else if (this.selectedImageMat.NumberOfChannels != 1)
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
             {
                 MessageBox.Show("Negation can only be applied to grayscale images.");
                 return;
             }
-            else
-            {
-                this.selectedImageMat = ImageOperarions.NegateImage(this.selectedImageMat);
-                activeImageWindow?.UpdateImage(this.selectedImageMat);
-                activeImageWindow?.UpdateHistogram();
-            }
 
+            this.selectedImageMat = ImageOperarions.NegateImage(this.selectedImageMat);
+            activeImageWindow?.UpdateImage(this.selectedImageMat);
+            activeImageWindow?.UpdateHistogram();
         }
 
         private void StretchContrast_Click(object sender, RoutedEventArgs e)
@@ -116,25 +113,23 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("No image selected");
                 return;
             }
-            else if (this.selectedImageMat.NumberOfChannels != 1)
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
             {
                 MessageBox.Show("Contrast stretching can only be applied to grayscale images.");
                 return;
             }
-            else
+
+            var dialog = new StretchContrastParamsWindow();
+            if (dialog.ShowDialog() == true)
             {
-                var dialog = new StretchContrastParamsWindow();
-                if (dialog.ShowDialog() == true)
-                {
-                    int minValue = dialog.MinValue ?? 0;
-                    int maxValue = dialog.MaxValue ?? 255;
+                int minValue = dialog.MinValue ?? 0;
+                int maxValue = dialog.MaxValue ?? 255;
 
-                    this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat, (byte)minValue, (byte)maxValue);
-                    activeImageWindow?.UpdateImage(this.selectedImageMat);
-                    activeImageWindow?.UpdateHistogram();
-                }
+                this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat, (byte)minValue, (byte)maxValue);
+                activeImageWindow?.UpdateImage(this.selectedImageMat);
+                activeImageWindow?.UpdateHistogram();
             }
-
         }
 
         private void SplitChannels_Click(object sender, RoutedEventArgs e)
@@ -144,20 +139,18 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("No image selected");
                 return;
             }
-            else if (this.selectedImageMat.NumberOfChannels < 3)
+
+            if (this.selectedImageMat.NumberOfChannels < 3)
             {
                 MessageBox.Show("Splitting channels can only be applied to images with at least 3 channels");
                 return;
             }
-            else
-            {
-                var channels = ImageOperarions.SplitChannels(this.selectedImageMat, "RGB");
-                foreach(var channel in channels)
-                {
-                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
-                }
 
+            var channels = ImageOperarions.SplitChannels(this.selectedImageMat, "RGB");
+            foreach (var channel in channels)
+            {
+                string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
+                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
             }
         }
 
@@ -168,20 +161,19 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("No image selected");
                 return;
             }
-            else if (this.selectedImageMat.NumberOfChannels < 3)
+
+            if (this.selectedImageMat.NumberOfChannels < 3)
             {
                 MessageBox.Show("Conversion to HSV and splitting channels can only be applied to images with at least 3 channels");
                 return;
             }
-            else
-            {
-                var hsvChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "HSV");
 
-                foreach (var channel in hsvChannels)
-                {
-                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
-                }
+            var hsvChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "HSV");
+
+            foreach (var channel in hsvChannels)
+            {
+                string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
+                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
             }
         }
 
@@ -192,20 +184,19 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("No image selected");
                 return;
             }
-            else if (this.selectedImageMat.NumberOfChannels < 3)
+
+            if (this.selectedImageMat.NumberOfChannels < 3)
             {
                 MessageBox.Show("Conversion to Lab and splitting channels can only be applied to images with at least 3 channels");
                 return;
             }
-            else
-            {
-                var labChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "Lab");
 
-                foreach (var channel in labChannels)
-                {
-                    string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                    DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
-                }
+            var labChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "Lab");
+
+            foreach (var channel in labChannels)
+            {
+                string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
+                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
             }
         }
 
@@ -216,17 +207,16 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("No image selected");
                 return;
             }
-            else if (this.selectedImageMat.NumberOfChannels != 1)
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
             {
                 MessageBox.Show("Histogram equalization can only be applied to grayscale images.");
                 return;
             }
-            else
-            {
-                this.selectedImageMat = ImageOperarions.EqualizeHistogram(this.selectedImageMat);
-                activeImageWindow?.UpdateImage(this.selectedImageMat);
-                activeImageWindow?.UpdateHistogram();
-            }
+
+            this.selectedImageMat = ImageOperarions.EqualizeHistogram(this.selectedImageMat);
+            activeImageWindow?.UpdateImage(this.selectedImageMat);
+            activeImageWindow?.UpdateHistogram();
         }
 
         private void StretchHistogram_Click(object sender, RoutedEventArgs e)
@@ -236,17 +226,16 @@ namespace APO_Mateusz_Marek_20456
                 MessageBox.Show("No image selected");
                 return;
             }
-            else if (this.selectedImageMat.NumberOfChannels != 1)
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
             {
                 MessageBox.Show("Histogram stretching can only be applied to grayscale images.");
                 return;
             }
-            else
-            {
-                this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat);
-                activeImageWindow?.UpdateImage(this.selectedImageMat);
-                activeImageWindow?.UpdateHistogram();
-            }
+
+            this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat);
+            activeImageWindow?.UpdateImage(this.selectedImageMat);
+            activeImageWindow?.UpdateHistogram();
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
