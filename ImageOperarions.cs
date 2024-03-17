@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -34,25 +35,18 @@ namespace APO_Mateusz_Marek_20456
         {
             int[] histogramData = new int[256];
 
-            if (imageMat.NumberOfChannels == 1)
+            IntPtr dataPtr = imageMat.DataPointer;
+            int width = imageMat.Width;
+            int height = imageMat.Height;
+            int step = imageMat.Step;
+
+            for (int y = 0; y < height; y++)
             {
-                IntPtr scan0 = imageMat.DataPointer;
-
-                int step = imageMat.Step;
-                int width = imageMat.Width;
-                int height = imageMat.Height;
-
-                unsafe
+                for (int x = 0; x < width; x++)
                 {
-                    for (int i = 0; i < height; i++)
-                    {
-                        byte* row = (byte*)scan0.ToPointer() + (i * step);
-                        for (int j = 0; j < width; j++)
-                        {
-                            byte intensity = row[j];
-                            histogramData[intensity]++;
-                        }
-                    }
+                    int offset = y * step + x;
+                    byte intensity = Marshal.ReadByte(dataPtr + offset);
+                    histogramData[intensity]++;
                 }
             }
 
@@ -68,26 +62,29 @@ namespace APO_Mateusz_Marek_20456
             }
             return histogramTableData;
         }
-
         public static Mat NegateImage(Mat image)
         {
-            unsafe
-            {
-                byte* dataPtr = (byte*)image.DataPointer;
-                int width = image.Width;
-                int height = image.Height;
-                int step = image.Step;
+            Mat result = image.Clone();
 
-                for (int y = 0; y < height; y++)
+            IntPtr dataPtr = result.DataPointer;
+            int width = result.Width;
+            int height = result.Height;
+            int step = result.Step;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
-                        byte* pixelPtr = dataPtr + (y * step) + x;
-                        *pixelPtr = (byte)(255 - *pixelPtr);
-                    }
+                    int offset = (y * step) + x;
+                    byte pixelValue = Marshal.ReadByte(dataPtr, offset);
+
+                    byte negatedValue = (byte)(255 - pixelValue);
+
+                    Marshal.WriteByte(dataPtr, offset, negatedValue);
                 }
             }
-            return image;
+
+            return result;
         }
 
         public static Mat StretchHistogram(Mat image, byte q3 = 0, byte q4 = 255)
