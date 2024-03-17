@@ -43,7 +43,7 @@ namespace APO_Mateusz_Marek_20456
                 string fileName = openFileDialog.FileName;
                 ImreadModes mode = isColor ? ImreadModes.Color : ImreadModes.Grayscale;
                 Mat img = CvInvoke.Imread(fileName, mode);
-                DisplayImageInNewWindow(img, fileName);
+                DisplayImageInNewWindow(img, fileName, null, true);
             }
         }
 
@@ -252,19 +252,29 @@ namespace APO_Mateusz_Marek_20456
             }
         }
 
-        private ImageWindow DisplayImageInNewWindow(Mat img, string fileName, string? customWindowTitle = null)
+        private ImageWindow DisplayImageInNewWindow(Mat img, string fileName, string? customWindowTitle = null, bool checkDuplicates = false)
         {
             string shortFileName = Path.GetFileName(fileName);
             string windowTitle = "";
 
-            if(customWindowTitle == null)
+            string imageType = img.NumberOfChannels == 1 ? "GrayScale" : "Color";
+
+            if (customWindowTitle != null)
             {
-                string imageType = img.NumberOfChannels == 1 ? "GrayScale" : "Color";
-                windowTitle = $"({imageType}) {shortFileName}";
+                windowTitle = customWindowTitle;
             }
             else
             {
-                windowTitle = customWindowTitle;
+                windowTitle = $"({imageType}) {shortFileName}";
+            }
+
+            if (checkDuplicates)
+            {
+                int countNameDuplicates = this.imageWindowNames.Count(name => name == shortFileName);
+                if (countNameDuplicates > 0)
+                {
+                    windowTitle += $" -{countNameDuplicates}";
+                }
             }
 
             BitmapSource imageSource = BitmapSourceConverter.ToBitmapSource(img);
@@ -275,7 +285,8 @@ namespace APO_Mateusz_Marek_20456
                 Height = Math.Min(700, img.Height + 38),
             };
 
-            imageWindows.Add(imageWindow);
+            this.imageWindows.Add(imageWindow);
+            this.imageWindowNames.Add(shortFileName);
             imageWindow.Closing += (s, e) => imageWindows.Remove(imageWindow);
 
             imageWindow.Show();
