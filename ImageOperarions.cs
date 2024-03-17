@@ -55,7 +55,7 @@ namespace APO_Mateusz_Marek_20456
 
         public static List<HistogramTableDataRow> CalculateTableHistogramData(int[] histogramData)
         {
-            var histogramTableData = new List<HistogramTableDataRow>();
+            List<HistogramTableDataRow> histogramTableData = new List<HistogramTableDataRow>();
             for (int i = 0; i < histogramData.Length; i++)
             {
                 histogramTableData.Add(new HistogramTableDataRow { Intensity = i, Count = histogramData[i] });
@@ -89,45 +89,45 @@ namespace APO_Mateusz_Marek_20456
 
         public static Mat StretchHistogram(Mat image, byte q3 = 0, byte q4 = 255)
         {
-            double minVal = 0, maxVal = 0;
-            int[]? minIdx = null;
-            int[]? maxIdx = null;
-            CvInvoke.MinMaxIdx(image, out minVal, out maxVal, minIdx, maxIdx);
+            double minVal, maxVal;
+            CvInvoke.MinMaxIdx(image, out minVal, out maxVal, null, null);
 
             byte p1 = (byte)minVal;
             byte p2 = (byte)maxVal;
 
-            unsafe
+            Mat result = image.Clone();
+
+            IntPtr dataPtr = result.DataPointer;
+            int width = result.Width;
+            int height = result.Height;
+            int step = result.Step;
+
+            for (int y = 0; y < height; y++)
             {
-                byte* dataPtr = (byte*)image.DataPointer;
-                int width = image.Width;
-                int height = image.Height;
-                int step = image.Step;
-
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
-                        byte* pixelPtr = dataPtr + (y * step) + x;
-                        byte pixelValue = *pixelPtr;
+                    int offset = (y * step) + x;
+                    byte pixelValue = Marshal.ReadByte(dataPtr, offset);
 
-                        if (pixelValue < p1)
-                        {
-                            *pixelPtr = q3;
-                        }
-                        else if (pixelValue > p2)
-                        {
-                            *pixelPtr = q4;
-                        }
-                        else
-                        {
-                            *pixelPtr = (byte)(((pixelValue - p1) * (q4 - q3)) / (p2 - p1) + q3);
-                        }
+                    byte stretchedValue;
+                    if (pixelValue < p1)
+                    {
+                        stretchedValue = q3;
                     }
+                    else if (pixelValue > p2)
+                    {
+                        stretchedValue = q4;
+                    }
+                    else
+                    {
+                        stretchedValue = (byte)(((pixelValue - p1) * (q4 - q3)) / (p2 - p1) + q3);
+                    }
+
+                    Marshal.WriteByte(dataPtr, offset, stretchedValue);
                 }
             }
 
-            return image;
+            return result;
         }
 
         public static List<(Mat image, string channelName)> SplitChannels(Mat image, string type)
