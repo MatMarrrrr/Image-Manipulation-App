@@ -82,9 +82,8 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.ConvertToGrayScale(this.selectedImageMat);
-            activeImageWindow?.UpdateImage(this.selectedImageMat);
+            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
             activeImageWindow?.UpdateTitlePrefix("GrayScale");
-            activeImageWindow?.UpdateHistogram();
         }
 
         private void Negate_Click(object sender, RoutedEventArgs e)
@@ -102,8 +101,7 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.NegateImage(this.selectedImageMat);
-            activeImageWindow?.UpdateImage(this.selectedImageMat);
-            activeImageWindow?.UpdateHistogram();
+            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
         private void StretchContrast_Click(object sender, RoutedEventArgs e)
@@ -127,8 +125,7 @@ namespace Image_Manipulation_App
                 int maxValue = dialog.MaxValue ?? 255;
 
                 this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat, (byte)minValue, (byte)maxValue);
-                activeImageWindow?.UpdateImage(this.selectedImageMat);
-                activeImageWindow?.UpdateHistogram();
+                activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
             }
         }
 
@@ -215,8 +212,7 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.EqualizeHistogram(this.selectedImageMat);
-            activeImageWindow?.UpdateImage(this.selectedImageMat);
-            activeImageWindow?.UpdateHistogram();
+            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
         private void StretchHistogram_Click(object sender, RoutedEventArgs e)
@@ -234,8 +230,7 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat);
-            activeImageWindow?.UpdateImage(this.selectedImageMat);
-            activeImageWindow?.UpdateHistogram();
+            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
         private void About_Click(object sender, RoutedEventArgs e)

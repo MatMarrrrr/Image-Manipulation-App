@@ -68,6 +68,12 @@ namespace Image_Manipulation_App
             }
         }
 
+        public void UpdateImageAndHistogram(Mat imageMat)
+        {
+            this.UpdateImage(imageMat);
+            this.UpdateHistogram();
+        }
+
         public void ClearHistogramWindowReference()
         {
             histogramWindow = null;
