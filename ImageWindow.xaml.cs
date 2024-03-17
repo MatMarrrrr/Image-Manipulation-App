@@ -7,7 +7,7 @@ namespace APO_Mateusz_Marek_20456
 {
     public partial class ImageWindow : Window
     {
-        public static event Action<Mat, string, string>? ImageWindowFocused;
+        public static event Action<ImageWindow, Mat, string, string>? ImageWindowFocused;
         public static event Action? ImageWindowClosing;
 
         public HistogramWindow? histogramWindow;
@@ -23,7 +23,7 @@ namespace APO_Mateusz_Marek_20456
             this.fileName = fileName;
             this.shortFileName = shortFileName;
 
-            Activated += (sender, e) => ImageWindowFocused?.Invoke(imageMat, fileName, shortFileName);
+            Activated += (sender, e) => ImageWindowFocused?.Invoke(this, imageMat, fileName, shortFileName);
             Closing += ImageWindow_Closing;
         }
 

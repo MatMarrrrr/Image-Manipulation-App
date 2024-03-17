@@ -29,7 +29,7 @@ namespace APO_Mateusz_Marek_20456
         public MainWindow()
         {
             InitializeComponent();
-            ImageWindow.ImageWindowFocused += UpdateSelectedImageMat;
+            ImageWindow.ImageWindowFocused += UpdateSelectedImage;
             ImageWindow.ImageWindowClosing += ClearSelectedImageMat;
             Closing += MainWindow_Closing;
         }
@@ -293,14 +293,12 @@ namespace APO_Mateusz_Marek_20456
             return imageWindow;
         }
 
-        private void UpdateSelectedImageMat(Mat imageMat, string fileName, string shortFileName)
+        private void UpdateSelectedImage(ImageWindow imageWindow, Mat imageMat, string fileName, string shortFileName)
         {
             this.selectedImageMat = imageMat;
             this.selectedImageFileName = fileName;
             this.selectedImageShortFileName = shortFileName;
-            this.activeImageWindow = Application.Current.Windows
-                .OfType<ImageWindow>()
-                .FirstOrDefault(window => window.imageMat == imageMat);
+            this.activeImageWindow = imageWindow;
             this.labelSelectedImage.Content = activeImageWindow?.Title;
         }
 
