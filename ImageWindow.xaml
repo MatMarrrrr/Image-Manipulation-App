@@ -4,6 +4,14 @@
         Title="Image Window"
         Closing="ImageWindow_Closing">
     <Grid>
-        <Image x:Name="imageControl" Stretch="Uniform"/>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto" 
+                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+            <Image x:Name="imageControl" Stretch="Uniform">
+                <Image.LayoutTransform>
+                    <ScaleTransform x:Name="imageScaleTransform"/>
+                </Image.LayoutTransform>
+            </Image>
+        </ScrollViewer>
     </Grid>
 </Window>

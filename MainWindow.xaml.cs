@@ -281,8 +281,8 @@ namespace APO_Mateusz_Marek_20456
             ImageWindow imageWindow = new ImageWindow(imageSource, img, fileName, shortFileName)
             {
                 Title = windowTitle,
-                Width = Math.Min(700, img.Width),
-                Height = Math.Min(700, img.Height + 38),
+                Width = Math.Min(500, img.Width),
+                Height = Math.Min(500, img.Height + 38),
             };
 
             this.imageWindows.Add(imageWindow);
