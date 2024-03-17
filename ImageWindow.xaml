@@ -1,4 +1,4 @@
-﻿<Window x:Class="APO_Mateusz_Marek_20456.ImageWindow"
+﻿<Window x:Class="Image_Manipulation_App.ImageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Image Window"

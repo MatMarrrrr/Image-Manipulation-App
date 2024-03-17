@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace APO_Mateusz_Marek_20456
+namespace Image_Manipulation_App
 {
     internal static class ImageOperarions
     {

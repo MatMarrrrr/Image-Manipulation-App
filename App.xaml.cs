@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace APO_Mateusz_Marek_20456
+namespace Image_Manipulation_App
 {
     /// <summary>
     /// Interaction logic for App.xaml

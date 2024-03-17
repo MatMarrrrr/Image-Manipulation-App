@@ -4,7 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
 
-namespace APO_Mateusz_Marek_20456
+namespace Image_Manipulation_App
 {
     public partial class ImageWindow : Window
     {

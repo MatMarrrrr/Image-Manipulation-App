@@ -16,7 +16,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 
-namespace APO_Mateusz_Marek_20456
+namespace Image_Manipulation_App
 {
     public partial class MainWindow : Window
     {

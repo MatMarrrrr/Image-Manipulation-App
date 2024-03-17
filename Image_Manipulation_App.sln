@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APO Mateusz Marek 20456", "APO Mateusz Marek 20456.csproj", "{97724A24-82CF-4F2E-9269-FC09CC772AB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Image_Manipulation_App", "Image_Manipulation_App.csproj", "{97724A24-82CF-4F2E-9269-FC09CC772AB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

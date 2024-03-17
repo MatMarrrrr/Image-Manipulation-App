@@ -20,9 +20,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static APO_Mateusz_Marek_20456.ImageOperarions;
+using static Image_Manipulation_App.ImageOperarions;
 
-namespace APO_Mateusz_Marek_20456
+namespace Image_Manipulation_App
 {
     public partial class HistogramWindow : Window
     {
