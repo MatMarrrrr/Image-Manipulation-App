@@ -7,10 +7,10 @@
         mc:Ignorable="d"
         Title="Stretch Params" Height="128" Width="300">
     <StackPanel>
-        <TextBlock Text="Min value (q3):" />
+        <TextBlock Text="New min value (q3):" />
         <TextBox x:Name="MinValueTextBox" TextChanged="ValueTextBox_TextChanged"/>
 
-        <TextBlock Text="Max value (q4):" />
+        <TextBlock Text="New max value (q4):" />
         <TextBox x:Name="MaxValueTextBox" TextChanged="ValueTextBox_TextChanged"/>
 
         <Button Content="Stretch" x:Name="OkButton" Click="OnOkClicked" IsEnabled="False" />
