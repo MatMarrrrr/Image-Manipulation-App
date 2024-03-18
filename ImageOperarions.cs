@@ -194,7 +194,6 @@ namespace Image_Manipulation_App
 
         public static Mat EqualizeHistogram(Mat image)
         {
-
             int[] histogram = CalculateHistogram(image);
             int total = image.Width * image.Height;
 
@@ -208,26 +207,25 @@ namespace Image_Manipulation_App
             }
 
             Mat equalizedImage = new Mat(image.Size, DepthType.Cv8U, 1);
-            unsafe
-            {
-                byte* srcPtr = (byte*)image.DataPointer;
-                byte* dstPtr = (byte*)equalizedImage.DataPointer;
-                int width = image.Width;
-                int height = image.Height;
-                int step = image.Step;
+            IntPtr srcDataPtr = image.DataPointer;
+            IntPtr dstDataPtr = equalizedImage.DataPointer;
+            int width = image.Width;
+            int height = image.Height;
+            int step = image.Step;
 
-                for (int y = 0; y < height; y++)
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
-                        byte val = srcPtr[y * step + x];
-                        dstPtr[y * step + x] = lut[val];
-                    }
+                    int offset = y * step + x;
+                    byte val = Marshal.ReadByte(srcDataPtr, offset);
+                    Marshal.WriteByte(dstDataPtr, offset, lut[val]);
                 }
             }
 
             return equalizedImage;
         }
+
 
 
     }
