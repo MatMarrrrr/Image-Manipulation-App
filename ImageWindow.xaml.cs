@@ -89,26 +89,5 @@ namespace Image_Manipulation_App
             }
             histogramWindow?.Close();
         }
-
-        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                const double zoomFactor = 0.1;
-                var currentScale = imageScaleTransform.ScaleX;
-                if (e.Delta > 0)
-                {
-                    imageScaleTransform.ScaleX = currentScale + zoomFactor;
-                    imageScaleTransform.ScaleY = currentScale + zoomFactor;
-                }
-                else if (e.Delta < 0 && currentScale - zoomFactor > 0)
-                {
-                    imageScaleTransform.ScaleX = currentScale - zoomFactor;
-                    imageScaleTransform.ScaleY = currentScale - zoomFactor;
-                }
-
-                e.Handled = true;
-            }
-        }
     }
 }

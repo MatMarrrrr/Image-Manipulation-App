@@ -120,7 +120,7 @@ namespace Image_Manipulation_App
                     }
                     else
                     {
-                        stretchedValue = (byte)(((pixelValue - p1) * (q4 - q3)) / (p2 - p1) + q3);
+                        stretchedValue = (byte)((pixelValue - p1) * (q4 - q3) / (p2 - p1) + q3);
                     }
 
                     Marshal.WriteByte(dataPtr, offset, stretchedValue);
