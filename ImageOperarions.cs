@@ -87,13 +87,19 @@ namespace Image_Manipulation_App
             return result;
         }
 
-        public static Mat StretchHistogram(Mat image, byte q3 = 0, byte q4 = 255)
+        public static Mat StretchHistogram(Mat image, byte? p1 = null, byte? p2 = null, byte q3 = 0, byte q4 = 255)
         {
-            double minVal, maxVal;
-            CvInvoke.MinMaxIdx(image, out minVal, out maxVal, null, null);
+            if (p1 is null || p2 is null)
+            {
+                CvInvoke.MinMaxIdx(image, out double minVal, out double maxVal, null, null);
+                p1 = p1 ?? (byte)minVal;
+                p2 = p2 ?? (byte)maxVal;
+            }
 
-            byte p1 = (byte)minVal;
-            byte p2 = (byte)maxVal;
+            if (p1 == p2)
+            {
+                return image.Clone();
+            }
 
             Mat result = image.Clone();
 

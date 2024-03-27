@@ -122,10 +122,12 @@ namespace Image_Manipulation_App
             var dialog = new StretchContrastParamsWindow();
             if (dialog.ShowDialog() == true)
             {
+                int bottomRange = dialog.BottomRange ?? 0;
+                int topRange = dialog.TopRange ?? 255;
                 int minValue = dialog.MinValue ?? 0;
                 int maxValue = dialog.MaxValue ?? 255;
 
-                this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat, (byte)minValue, (byte)maxValue);
+                this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat, (byte)bottomRange, (byte)topRange, (byte)minValue, (byte)maxValue);
                 activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
             }
         }

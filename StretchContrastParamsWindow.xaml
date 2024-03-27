@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Image_Manipulation_App"
         mc:Ignorable="d"
-        Title="Stretch Params" Height="128" Width="300">
+        Title="Stretch Params" Height="196" Width="300">
     <StackPanel>
+        <TextBlock Text="Bottom range (p1):" />
+        <TextBox x:Name="BottomRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
+
+        <TextBlock Text="Top range (p2):" />
+        <TextBox x:Name="TopRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
+
         <TextBlock Text="New min value (q3):" />
         <TextBox x:Name="MinValueTextBox" TextChanged="ValueTextBox_TextChanged"/>
 

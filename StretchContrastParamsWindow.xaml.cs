@@ -17,6 +17,8 @@ namespace Image_Manipulation_App
 {
     public partial class StretchContrastParamsWindow : Window
     {
+        public int? BottomRange { get; private set; }
+        public int? TopRange { get; private set; }
         public int? MinValue { get; private set; }
         public int? MaxValue { get; private set; }
 
@@ -34,10 +36,17 @@ namespace Image_Manipulation_App
                     if (value < 0) textBox.Text = "0";
                     else if (value > 255) textBox.Text = "255";
                 }
-
-                OkButton.IsEnabled = int.TryParse(MinValueTextBox.Text, out _) &&
-                                     int.TryParse(MaxValueTextBox.Text, out _);
             }
+
+            bool isValidRange = int.TryParse(BottomRangeTextBox.Text, out int bottomRange) &&
+                                int.TryParse(TopRangeTextBox.Text, out int topRange) &&
+                                bottomRange < topRange;
+
+            bool isValidValue = int.TryParse(MinValueTextBox.Text, out int minValue) &&
+                                int.TryParse(MaxValueTextBox.Text, out int maxValue) &&
+                                minValue < maxValue;
+
+            OkButton.IsEnabled = isValidRange && isValidValue;
         }
 
         private void OnOkClicked(object sender, RoutedEventArgs e)
