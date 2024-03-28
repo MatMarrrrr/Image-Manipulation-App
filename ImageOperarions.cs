@@ -130,7 +130,8 @@ namespace Image_Manipulation_App
 
         public static Mat StretchHistogram(Mat image)
         {
-            return ImageOperarions.StretchContrast(image, 0, 255, 0, 255);
+            CvInvoke.MinMaxIdx(image, out double minValue, out double maxValue, null, null);
+            return ImageOperarions.StretchContrast(image, (int)minValue, (int)maxValue, 0, 255);
         }
 
         public static List<(Mat image, string channelName)> SplitChannels(Mat image, string type)
