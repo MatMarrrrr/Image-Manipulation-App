@@ -240,7 +240,7 @@ namespace Image_Manipulation_App
 
         private void DuplicateImage_Click(object sender, RoutedEventArgs e)
         {
-            this.duplicateCurrentImage();
+            this.DuplicateCurrentImage();
         }
 
         private void AddImages_Click(object sender, RoutedEventArgs e)
@@ -310,6 +310,7 @@ namespace Image_Manipulation_App
             this.imageWindows.Add(imageWindow);
             this.imageWindowNames.Add(shortFileName);
             imageWindow.Closing += (s, e) => imageWindows.Remove(imageWindow);
+            imageWindow.KeyDown += Window_KeyDown;
 
             imageWindow.Show();
             return imageWindow;
@@ -330,7 +331,7 @@ namespace Image_Manipulation_App
             labelSelectedImage.Content = "Selected Image: None";
         }
 
-        private void duplicateCurrentImage()
+        private void DuplicateCurrentImage()
         {
             if (this.selectedImageMat == null || this.selectedImageFileName == null)
             {
@@ -349,7 +350,7 @@ namespace Image_Manipulation_App
                 {
                     if (e.Key == Key.D)
                     {
-                        this.duplicateCurrentImage();
+                        this.DuplicateCurrentImage();
                     }
                 }
             }
