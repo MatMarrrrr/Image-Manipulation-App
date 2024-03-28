@@ -121,7 +121,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            var dialog = new StretchContrastParamsWindow();
+            StretchContrastParamsWindow dialog = new StretchContrastParamsWindow();
             if (dialog.ShowDialog() == true)
             {
                 int p1 = dialog.P1 ?? 0;
@@ -253,7 +253,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            var dialog = new MathOperationParamsWindow(this.imageWindows, "Add images window", "Add");
+            MathOperationParamsWindow dialog = new MathOperationParamsWindow(this.imageWindows, "Add images window", "Add");
             if (dialog.ShowDialog() == true)
             {
                 MessageBox.Show($"{dialog.firstImageIndex}, {dialog.secondImageIndex}");
