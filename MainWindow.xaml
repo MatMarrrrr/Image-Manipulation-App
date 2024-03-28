@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Image Manipulation App" Height="90" Width="800">
+        Title="Image Manipulation App" Height="90" Width="800"
+        KeyDown="Window_KeyDown">
     <Grid Background="#ECECED">
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
@@ -31,6 +32,12 @@
                 <MenuItem Header="Split Channels" Click="SplitChannels_Click"/>
                 <MenuItem Header="Stretch Histogram" Click="StretchHistogram_Click"/>
                 <MenuItem Header="Equalize Histogram" Click="EqualizeHistogram_Click"/>
+                <MenuItem Header="Duplicate Image" Click="DuplicateImage_Click"/>
+            </MenuItem>
+            <MenuItem Header="Lab2" Padding="3">
+                <MenuItem Header="Math">
+                    <MenuItem Header="Add" Click="AddImages_Click"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="About" Padding="3" Click="About_Click"/>
         </Menu>

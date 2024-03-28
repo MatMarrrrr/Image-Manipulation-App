@@ -15,6 +15,8 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Threading.Channels;
+using System.Windows.Input;
 
 namespace Image_Manipulation_App
 {
@@ -150,7 +152,7 @@ namespace Image_Manipulation_App
             foreach (var channel in channels)
             {
                 string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
+                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle, true);
             }
         }
 
@@ -173,7 +175,7 @@ namespace Image_Manipulation_App
             foreach (var channel in hsvChannels)
             {
                 string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
+                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle, true);
             }
         }
 
@@ -196,7 +198,7 @@ namespace Image_Manipulation_App
             foreach (var channel in labChannels)
             {
                 string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
-                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle);
+                DisplayImageInNewWindow(channel.image, this.selectedImageFileName, windowTitle, true);
             }
         }
 
@@ -234,6 +236,28 @@ namespace Image_Manipulation_App
 
             this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat);
             activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
+        }
+
+        private void DuplicateImage_Click(object sender, RoutedEventArgs e)
+        {
+            this.duplicateCurrentImage();
+        }
+
+        private void AddImages_Click(object sender, RoutedEventArgs e)
+        {
+            int countGrayScaleImages = this.imageWindows.Count(window => window?.imageMat?.NumberOfChannels == 1);
+
+            if (countGrayScaleImages < 2)
+            {
+                MessageBox.Show("You must have at least two greyscale images to perform math operations");
+                return;
+            }
+
+            var dialog = new MathOperationParamsWindow(this.imageWindows, "Add images window", "Add");
+            if (dialog.ShowDialog() == true)
+            {
+                MessageBox.Show($"{dialog.firstImageIndex}, {dialog.secondImageIndex}");
+            }
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -304,6 +328,33 @@ namespace Image_Manipulation_App
         {
             this.selectedImageMat = null;
             labelSelectedImage.Content = "Selected Image: None";
+        }
+
+        private void duplicateCurrentImage()
+        {
+            if (this.selectedImageMat == null || this.selectedImageFileName == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            DisplayImageInNewWindow(this.selectedImageMat, this.selectedImageFileName, null, true);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Ctrl + Shift + D => Duplicate Image
+            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl) || e.KeyboardDevice.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.KeyboardDevice.IsKeyDown(Key.LeftShift) || e.KeyboardDevice.IsKeyDown(Key.RightShift))
+                {
+                    if (e.Key == Key.D)
+                    {
+                        this.duplicateCurrentImage();
+                    }
+                }
+            }
+
+
         }
 
     }
