@@ -87,26 +87,15 @@ namespace Image_Manipulation_App
             return result;
         }
 
-        public static Mat StretchHistogram(Mat image, byte? p1 = null, byte? p2 = null, byte q3 = 0, byte q4 = 255)
+        public static Mat StretchContrast(Mat image, int p1, int p2, int q3, int q4)
         {
-            if (p1 is null || p2 is null)
-            {
-                CvInvoke.MinMaxIdx(image, out double minVal, out double maxVal, null, null);
-                p1 = p1 ?? (byte)minVal;
-                p2 = p2 ?? (byte)maxVal;
-            }
+            byte minValue = 255;
+            byte maxValue = 0;
 
-            if (p1 == p2)
-            {
-                return image.Clone();
-            }
-
-            Mat result = image.Clone();
-
-            IntPtr dataPtr = result.DataPointer;
-            int width = result.Width;
-            int height = result.Height;
-            int step = result.Step;
+            IntPtr dataPtr = image.DataPointer;
+            int width = image.Width;
+            int height = image.Height;
+            int step = image.Step;
 
             for (int y = 0; y < height; y++)
             {
@@ -114,26 +103,34 @@ namespace Image_Manipulation_App
                 {
                     int offset = (y * step) + x;
                     byte pixelValue = Marshal.ReadByte(dataPtr, offset);
-
-                    byte stretchedValue;
-                    if (pixelValue < p1)
+                    if (pixelValue >= p1 && pixelValue <= p2)
                     {
-                        stretchedValue = q3;
+                        if (pixelValue < minValue) minValue = pixelValue;
+                        if (pixelValue > maxValue) maxValue = pixelValue;
                     }
-                    else if (pixelValue > p2)
-                    {
-                        stretchedValue = q4;
-                    }
-                    else
-                    {
-                        stretchedValue = (byte)((pixelValue - p1) * (q4 - q3) / (p2 - p1) + q3);
-                    }
-
-                    Marshal.WriteByte(dataPtr, offset, stretchedValue);
                 }
             }
 
-            return result;
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int offset = (y * step) + x;
+                    double pixelValue = Marshal.ReadByte(dataPtr, offset);
+                    if (pixelValue >= p1 && pixelValue <= p2)
+                    {
+                        byte newPixelValue = (byte)Math.Round(((pixelValue - minValue) / (maxValue - minValue)) * (q4 - q3) + q3);
+                        Marshal.WriteByte(dataPtr, offset, newPixelValue);
+                    }
+                }
+            }
+
+            return image;
+        }
+
+        public static Mat StretchHistogram(Mat image)
+        {
+            return ImageOperarions.StretchContrast(image, 0, 255, 0, 255);
         }
 
         public static List<(Mat image, string channelName)> SplitChannels(Mat image, string type)

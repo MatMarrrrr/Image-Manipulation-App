@@ -17,10 +17,10 @@ namespace Image_Manipulation_App
 {
     public partial class StretchContrastParamsWindow : Window
     {
-        public int? BottomRange { get; private set; }
-        public int? TopRange { get; private set; }
-        public int? MinValue { get; private set; }
-        public int? MaxValue { get; private set; }
+        public int? P1 { get; private set; }
+        public int? P2 { get; private set; }
+        public int? Q3 { get; private set; }
+        public int? Q4 { get; private set; }
 
         public StretchContrastParamsWindow()
         {
@@ -38,24 +38,30 @@ namespace Image_Manipulation_App
                 }
             }
 
-            bool isValidRange = int.TryParse(BottomRangeTextBox.Text, out int bottomRange) &&
-                                int.TryParse(TopRangeTextBox.Text, out int topRange) &&
+            bool isValidValueRange = int.TryParse(BottomValueRangeTextBox.Text, out int bottomRange) &&
+                                int.TryParse(TopValueRangeTextBox.Text, out int topRange) &&
                                 bottomRange < topRange;
 
-            bool isValidValue = int.TryParse(MinValueTextBox.Text, out int minValue) &&
-                                int.TryParse(MaxValueTextBox.Text, out int maxValue) &&
-                                minValue < maxValue;
+            bool isValidNewValueRange = int.TryParse(NewBottomValueRangeTextBox.Text, out int newBottomRange) &&
+                                int.TryParse(NewTopValueRangeTextBox.Text, out int newTopRange) &&
+                                newBottomRange < newTopRange;
 
-            OkButton.IsEnabled = isValidRange && isValidValue;
+            OkButton.IsEnabled = isValidValueRange && isValidNewValueRange;
         }
 
         private void OnOkClicked(object sender, RoutedEventArgs e)
         {
-            if (int.TryParse(MinValueTextBox.Text, out int minValue) &&
-                int.TryParse(MaxValueTextBox.Text, out int maxValue))
+            if (
+                int.TryParse(BottomValueRangeTextBox.Text, out int p1) &&
+                int.TryParse(TopValueRangeTextBox.Text, out int p2) &&
+                int.TryParse(NewBottomValueRangeTextBox.Text, out int q3) &&
+                int.TryParse(NewTopValueRangeTextBox.Text, out int q4)
+                )
             {
-                MinValue = minValue;
-                MaxValue = maxValue;
+                this.P1 = p1;
+                this.P2 = p2;
+                this.Q3 = q3;
+                this.Q4 = q4;
                 this.DialogResult = true;
             }
             else

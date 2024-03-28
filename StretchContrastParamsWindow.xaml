@@ -7,17 +7,17 @@
         mc:Ignorable="d"
         Title="Stretch Params" Height="196" Width="300">
     <StackPanel>
-        <TextBlock Text="Bottom range (p1):" />
-        <TextBox x:Name="BottomRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
+        <TextBlock Text="Bottom value range (p1):" />
+        <TextBox x:Name="BottomValueRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
 
-        <TextBlock Text="Top range (p2):" />
-        <TextBox x:Name="TopRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
+        <TextBlock Text="Top value range (p2):" />
+        <TextBox x:Name="TopValueRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
 
-        <TextBlock Text="New min value (q3):" />
-        <TextBox x:Name="MinValueTextBox" TextChanged="ValueTextBox_TextChanged"/>
+        <TextBlock Text="New bottom value range (q3):" />
+        <TextBox x:Name="NewBottomValueRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
 
-        <TextBlock Text="New max value (q4):" />
-        <TextBox x:Name="MaxValueTextBox" TextChanged="ValueTextBox_TextChanged"/>
+        <TextBlock Text="New top value range (q4):" />
+        <TextBox x:Name="NewTopValueRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
 
         <Button Content="Stretch" x:Name="OkButton" Click="OnOkClicked" IsEnabled="False" />
     </StackPanel>
