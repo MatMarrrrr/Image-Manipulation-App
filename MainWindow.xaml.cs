@@ -61,18 +61,18 @@ namespace Image_Manipulation_App
 
         private void CreateHistogram_Click(object sender, RoutedEventArgs e)
         {
-            if(this.selectedImageMat == null)
+            if(this.selectedImageMat == null || this.activeImageWindow == null)
             {
                 MessageBox.Show("No image selected");
                 return;
             }
 
-            this.activeImageWindow?.ShowHistogram();
+            this.activeImageWindow.ShowHistogram();
         }
 
         private void ConvertToGrayScale_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -84,14 +84,14 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.ConvertToGrayScale(this.selectedImageMat);
-            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
-            activeImageWindow?.UpdateTitlePrefix("GrayScale");
-            this.labelSelectedImage.Content = $"Selected Image: {activeImageWindow?.Title}";
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            activeImageWindow.UpdateTitlePrefix("GrayScale");
+            this.labelSelectedImage.Content = $"Selected Image: {activeImageWindow.Title}";
         }
 
         private void Negate_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -104,12 +104,12 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.NegateImage(this.selectedImageMat);
-            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
         private void StretchContrast_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -130,7 +130,7 @@ namespace Image_Manipulation_App
                 int q4 = dialog.Q4 ?? 255;
 
                 this.selectedImageMat = ImageOperarions.StretchContrast(this.selectedImageMat, (byte)p1, (byte)p2, (byte)q3, (byte)q4);
-                activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
             }
         }
 
@@ -204,7 +204,7 @@ namespace Image_Manipulation_App
 
         private void EqualizeHistogram_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -217,12 +217,12 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.EqualizeHistogram(this.selectedImageMat);
-            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
         private void StretchHistogram_Click(object sender, RoutedEventArgs e)
         {
-            if (this.selectedImageMat == null)
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -235,7 +235,7 @@ namespace Image_Manipulation_App
             }
 
             this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat);
-            activeImageWindow?.UpdateImageAndHistogram(this.selectedImageMat);
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
         private void DuplicateImage_Click(object sender, RoutedEventArgs e)
