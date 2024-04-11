@@ -16,8 +16,8 @@ namespace Image_Manipulation_App
 {
     public partial class MathOperationParamsWindow : Window
     {
-        public int? firstImageIndex { get; private set; }
-        public int? secondImageIndex { get; private set; }
+        public int FirstImageIndex { get; private set; }
+        public int SecondImageIndex { get; private set; }
         public MathOperationParamsWindow(List<ImageWindow> imageWindows, string windowTitle, string buttonText)
         {
             InitializeComponent();
@@ -46,10 +46,10 @@ namespace Image_Manipulation_App
         public void OperationButton_Click(object sender, RoutedEventArgs e)
         {
             ComboBoxItem? firstSelectedItem = ImagesList1.SelectedItem as ComboBoxItem;
-            this.firstImageIndex = firstSelectedItem?.HiddenValue;
+            this.FirstImageIndex = firstSelectedItem?.HiddenValue ?? 0;
 
             ComboBoxItem? secondSelectedItem = ImagesList2.SelectedItem as ComboBoxItem;
-            this.secondImageIndex = secondSelectedItem?.HiddenValue;
+            this.SecondImageIndex = secondSelectedItem?.HiddenValue ?? 0;
 
             this.DialogResult = true;
         }

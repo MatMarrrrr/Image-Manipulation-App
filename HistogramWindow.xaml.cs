@@ -20,7 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static Image_Manipulation_App.ImageOperarions;
+using static Image_Manipulation_App.ImageOperations;
 
 namespace Image_Manipulation_App
 {

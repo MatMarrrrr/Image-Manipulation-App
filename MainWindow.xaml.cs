@@ -29,6 +29,8 @@ namespace Image_Manipulation_App
         public string? selectedImageShortFileName;
         public ImageWindow? activeImageWindow;
 
+        delegate Mat PointOperation(Mat image1, Mat image2);
+
         public MainWindow()
         {
             InitializeComponent();
@@ -83,7 +85,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            this.selectedImageMat = ImageOperarions.ConvertToGrayScale(this.selectedImageMat);
+            this.selectedImageMat = ImageOperations.ConvertToGrayScale(this.selectedImageMat);
             activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
             activeImageWindow.UpdateTitlePrefix("GrayScale");
             this.labelSelectedImage.Content = $"Selected Image: {activeImageWindow.Title}";
@@ -103,7 +105,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            this.selectedImageMat = ImageOperarions.NegateImage(this.selectedImageMat);
+            this.selectedImageMat = ImageOperations.NegateImage(this.selectedImageMat);
             activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
@@ -129,7 +131,7 @@ namespace Image_Manipulation_App
                 int q3 = dialog.Q3 ?? 0;
                 int q4 = dialog.Q4 ?? 255;
 
-                this.selectedImageMat = ImageOperarions.StretchContrast(this.selectedImageMat, (byte)p1, (byte)p2, (byte)q3, (byte)q4);
+                this.selectedImageMat = ImageOperations.StretchContrast(this.selectedImageMat, (byte)p1, (byte)p2, (byte)q3, (byte)q4);
                 activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
             }
         }
@@ -148,7 +150,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            var channels = ImageOperarions.SplitChannels(this.selectedImageMat, "RGB");
+            var channels = ImageOperations.SplitChannels(this.selectedImageMat, "RGB");
             foreach (var channel in channels)
             {
                 string windowTitle = $"{channel.channelName} {this.selectedImageShortFileName}";
@@ -170,7 +172,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            var hsvChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "HSV");
+            var hsvChannels = ImageOperations.ConvertAndSplitRgb(this.selectedImageMat, "HSV");
 
             foreach (var channel in hsvChannels)
             {
@@ -193,7 +195,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            var labChannels = ImageOperarions.ConvertAndSplitRgb(this.selectedImageMat, "Lab");
+            var labChannels = ImageOperations.ConvertAndSplitRgb(this.selectedImageMat, "Lab");
 
             foreach (var channel in labChannels)
             {
@@ -216,7 +218,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            this.selectedImageMat = ImageOperarions.EqualizeHistogram(this.selectedImageMat);
+            this.selectedImageMat = ImageOperations.EqualizeHistogram(this.selectedImageMat);
             activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
@@ -234,7 +236,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            this.selectedImageMat = ImageOperarions.StretchHistogram(this.selectedImageMat);
+            this.selectedImageMat = ImageOperations.StretchHistogram(this.selectedImageMat);
             activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
@@ -245,19 +247,12 @@ namespace Image_Manipulation_App
 
         private void AddImages_Click(object sender, RoutedEventArgs e)
         {
-            int countGrayScaleImages = this.imageWindows.Count(window => window?.imageMat?.NumberOfChannels == 1);
+            PerformPointOperation("Add", ImageOperations.AddImages);
+        }
 
-            if (countGrayScaleImages < 2)
-            {
-                MessageBox.Show("You must have at least two greyscale images to perform math operations");
-                return;
-            }
-
-            MathOperationParamsWindow dialog = new MathOperationParamsWindow(this.imageWindows, "Add images window", "Add");
-            if (dialog.ShowDialog() == true)
-            {
-                MessageBox.Show($"{dialog.firstImageIndex}, {dialog.secondImageIndex}");
-            }
+        private void SubtractImages_Click(object sender, RoutedEventArgs e)
+        {
+            PerformPointOperation("Subtract", ImageOperations.SubtractImages);
         }
 
         private void Posterize_Click(object sender, RoutedEventArgs e)
@@ -278,7 +273,7 @@ namespace Image_Manipulation_App
             if (dialog.ShowDialog() == true)
             {
                 int levels = dialog.levels ?? 2;
-                this.selectedImageMat = ImageOperarions.PosterizeImage(this.selectedImageMat, levels);
+                this.selectedImageMat = ImageOperations.PosterizeImage(this.selectedImageMat, levels);
                 activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
             }
         }
@@ -294,6 +289,35 @@ namespace Image_Manipulation_App
             foreach (var window in windowsToClose)
             {
                 window.Close();
+            }
+        }
+
+        private void PerformPointOperation(string operationName, PointOperation operation)
+        {
+            int countGrayScaleImages = imageWindows.Count(window => window?.imageMat?.NumberOfChannels == 1);
+
+            if (countGrayScaleImages < 2)
+            {
+                MessageBox.Show("You must have at least two greyscale images to perform math operations");
+                return;
+            }
+
+            MathOperationParamsWindow dialog = new MathOperationParamsWindow(this.imageWindows, $"{operationName} images window", operationName);
+            if (dialog.ShowDialog() == true)
+            {
+                ImageWindow window1 = imageWindows[dialog.FirstImageIndex];
+                ImageWindow window2 = imageWindows[dialog.SecondImageIndex];
+
+                if (window1?.imageMat != null && window2?.imageMat != null)
+                {
+                    Mat image1 = window1.imageMat;
+                    Mat image2 = window2.imageMat;
+                    if (image1 != null && image2 != null)
+                    {
+                        this.selectedImageMat = operation(image1, image2);
+                        DisplayImageInNewWindow(this.selectedImageMat, $"{operationName} {window1.shortFileName}, {window2.shortFileName}", null, true);
+                    }
+                }
             }
         }
 
@@ -333,6 +357,7 @@ namespace Image_Manipulation_App
             this.imageWindows.Add(imageWindow);
             this.imageWindowNames.Add(shortFileName);
             imageWindow.Closing += (s, e) => imageWindows.Remove(imageWindow);
+            imageWindow.Closing += (s, e) => imageWindowNames.Remove(shortFileName);
             imageWindow.KeyDown += Window_KeyDown;
 
             imageWindow.Show();

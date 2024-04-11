@@ -15,7 +15,7 @@ using System.Windows.Markup;
 
 namespace Image_Manipulation_App
 {
-    internal static class ImageOperarions
+    internal static class ImageOperations
     {
         public class HistogramTableDataRow
         {
@@ -129,7 +129,7 @@ namespace Image_Manipulation_App
         public static Mat StretchHistogram(Mat image)
         {
             CvInvoke.MinMaxIdx(image, out double minValue, out double maxValue, null, null);
-            return ImageOperarions.StretchContrast(image, (int)minValue, (int)maxValue, 0, 255);
+            return ImageOperations.StretchContrast(image, (int)minValue, (int)maxValue, 0, 255);
         }
 
         public static List<(Mat image, string channelName)> SplitChannels(Mat image, string type)
@@ -226,6 +226,78 @@ namespace Image_Manipulation_App
             }
 
             return equalizedImage;
+        }
+
+        public static Mat AddImages(Mat image1, Mat image2)
+        {
+            int Width = Math.Min(image1.Width, image2.Width);
+            int Height = Math.Min(image1.Height, image2.Height);
+
+            Mat result = new Mat(Height, Width, image1.Depth, image1.NumberOfChannels);
+
+            IntPtr ptr1 = image1.DataPointer;
+            IntPtr ptr2 = image2.DataPointer;
+            IntPtr resultPtr = result.DataPointer;
+
+            int step1 = image1.Step;
+            int step2 = image2.Step;
+            int resultStep = result.Step;
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int offset1 = (y * step1) + x;
+                    int offset2 = (y * step2) + x;
+                    int resultOffset = (y * resultStep) + x;
+
+                    byte pixelValue1 = Marshal.ReadByte(ptr1, offset1);
+                    byte pixelValue2 = Marshal.ReadByte(ptr2, offset2);
+
+                    int sum = pixelValue1 + pixelValue2;
+                    byte sumValue = sum > 255 ? (byte)255 : (byte)sum;
+
+                    Marshal.WriteByte(resultPtr, resultOffset, sumValue);
+                }
+            }
+
+            return result;
+        }
+
+        public static Mat SubtractImages(Mat image1, Mat image2)
+        {
+            int Width = Math.Min(image1.Width, image2.Width);
+            int Height = Math.Min(image1.Height, image2.Height);
+
+            Mat result = new Mat(Height, Width, image1.Depth, image1.NumberOfChannels);
+
+            IntPtr ptr1 = image1.DataPointer;
+            IntPtr ptr2 = image2.DataPointer;
+            IntPtr resultPtr = result.DataPointer;
+
+            int step1 = image1.Step;
+            int step2 = image2.Step;
+            int resultStep = result.Step;
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int offset1 = (y * step1) + x;
+                    int offset2 = (y * step2) + x;
+                    int resultOffset = (y * resultStep) + x;
+
+                    byte pixelValue1 = Marshal.ReadByte(ptr1, offset1);
+                    byte pixelValue2 = Marshal.ReadByte(ptr2, offset2);
+
+                    int difference = pixelValue1 - pixelValue2;
+                    byte differenceValue = (byte)Math.Max(0, difference);
+
+                    Marshal.WriteByte(resultPtr, resultOffset, differenceValue);
+                }
+            }
+
+            return result;
         }
 
         public static Mat PosterizeImage(Mat image, int levels)

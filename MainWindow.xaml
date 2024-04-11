@@ -37,6 +37,7 @@
             <MenuItem Header="Lab2" Padding="3">
                 <MenuItem Header="Math">
                     <MenuItem Header="Add" Click="AddImages_Click"/>
+                    <MenuItem Header="Subtract" Click="SubtractImages_Click"/>
                 </MenuItem>
                 <MenuItem Header="Posterize" Click="Posterize_Click"/>
             </MenuItem>
