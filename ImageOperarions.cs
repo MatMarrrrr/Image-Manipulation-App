@@ -64,12 +64,10 @@ namespace Image_Manipulation_App
         }
         public static Mat NegateImage(Mat image)
         {
-            Mat result = image.Clone();
-
-            IntPtr dataPtr = result.DataPointer;
-            int width = result.Width;
-            int height = result.Height;
-            int step = result.Step;
+            IntPtr dataPtr = image.DataPointer;
+            int width = image.Width;
+            int height = image.Height;
+            int step = image.Step;
 
             for (int y = 0; y < height; y++)
             {
@@ -84,7 +82,7 @@ namespace Image_Manipulation_App
                 }
             }
 
-            return result;
+            return image;
         }
 
         public static Mat StretchContrast(Mat image, int p1, int p2, int q3, int q4)
@@ -230,7 +228,31 @@ namespace Image_Manipulation_App
             return equalizedImage;
         }
 
+        public static Mat PosterizeImage(Mat image, int levels)
+        {
+            IntPtr dataPtr = image.DataPointer;
+            int width = image.Width;
+            int height = image.Height;
+            int step = image.Step;
 
+            float levelStep = 255f / (levels - 1);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int offset = (y * step) + x;
+                    byte pixelValue = Marshal.ReadByte(dataPtr, offset);
+
+                    int levelIndex = (int)Math.Round(pixelValue / levelStep);
+                    byte posterizedValue = (byte)(levelIndex * levelStep);
+
+                    Marshal.WriteByte(dataPtr, offset, posterizedValue);
+                }
+            }
+
+            return image;
+        }
 
     }
 }

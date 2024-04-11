@@ -19,6 +19,6 @@
         <TextBlock Text="New top value range (q4):" Margin="0,10,0,0"/>
         <TextBox x:Name="NewTopValueRangeTextBox" TextChanged="ValueTextBox_TextChanged"/>
 
-        <Button Content="Stretch" x:Name="OkButton" Width="100" Click="OnOkClicked" IsEnabled="False" Margin="10"/>
+        <Button Content="Stretch" x:Name="StretchButton" Width="100" Click="OnOkClicked" IsEnabled="False" Margin="10"/>
     </StackPanel>
 </Window>

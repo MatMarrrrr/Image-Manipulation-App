@@ -38,6 +38,7 @@
                 <MenuItem Header="Math">
                     <MenuItem Header="Add" Click="AddImages_Click"/>
                 </MenuItem>
+                <MenuItem Header="Posterize" Click="Posterize_Click"/>
             </MenuItem>
             <MenuItem Header="About" Padding="3" Click="About_Click"/>
         </Menu>

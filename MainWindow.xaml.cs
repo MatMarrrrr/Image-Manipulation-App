@@ -260,6 +260,29 @@ namespace Image_Manipulation_App
             }
         }
 
+        private void Posterize_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Posterization can only be applied to grayscale images.");
+                return;
+            }
+
+            PosterizationParamsWindow dialog = new PosterizationParamsWindow();
+            if (dialog.ShowDialog() == true)
+            {
+                int levels = dialog.levels ?? 2;
+                this.selectedImageMat = ImageOperarions.PosterizeImage(this.selectedImageMat, levels);
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");

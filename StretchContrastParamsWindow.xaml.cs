@@ -46,7 +46,7 @@ namespace Image_Manipulation_App
                                 int.TryParse(NewTopValueRangeTextBox.Text, out int newTopRange) &&
                                 newBottomRange < newTopRange;
 
-            OkButton.IsEnabled = isValidValueRange && isValidNewValueRange;
+            StretchButton.IsEnabled = isValidValueRange && isValidNewValueRange;
         }
 
         private void OnOkClicked(object sender, RoutedEventArgs e)
