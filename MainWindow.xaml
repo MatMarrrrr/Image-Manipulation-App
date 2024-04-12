@@ -35,9 +35,10 @@
                 <MenuItem Header="Duplicate Image" Click="DuplicateImage_Click"/>
             </MenuItem>
             <MenuItem Header="Lab2" Padding="3">
-                <MenuItem Header="Math">
+                <MenuItem Header="Point operations">
                     <MenuItem Header="Add" Click="AddImages_Click"/>
                     <MenuItem Header="Subtract" Click="SubtractImages_Click"/>
+                    <MenuItem Header="Blend" Click="BlendImages_Click"/>
                 </MenuItem>
                 <MenuItem Header="Posterize" Click="Posterize_Click"/>
             </MenuItem>

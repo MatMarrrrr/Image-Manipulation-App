@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 
 namespace Image_Manipulation_App
 {
-    public partial class MathOperationParamsWindow : Window
+    public partial class PointOperationParamsWindow : Window
     {
         public int FirstImageIndex { get; private set; }
         public int SecondImageIndex { get; private set; }
-        public MathOperationParamsWindow(List<ImageWindow> imageWindows, string windowTitle, string buttonText)
+        public PointOperationParamsWindow(List<ImageWindow> imageWindows, string windowTitle, string buttonText)
         {
             InitializeComponent();
 

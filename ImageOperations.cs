@@ -268,8 +268,9 @@ namespace Image_Manipulation_App
         {
             int Width = Math.Min(image1.Width, image2.Width);
             int Height = Math.Min(image1.Height, image2.Height);
+            int NumberOfChannels = image1.NumberOfChannels;
 
-            Mat result = new Mat(Height, Width, image1.Depth, image1.NumberOfChannels);
+            Mat result = new Mat(Height, Width, image1.Depth, NumberOfChannels);
 
             IntPtr ptr1 = image1.DataPointer;
             IntPtr ptr2 = image2.DataPointer;
@@ -294,6 +295,42 @@ namespace Image_Manipulation_App
                     byte differenceValue = (byte)Math.Max(0, difference);
 
                     Marshal.WriteByte(resultPtr, resultOffset, differenceValue);
+                }
+            }
+
+            return result;
+        }
+
+        public static Mat BlendImages(Mat image1, Mat image2, double alpha)
+        {
+            int Width = Math.Min(image1.Width, image2.Width);
+            int Height = Math.Min(image1.Height, image2.Height);
+            int NumberOfChannels = image1.NumberOfChannels;
+            double beta = 1.0 - alpha;
+
+            Mat result = new Mat(Height, Width, image1.Depth, NumberOfChannels);
+
+            IntPtr ptr1 = image1.DataPointer;
+            IntPtr ptr2 = image2.DataPointer;
+            IntPtr resultPtr = result.DataPointer;
+
+            int step1 = image1.Step;
+            int step2 = image2.Step;
+            int resultStep = result.Step;
+
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int offset1 = (y * step1) + x * NumberOfChannels;
+                    int offset2 = (y * step2) + x * NumberOfChannels;
+                    int resultOffset = (y * resultStep) + x * NumberOfChannels;
+
+                    byte pixelValue1 = Marshal.ReadByte(ptr1, offset1);
+                    byte pixelValue2 = Marshal.ReadByte(ptr2, offset2);
+
+                    byte blendValue = (byte)(pixelValue1 * alpha + pixelValue2 * beta);
+                    Marshal.WriteByte(resultPtr, resultOffset, blendValue);
                 }
             }
 

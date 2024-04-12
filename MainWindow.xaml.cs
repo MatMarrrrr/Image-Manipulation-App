@@ -30,6 +30,7 @@ namespace Image_Manipulation_App
         public ImageWindow? activeImageWindow;
 
         delegate Mat PointOperation(Mat image1, Mat image2);
+        delegate Mat PointOperationWithAlpha(Mat image1, Mat image2, double alpha);
 
         public MainWindow()
         {
@@ -255,6 +256,11 @@ namespace Image_Manipulation_App
             PerformPointOperation("Subtract", ImageOperations.SubtractImages);
         }
 
+        private void BlendImages_Click(object sender, RoutedEventArgs e)
+        {
+            PerformPointOperation("Blend", ImageOperations.BlendImages);
+        }
+
         private void Posterize_Click(object sender, RoutedEventArgs e)
         {
             if (this.selectedImageMat == null || this.activeImageWindow == null)
@@ -269,10 +275,10 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            OneParamWindow dialog = new OneParamWindow("Posterization params", "Number of levels", "Posterize", 2, 255);
+            OneParamWindow dialog = new OneParamWindow("Posterization params", "Number of levels", "Posterize", 2, 255, "int");
             if (dialog.ShowDialog() == true)
             {
-                int levels = dialog.Param;
+                int levels = dialog.IntParam;
                 this.selectedImageMat = ImageOperations.PosterizeImage(this.selectedImageMat, levels);
                 activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
             }
@@ -302,7 +308,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            MathOperationParamsWindow dialog = new MathOperationParamsWindow(this.imageWindows, $"{operationName} images window", operationName);
+            PointOperationParamsWindow dialog = new PointOperationParamsWindow(this.imageWindows, $"{operationName} images window", operationName);
             if (dialog.ShowDialog() == true)
             {
                 ImageWindow window1 = imageWindows[dialog.FirstImageIndex];
@@ -316,6 +322,41 @@ namespace Image_Manipulation_App
                     {
                         this.selectedImageMat = operation(image1, image2);
                         DisplayImageInNewWindow(this.selectedImageMat, $"{operationName} {window1.shortFileName}, {window2.shortFileName}", null, true);
+                    }
+                }
+            }
+        }
+
+        private void PerformPointOperation(string operationName, PointOperationWithAlpha operation)
+        {
+            int countGrayScaleImages = imageWindows.Count(window => window?.imageMat?.NumberOfChannels == 1);
+
+            if (countGrayScaleImages < 2)
+            {
+                MessageBox.Show("You must have at least two greyscale images to perform math operations");
+                return;
+            }
+
+            PointOperationParamsWindow dialog = new PointOperationParamsWindow(this.imageWindows, $"{operationName} images window", operationName);
+            if (dialog.ShowDialog() == true)
+            {
+                ImageWindow window1 = imageWindows[dialog.FirstImageIndex];
+                ImageWindow window2 = imageWindows[dialog.SecondImageIndex];
+
+                if (window1?.imageMat != null && window2?.imageMat != null)
+                {
+                    Mat image1 = window1.imageMat;
+                    Mat image2 = window2.imageMat;
+                    if (image1 != null && image2 != null)
+                    {
+                        OneParamWindow dialog_ = new OneParamWindow("Blending params", "Alpha value:", "Blend", 0, 1, "double");
+                        if (dialog_.ShowDialog() == true)
+                        {
+                            double alpha = dialog_.DoubleParam;
+                            this.selectedImageMat = operation(image1, image2, alpha);
+                            DisplayImageInNewWindow(this.selectedImageMat, $"{operationName} {window1.shortFileName}, {window2.shortFileName}", null, true);
+                        }
+                        
                     }
                 }
             }
