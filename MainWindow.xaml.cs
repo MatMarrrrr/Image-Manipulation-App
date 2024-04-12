@@ -269,10 +269,10 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            PosterizationParamsWindow dialog = new PosterizationParamsWindow();
+            OneParamWindow dialog = new OneParamWindow("Posterization params", "Number of levels", "Posterize", 2, 255);
             if (dialog.ShowDialog() == true)
             {
-                int levels = dialog.levels ?? 2;
+                int levels = dialog.Param;
                 this.selectedImageMat = ImageOperations.PosterizeImage(this.selectedImageMat, levels);
                 activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
             }
