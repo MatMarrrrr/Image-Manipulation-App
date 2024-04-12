@@ -39,6 +39,10 @@
                     <MenuItem Header="Add" Click="AddImages_Click"/>
                     <MenuItem Header="Subtract" Click="SubtractImages_Click"/>
                     <MenuItem Header="Blend" Click="BlendImages_Click"/>
+                    <MenuItem Header="AND" Click="AndImages_Click"/>
+                    <MenuItem Header="OR" Click="OrImages_Click"/>
+                    <MenuItem Header="NOT" Click="NotImages_Click"/>
+                    <MenuItem Header="XOR" Click="XorImages_Click"/>
                 </MenuItem>
                 <MenuItem Header="Posterize" Click="Posterize_Click"/>
             </MenuItem>

@@ -261,6 +261,26 @@ namespace Image_Manipulation_App
             PerformPointOperation("Blend", ImageOperations.BlendImages);
         }
 
+        private void AndImages_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
+
+        private void OrImages_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
+
+        private void NotImages_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
+
+        private void XorImages_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
+
         private void Posterize_Click(object sender, RoutedEventArgs e)
         {
             if (this.selectedImageMat == null || this.activeImageWindow == null)
