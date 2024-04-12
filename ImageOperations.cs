@@ -228,112 +228,60 @@ namespace Image_Manipulation_App
             return equalizedImage;
         }
 
+
+
         public static Mat AddImages(Mat image1, Mat image2)
         {
-            int Width = Math.Min(image1.Width, image2.Width);
-            int Height = Math.Min(image1.Height, image2.Height);
-
-            Mat result = new Mat(Height, Width, image1.Depth, image1.NumberOfChannels);
-
-            IntPtr ptr1 = image1.DataPointer;
-            IntPtr ptr2 = image2.DataPointer;
-            IntPtr resultPtr = result.DataPointer;
-
-            int step1 = image1.Step;
-            int step2 = image2.Step;
-            int resultStep = result.Step;
-
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    int offset1 = (y * step1) + x;
-                    int offset2 = (y * step2) + x;
-                    int resultOffset = (y * resultStep) + x;
-
-                    byte pixelValue1 = Marshal.ReadByte(ptr1, offset1);
-                    byte pixelValue2 = Marshal.ReadByte(ptr2, offset2);
-
-                    int sum = pixelValue1 + pixelValue2;
-                    byte sumValue = sum > 255 ? (byte)255 : (byte)sum;
-
-                    Marshal.WriteByte(resultPtr, resultOffset, sumValue);
-                }
-            }
+            var (paddedImage1, paddedImage2, size) = PaddingImages(image1, image2);
+            Mat result = new Mat(size, DepthType.Cv8U, 1);
+            CvInvoke.Add(paddedImage1, paddedImage2, result);
 
             return result;
         }
 
         public static Mat SubtractImages(Mat image1, Mat image2)
         {
-            int Width = Math.Min(image1.Width, image2.Width);
-            int Height = Math.Min(image1.Height, image2.Height);
-            int NumberOfChannels = image1.NumberOfChannels;
+            var (paddedImage1, paddedImage2, size) = PaddingImages(image1, image2);
+            Mat result = new Mat(size, DepthType.Cv8U, paddedImage1.NumberOfChannels);
 
-            Mat result = new Mat(Height, Width, image1.Depth, NumberOfChannels);
-
-            IntPtr ptr1 = image1.DataPointer;
-            IntPtr ptr2 = image2.DataPointer;
-            IntPtr resultPtr = result.DataPointer;
-
-            int step1 = image1.Step;
-            int step2 = image2.Step;
-            int resultStep = result.Step;
-
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    int offset1 = (y * step1) + x;
-                    int offset2 = (y * step2) + x;
-                    int resultOffset = (y * resultStep) + x;
-
-                    byte pixelValue1 = Marshal.ReadByte(ptr1, offset1);
-                    byte pixelValue2 = Marshal.ReadByte(ptr2, offset2);
-
-                    int difference = pixelValue1 - pixelValue2;
-                    byte differenceValue = (byte)Math.Max(0, difference);
-
-                    Marshal.WriteByte(resultPtr, resultOffset, differenceValue);
-                }
-            }
-
+            CvInvoke.Subtract(paddedImage1, paddedImage2, result);
             return result;
         }
 
         public static Mat BlendImages(Mat image1, Mat image2, double alpha)
         {
-            int Width = Math.Min(image1.Width, image2.Width);
-            int Height = Math.Min(image1.Height, image2.Height);
-            int NumberOfChannels = image1.NumberOfChannels;
+            var (paddedImage1, paddedImage2, size) = PaddingImages(image1, image2);
+            Mat result = new Mat(size, DepthType.Cv8U, paddedImage1.NumberOfChannels);
             double beta = 1.0 - alpha;
 
-            Mat result = new Mat(Height, Width, image1.Depth, NumberOfChannels);
+            CvInvoke.AddWeighted(paddedImage1, alpha, paddedImage2, beta, 0, result);
+            return result;
+        }
 
-            IntPtr ptr1 = image1.DataPointer;
-            IntPtr ptr2 = image2.DataPointer;
-            IntPtr resultPtr = result.DataPointer;
+        public static Mat AndImages(Mat image1, Mat image2)
+        {
+            var (paddedImage1, paddedImage2, size) = PaddingImages(image1, image2);
+            Mat result = new Mat(size, DepthType.Cv8U, paddedImage1.NumberOfChannels);
 
-            int step1 = image1.Step;
-            int step2 = image2.Step;
-            int resultStep = result.Step;
+            CvInvoke.BitwiseAnd(paddedImage1, paddedImage2, result);
+            return result;
+        }
 
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    int offset1 = (y * step1) + x * NumberOfChannels;
-                    int offset2 = (y * step2) + x * NumberOfChannels;
-                    int resultOffset = (y * resultStep) + x * NumberOfChannels;
+        public static Mat OrImages(Mat image1, Mat image2)
+        {
+            var (paddedImage1, paddedImage2, size) = PaddingImages(image1, image2);
+            Mat result = new Mat(size, DepthType.Cv8U, paddedImage1.NumberOfChannels);
 
-                    byte pixelValue1 = Marshal.ReadByte(ptr1, offset1);
-                    byte pixelValue2 = Marshal.ReadByte(ptr2, offset2);
+            CvInvoke.BitwiseOr(paddedImage1, paddedImage2, result);
+            return result;
+        }
 
-                    byte blendValue = (byte)(pixelValue1 * alpha + pixelValue2 * beta);
-                    Marshal.WriteByte(resultPtr, resultOffset, blendValue);
-                }
-            }
+        public static Mat XorImages(Mat image1, Mat image2)
+        {
+            var (paddedImage1, paddedImage2, size) = PaddingImages(image1, image2);
+            Mat result = new Mat(size, DepthType.Cv8U, paddedImage1.NumberOfChannels);
 
+            CvInvoke.BitwiseXor(paddedImage1, paddedImage2, result);
             return result;
         }
 
@@ -363,5 +311,29 @@ namespace Image_Manipulation_App
             return image;
         }
 
+
+        public static (Mat paddedImage1, Mat paddedImage2, Size size) PaddingImages(Mat image1, Mat image2)
+        {
+            int width = Math.Max(image1.Width, image2.Width);
+            int height = Math.Max(image1.Height, image2.Height);
+
+            Mat paddedImage1 = new Mat();
+            Mat paddedImage2 = new Mat();
+
+            int image1TopPadding = (height - image1.Height) / 2;
+            int image1BottomPadding = height - image1.Height - image1TopPadding;
+            int image1LeftPadding = (width - image1.Width) / 2;
+            int image1RightPadding = width - image1.Width - image1LeftPadding;
+
+            int image2TopPadding = (height - image2.Height) / 2;
+            int image2BottomPadding = height - image2.Height - image2TopPadding;
+            int image2LeftPadding = (width - image2.Width) / 2;
+            int image2RightPadding = width - image2.Width - image2LeftPadding;
+
+            CvInvoke.CopyMakeBorder(image1, paddedImage1, image1TopPadding, image1BottomPadding, image1LeftPadding, image1RightPadding, BorderType.Constant, new MCvScalar(0));
+            CvInvoke.CopyMakeBorder(image2, paddedImage2, image2TopPadding, image2BottomPadding, image2LeftPadding, image2RightPadding, BorderType.Constant, new MCvScalar(0));
+
+            return (paddedImage1, paddedImage2, paddedImage1.Size);
+        }
     }
 }

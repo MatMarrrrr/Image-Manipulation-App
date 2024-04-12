@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,11 +29,12 @@ namespace Image_Manipulation_App
         {
             if (sender is TextBox textBox)
             {
-                if (this.isDouble && double.TryParse(textBox.Text, out double doubleValue))
+                string input = textBox.Text.Replace(',', '.');
+                if (this.isDouble && double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue))
                 {
                     AdjustValueInRange(textBox, doubleValue);
                 }
-                else if (!this.isDouble && int.TryParse(textBox.Text, out int intValue))
+                else if (!this.isDouble && int.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
                 {
                     AdjustValueInRange(textBox, intValue);
                 }
@@ -43,12 +45,13 @@ namespace Image_Manipulation_App
 
         private void OnParamButtonClicked(object sender, EventArgs e)
         {
-            if (this.isDouble && double.TryParse(ParamTextBox.Text, out double doubleValue))
+            string input = ParamTextBox.Text.Replace(',', '.');
+            if (this.isDouble && double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue))
             {
                 this.DoubleParam = doubleValue;
                 this.DialogResult = true;
             }
-            else if (!this.isDouble && int.TryParse(ParamTextBox.Text, out int intValue))
+            else if (!this.isDouble && int.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue))
             {
                 this.IntParam = intValue;
                 this.DialogResult = true;
@@ -69,7 +72,8 @@ namespace Image_Manipulation_App
 
         private bool ValidateInput(string text)
         {
-            return this.isDouble ? double.TryParse(text, out _) : int.TryParse(text, out _);
+            string input = text.Replace(',', '.');
+            return this.isDouble ? double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out _) : int.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out _);
         }
     }
 }

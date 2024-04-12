@@ -64,7 +64,7 @@ namespace Image_Manipulation_App
 
         private void CreateHistogram_Click(object sender, RoutedEventArgs e)
         {
-            if(this.selectedImageMat == null || this.activeImageWindow == null)
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
                 MessageBox.Show("No image selected");
                 return;
@@ -248,37 +248,37 @@ namespace Image_Manipulation_App
 
         private void AddImages_Click(object sender, RoutedEventArgs e)
         {
-            PerformPointOperation("Add", ImageOperations.AddImages);
+            this.PerformPointOperation("Add", ImageOperations.AddImages);
         }
 
         private void SubtractImages_Click(object sender, RoutedEventArgs e)
         {
-            PerformPointOperation("Subtract", ImageOperations.SubtractImages);
+            this.PerformPointOperation("Subtract", ImageOperations.SubtractImages);
         }
 
         private void BlendImages_Click(object sender, RoutedEventArgs e)
         {
-            PerformPointOperation("Blend", ImageOperations.BlendImages);
+            this.PerformPointOperation("Blend", ImageOperations.BlendImages);
         }
 
         private void AndImages_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            this.PerformPointOperation("AND", ImageOperations.AndImages);
         }
 
         private void OrImages_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            this.PerformPointOperation("OR", ImageOperations.OrImages);
         }
 
-        private void NotImages_Click(object sender, RoutedEventArgs e)
+        private void NotImage_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            this.Negate_Click(sender, e);
         }
 
         private void XorImages_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            this.PerformPointOperation("XOR", ImageOperations.XorImages);
         }
 
         private void Posterize_Click(object sender, RoutedEventArgs e)
@@ -376,7 +376,7 @@ namespace Image_Manipulation_App
                             this.selectedImageMat = operation(image1, image2, alpha);
                             DisplayImageInNewWindow(this.selectedImageMat, $"{operationName} {window1.shortFileName}, {window2.shortFileName}", null, true);
                         }
-                        
+
                     }
                 }
             }
@@ -463,8 +463,6 @@ namespace Image_Manipulation_App
                     }
                 }
             }
-
-
         }
 
     }
