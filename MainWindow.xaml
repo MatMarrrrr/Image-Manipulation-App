@@ -35,6 +35,8 @@
                 <MenuItem Header="Duplicate Image" Click="DuplicateImage_Click"/>
             </MenuItem>
             <MenuItem Header="Lab2" Padding="3">
+                <MenuItem Header="Blur" Click="Blur_Click"/>
+                <MenuItem Header="Gaussian Blur" Click="GaussianBlur_Click"/>
                 <MenuItem Header="Point operations">
                     <MenuItem Header="Add" Click="AddImages_Click"/>
                     <MenuItem Header="Subtract" Click="SubtractImages_Click"/>

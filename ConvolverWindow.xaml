@@ -1,0 +1,61 @@
+﻿<Window x:Class="Image_Manipulation_App.ConvolverWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Image_Manipulation_App"
+        mc:Ignorable="d"
+        Title="ConvolverWindow" Height="300" Width="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="40 0 0 0 ">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBox x:Name="Value1" Width="30" Margin="2" TextAlignment="Center" Text="0" />
+                <TextBox x:Name="Value2" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
+                <TextBox x:Name="Value3" Width="30" Margin="2" TextAlignment="Center" Text="0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBox x:Name="Value4" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
+                <TextBox x:Name="Value5" Width="30" Margin="2" TextAlignment="Center" Text="5" />
+                <TextBox x:Name="Value6" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <TextBox x:Name="Value7" Width="30" Margin="2" TextAlignment="Center" Text="0" />
+                <TextBox x:Name="Value8" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
+                <TextBox x:Name="Value9" Width="30" Margin="2" TextAlignment="Center" Text="0" />
+            </StackPanel>
+            <Button Content="Apply Mask" HorizontalAlignment="Center" Margin="10" Padding="10,5"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label x:Name="Maskslabel" Content="Select Mask:" Margin="0,0,0,5" />
+            <ComboBox x:Name="MasksComboBox" Width="200" Margin="0,0,0,10">
+                <ComboBoxItem Content="Laplacian 1"/>
+                <ComboBoxItem Content="Laplacian 2"/>
+                <ComboBoxItem Content="Laplacian 3"/>
+                <ComboBoxItem Content="Prewitt"/>
+            </ComboBox>
+            <Label x:Name="BorderHandlingLabel" Content="Select Border Handling Method:" Margin="0,0,0,5"/>
+            <ComboBox x:Name="BorderHandlingComboBox" Width="200" Margin="0,0,0,10">
+                <ComboBoxItem Content="Isolated"/>
+                <ComboBoxItem Content="Reflect"/>
+                <ComboBoxItem Content="Replicate"/>
+            </ComboBox>
+            <Label x:Name="DirectionsLabel"  Content="Select Direction:" Margin="0,0,0,5"/>
+            <ComboBox x:Name="DirectionsComboBox" Width="200">
+                <ComboBoxItem Content="N (North)"/>
+                <ComboBoxItem Content="NE (North East)"/>
+                <ComboBoxItem Content="E (East)"/>
+                <ComboBoxItem Content="SE (South East)"/>
+                <ComboBoxItem Content="S (South)"/>
+                <ComboBoxItem Content="SW (South West)"/>
+                <ComboBoxItem Content="W (West)"/>
+                <ComboBoxItem Content="NW (North West)"/>
+            </ComboBox>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Threading.Channels;
 using System.Windows.Input;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Image_Manipulation_App
 {
@@ -302,6 +303,44 @@ namespace Image_Manipulation_App
                 this.selectedImageMat = ImageOperations.PosterizeImage(this.selectedImageMat, levels);
                 activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
             }
+        }
+
+        private void Blur_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Blur can only be applied to grayscale images.");
+                return;
+            }
+            Mat blurredImage = new Mat();
+            CvInvoke.Blur(this.selectedImageMat, blurredImage, new System.Drawing.Size(5, 5), new System.Drawing.Point(-1, -1));
+            this.selectedImageMat = blurredImage;
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+        }
+
+        private void GaussianBlur_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Gaussian blur can only be applied to grayscale images.");
+                return;
+            }
+            Mat gaussianBlurredImage = new Mat();
+            CvInvoke.GaussianBlur(this.selectedImageMat, gaussianBlurredImage, new System.Drawing.Size(5, 5), 1.5);
+            this.selectedImageMat = gaussianBlurredImage;
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
