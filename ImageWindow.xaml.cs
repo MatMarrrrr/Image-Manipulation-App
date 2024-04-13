@@ -15,12 +15,13 @@ namespace Image_Manipulation_App
         public Mat ?imageMat;
         public string fileName;
         public string shortFileName;
+        private bool isDisposed = false;
 
         public ImageWindow(BitmapSource image, Mat mat, string fileName, string shortFileName)
         {
             InitializeComponent();
             this.imageControl.Source = image;
-            this.imageMat = mat;
+            this.imageMat = mat.Clone();
             this.fileName = fileName;
             this.shortFileName = shortFileName;
 
@@ -82,12 +83,18 @@ namespace Image_Manipulation_App
         public void ImageWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             ImageWindowClosing?.Invoke();
-            if (imageMat != null)
+            histogramWindow?.Close();
+            this.DisposeImage();
+        }
+
+        public void DisposeImage()
+        {
+            if (!isDisposed && imageMat != null)
             {
                 imageMat.Dispose();
+                isDisposed = true;
                 imageMat = null;
             }
-            histogramWindow?.Close();
         }
     }
 }
