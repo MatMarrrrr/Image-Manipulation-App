@@ -47,6 +47,7 @@
                     <MenuItem Header="XOR" Click="XorImages_Click"/>
                 </MenuItem>
                 <MenuItem Header="Posterize" Click="Posterize_Click"/>
+                <MenuItem Header="Convolve" Click="Convolve_Click"/>
             </MenuItem>
             <MenuItem Header="About" Padding="3" Click="About_Click"/>
         </Menu>

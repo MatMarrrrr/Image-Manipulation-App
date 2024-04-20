@@ -6,56 +6,78 @@
         xmlns:local="clr-namespace:Image_Manipulation_App"
         mc:Ignorable="d"
         Title="ConvolverWindow" Height="300" Width="600">
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="40 0 0 0 ">
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBox x:Name="Value1" Width="30" Margin="2" TextAlignment="Center" Text="0" />
-                <TextBox x:Name="Value2" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
-                <TextBox x:Name="Value3" Width="30" Margin="2" TextAlignment="Center" Text="0" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBox x:Name="Value4" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
-                <TextBox x:Name="Value5" Width="30" Margin="2" TextAlignment="Center" Text="5" />
-                <TextBox x:Name="Value6" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBox x:Name="Value7" Width="30" Margin="2" TextAlignment="Center" Text="0" />
-                <TextBox x:Name="Value8" Width="30" Margin="2" TextAlignment="Center" Text="-1" />
-                <TextBox x:Name="Value9" Width="30" Margin="2" TextAlignment="Center" Text="0" />
-            </StackPanel>
-            <Button Content="Apply Mask" HorizontalAlignment="Center" Margin="10" Padding="10,5"/>
-        </StackPanel>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Edge Detection">
+                <MenuItem Header="Sobel">
+                    <MenuItem Header="Vertical" CommandParameter="SobelX" Click="LoadKernel_Click"/>
+                    <MenuItem Header="Horizontal" CommandParameter="SobelY" Click="LoadKernel_Click"/>
+                </MenuItem>
+                <MenuItem Header="Laplacian" CommandParameter="Laplacian" Click="LoadKernel_Click"/>
+                <MenuItem Header="Canny" Click="Canny_Click"/>
+            </MenuItem>
+            <MenuItem Header="Directional Edge Detection">
+                <MenuItem Header="Prewitt">
+                    <MenuItem Header="N (North)" CommandParameter="PrewittN" Click="LoadKernel_Click"/>
+                    <MenuItem Header="NE (North East)" CommandParameter="PrewittNE" Click="LoadKernel_Click"/>
+                    <MenuItem Header="E (East)" CommandParameter="PrewittE" Click="LoadKernel_Click"/>
+                    <MenuItem Header="SE (South East)" CommandParameter="PrewittSE" Click="LoadKernel_Click"/>
+                    <MenuItem Header="S (South)" CommandParameter="PrewittS" Click="LoadKernel_Click"/>
+                    <MenuItem Header="SW (South West)" CommandParameter="PrewittSW" Click="LoadKernel_Click"/>
+                    <MenuItem Header="W (West)" CommandParameter="PrewittW" Click="LoadKernel_Click"/>
+                    <MenuItem Header="NW (North West)" CommandParameter="PrewittNW" Click="LoadKernel_Click"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Sharpen">
+                <MenuItem Header="Laplacian 1" CommandParameter="Laplacian1" Click="LoadKernel_Click"/>
+                <MenuItem Header="Laplacian 2" CommandParameter="Laplacian2" Click="LoadKernel_Click"/>
+                <MenuItem Header="Laplacian 3" CommandParameter="Laplacian3" Click="LoadKernel_Click"/>
+            </MenuItem>
+        </Menu>
 
-        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Label x:Name="Maskslabel" Content="Select Mask:" Margin="0,0,0,5" />
-            <ComboBox x:Name="MasksComboBox" Width="200" Margin="0,0,0,10">
-                <ComboBoxItem Content="Laplacian 1"/>
-                <ComboBoxItem Content="Laplacian 2"/>
-                <ComboBoxItem Content="Laplacian 3"/>
-                <ComboBoxItem Content="Prewitt"/>
-            </ComboBox>
-            <Label x:Name="BorderHandlingLabel" Content="Select Border Handling Method:" Margin="0,0,0,5"/>
-            <ComboBox x:Name="BorderHandlingComboBox" Width="200" Margin="0,0,0,10">
-                <ComboBoxItem Content="Isolated"/>
-                <ComboBoxItem Content="Reflect"/>
-                <ComboBoxItem Content="Replicate"/>
-            </ComboBox>
-            <Label x:Name="DirectionsLabel"  Content="Select Direction:" Margin="0,0,0,5"/>
-            <ComboBox x:Name="DirectionsComboBox" Width="200">
-                <ComboBoxItem Content="N (North)"/>
-                <ComboBoxItem Content="NE (North East)"/>
-                <ComboBoxItem Content="E (East)"/>
-                <ComboBoxItem Content="SE (South East)"/>
-                <ComboBoxItem Content="S (South)"/>
-                <ComboBoxItem Content="SW (South West)"/>
-                <ComboBoxItem Content="W (West)"/>
-                <ComboBoxItem Content="NW (North West)"/>
-            </ComboBox>
-        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40 0 0 0">
+                <Label x:Name="CannyInfoLabel" Content="For Canny kernel can't be shown" FontWeight="Bold" Margin="0,0,0,5" Visibility="Hidden"/>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBox x:Name="Value1" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                    <TextBox x:Name="Value2" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                    <TextBox x:Name="Value3" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBox x:Name="Value4" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                    <TextBox x:Name="Value5" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="-4" TextChanged="ValueTextBox_TextChanged"/>
+                    <TextBox x:Name="Value6" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBox x:Name="Value7" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                    <TextBox x:Name="Value8" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                    <TextBox x:Name="Value9" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label x:Name="SelectedMaskLabel" Content="Selected kernel: Custom" FontWeight="Bold" Margin="0,0,0,5"/>
+                <Label Content="Handle Border Pixels Method" Margin="0,5,0,5"/>
+                <ComboBox x:Name="EdgeHandlingMethodComboBox" Width="150" Margin="0,0,0,10" SelectedIndex="0">
+                    <ComboBoxItem Content="Isolated"/>
+                    <ComboBoxItem Content="Reflect"/>
+                    <ComboBoxItem Content="Replicate"/>
+                </ComboBox>
+            </StackPanel>
+        </Grid>
+
+        <Button Grid.Row="2" x:Name="ApplyButton" Content="Apply Mask" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" Padding="5,3" Click="ApplyButton_Click"/>
     </Grid>
 </Window>

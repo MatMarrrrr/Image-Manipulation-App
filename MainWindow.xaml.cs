@@ -318,6 +318,7 @@ namespace Image_Manipulation_App
                 MessageBox.Show("Blur can only be applied to grayscale images.");
                 return;
             }
+
             Mat blurredImage = new Mat();
             CvInvoke.Blur(this.selectedImageMat, blurredImage, new System.Drawing.Size(5, 5), new System.Drawing.Point(-1, -1));
             this.selectedImageMat = blurredImage;
@@ -337,10 +338,33 @@ namespace Image_Manipulation_App
                 MessageBox.Show("Gaussian blur can only be applied to grayscale images.");
                 return;
             }
+
             Mat gaussianBlurredImage = new Mat();
             CvInvoke.GaussianBlur(this.selectedImageMat, gaussianBlurredImage, new System.Drawing.Size(5, 5), 1.5);
             this.selectedImageMat = gaussianBlurredImage;
             activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+        }
+
+        private void Convolve_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Convolutions can only be applied to grayscale images.");
+                return;
+            }
+
+            ConvolverWindow dialog = new ConvolverWindow(this.selectedImageMat);
+            if (dialog.ShowDialog() == true && dialog.result != null)
+            {
+                this.selectedImageMat = dialog.result;
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -503,6 +527,5 @@ namespace Image_Manipulation_App
                 }
             }
         }
-
     }
 }
