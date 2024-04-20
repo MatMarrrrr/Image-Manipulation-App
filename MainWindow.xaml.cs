@@ -367,6 +367,32 @@ namespace Image_Manipulation_App
             }
         }
 
+        private void MedianFilter_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Median filtration can only be applied to grayscale images.");
+                return;
+            }
+
+            MedianFIlterParamsWindow dialog = new MedianFIlterParamsWindow();
+            if (dialog.ShowDialog() == true)
+            {
+                int kernelSize = dialog.kernelSize;
+                BorderType borderType = dialog.edgeMethod;
+                Mat filteredImage = new Mat();
+                CvInvoke.MedianBlur(this.selectedImageMat, filteredImage, kernelSize);
+                this.selectedImageMat = filteredImage;
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");
