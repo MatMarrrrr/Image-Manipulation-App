@@ -52,21 +52,6 @@ namespace Image_Manipulation_App
             this.img = img;
         }
 
-        private void ValueTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!this.IsInitialized)
-            {
-                return;
-            }
-
-            if (this.SelectedMaskLabel.Content.ToString() != "Selected kernel: Custom")
-            {
-                this.SelectedMaskLabel.Content = "Selected kernel: Custom";
-            }
-            this.CannyInfoLabel.Visibility = Visibility.Hidden;
-            ApplyButton.IsEnabled = AreAllValuesValid();
-        }
-
         public void LoadKernel(string kernelName)
         {
             int[] kernel = this.kernels[kernelName];
@@ -91,6 +76,10 @@ namespace Image_Manipulation_App
                 {
                     kernelValues[i] = value;
                 }
+                else
+                {
+                    return Array.Empty<int>();
+                }
             }
             return kernelValues;
         }
@@ -108,10 +97,32 @@ namespace Image_Manipulation_App
             return true;
         }
 
+        private void ValueTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!this.IsInitialized)
+            {
+                return;
+            }
+
+            int[] currentKernelValues = ExtractKernelValues();
+
+            var matchingKernel = kernels.FirstOrDefault(kernel => kernel.Value.SequenceEqual(currentKernelValues));
+
+            if (matchingKernel.Key != null)
+            {
+                this.SelectedMaskLabel.Content = $"Selected kernel: {matchingKernel.Key}";
+            }
+            else
+            {
+                this.SelectedMaskLabel.Content = "Selected kernel: Custom";
+            }
+
+            ApplyButton.IsEnabled = AreAllValuesValid();
+        }
+
         private void LoadKernel_Click(object sender, RoutedEventArgs e)
         {
-            this.CannyInfoLabel.Visibility = Visibility.Hidden;
-            var menuItem = sender as MenuItem;
+            MenuItem? menuItem = sender as MenuItem;
 
             if (menuItem != null)
             {
@@ -123,14 +134,8 @@ namespace Image_Manipulation_App
             }
         }
 
-        private void Canny_Click(object sender, RoutedEventArgs e)
+        private Mat ApplyKernel()
         {
-            this.CannyInfoLabel.Visibility = Visibility.Visible;
-        }
-
-        private void ApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-
             BorderType selectedBorderMethod = borderMethodTypes[this.EdgeHandlingMethodComboBox.SelectedIndex];
 
             int[] kernelValues = ExtractKernelValues();
@@ -148,9 +153,53 @@ namespace Image_Manipulation_App
 
             Mat resultImage = new Mat(img.Size, img.Depth, img.NumberOfChannels);
             CvInvoke.Filter2D(img, resultImage, kernelMatrix, new Point(-1, -1), 0, selectedBorderMethod);
+            return resultImage;
+        }
 
-            this.result = resultImage;
+        private void Canny_Click(object sender, RoutedEventArgs e)
+        {
+            if(this.CannyInfoLabel.Visibility == Visibility.Hidden && this.SelectedMaskLabel.Content.ToString() != "Selected kernel: Canny")
+            {
+                this.CannyInfoLabel.Visibility = Visibility.Visible;
+                this.SelectedMaskLabel.Content = "Selected kernel: Canny";
+            }
+
+            TwoParamsWindow dialog = new TwoParamsWindow(
+                "Canny params", 
+                "Threshold 1 value",
+                "Threshold 2 value",
+                "Apply",
+                0,
+                255,
+                0,
+                255,
+                "int",
+                "int",
+                "less"
+                );
+            dialog.Closing += OnCannyParamsClosed;
+            if (dialog.ShowDialog() == true)
+            {
+                int threshold1 = dialog.IntParam1;
+                int threshold2 = dialog.IntParam2;
+
+                Mat resultImage = new Mat(img.Size, img.Depth, img.NumberOfChannels);
+                CvInvoke.Canny(this.img, resultImage, threshold1, threshold2);
+                this.result = resultImage;
+                this.DialogResult = true;
+            }
+        }
+
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.result = ApplyKernel();
             this.DialogResult = true;
+        }
+
+        private void OnCannyParamsClosed(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.SelectedMaskLabel.Content = "Selected kernel: Custom";
+            this.CannyInfoLabel.Visibility = Visibility.Hidden;
         }
     }
 }
