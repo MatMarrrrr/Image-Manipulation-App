@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Threading.Channels;
 using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
+using Image_Manipulation_App.ParamWindows;
 
 namespace Image_Manipulation_App
 {
@@ -319,10 +320,15 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            Mat blurredImage = new Mat();
-            CvInvoke.Blur(this.selectedImageMat, blurredImage, new System.Drawing.Size(5, 5), new System.Drawing.Point(-1, -1));
-            this.selectedImageMat = blurredImage;
-            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            BorderPixelsHandlingMethodParamWindow dialog = new BorderPixelsHandlingMethodParamWindow("Blur border handling method", "Apply");
+            if (dialog.ShowDialog() == true)
+            {
+                BorderType borderType = dialog.borderMethod;
+                Mat blurredImage = new Mat();
+                CvInvoke.Blur(this.selectedImageMat, blurredImage, new System.Drawing.Size(5, 5), new System.Drawing.Point(-1, -1), borderType);
+                this.selectedImageMat = blurredImage;
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
         }
 
         private void GaussianBlur_Click(object sender, RoutedEventArgs e)
@@ -339,10 +345,15 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            Mat gaussianBlurredImage = new Mat();
-            CvInvoke.GaussianBlur(this.selectedImageMat, gaussianBlurredImage, new System.Drawing.Size(5, 5), 1.5);
-            this.selectedImageMat = gaussianBlurredImage;
-            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            BorderPixelsHandlingMethodParamWindow dialog = new BorderPixelsHandlingMethodParamWindow("Gaussian Blur border handling method", "Apply");
+            if (dialog.ShowDialog() == true)
+            {
+                BorderType borderType = dialog.borderMethod;
+                Mat gaussianBlurredImage = new Mat();
+                CvInvoke.GaussianBlur(this.selectedImageMat, gaussianBlurredImage, new System.Drawing.Size(5, 5), 1.5, 0, borderType);
+                this.selectedImageMat = gaussianBlurredImage;
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
         }
 
         private void Convolve_Click(object sender, RoutedEventArgs e)
@@ -385,7 +396,7 @@ namespace Image_Manipulation_App
             if (dialog.ShowDialog() == true)
             {
                 int kernelSize = dialog.kernelSize;
-                BorderType borderType = dialog.edgeMethod;
+                BorderType borderType = dialog.borderMethod;
                 Mat filteredImage = new Mat();
                 CvInvoke.MedianBlur(this.selectedImageMat, filteredImage, kernelSize);
                 this.selectedImageMat = filteredImage;
