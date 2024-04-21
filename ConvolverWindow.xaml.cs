@@ -86,10 +86,10 @@ namespace Image_Manipulation_App
 
         private bool AreAllValuesValid()
         {
-            TextBox[] textBoxes = { this.Value1, this.Value2, this.Value3, this.Value4, this.Value5, this.Value6, this.Value7, this.Value8, this.Value9 };
-            foreach (TextBox textBox in textBoxes)
+            for (int i = 1; i <= 9; i++)
             {
-                if (!double.TryParse(textBox.Text, out _))
+                TextBox? textBox = this.FindName($"Value{i}") as TextBox;
+                if (!double.TryParse(textBox?.Text, out _))
                 {
                     return false;
                 }

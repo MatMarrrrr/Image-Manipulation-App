@@ -404,6 +404,54 @@ namespace Image_Manipulation_App
             }
         }
 
+        private void SingleAndTwoStage_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null || this.selectedImageFileName == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Single and two stage filtration can only be applied to grayscale images.");
+                return;
+            }
+
+            SingleAndTwoStageFiltrationParamsWindow dialog = new SingleAndTwoStageFiltrationParamsWindow();
+            if (dialog.ShowDialog() == true)
+            {
+                int[] firstKernelArray = dialog.firstKernel;
+                int[] secondKernelArray = dialog.secondKernel;
+                BorderType borderMethod = dialog.borderMethod;
+
+                Matrix<float> firstKernel = new Matrix<float>(3, 3);
+                Matrix<float> secondKernel = new Matrix<float>(3, 3);
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        firstKernel[i, j] = firstKernelArray[i * 3 + j];
+                        secondKernel[i, j] = secondKernelArray[i * 3 + j];
+                    }
+                }
+
+                Mat firstStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+                CvInvoke.Filter2D(this.selectedImageMat, firstStageResult, firstKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
+
+                Mat secondStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+                CvInvoke.Filter2D(firstStageResult, secondStageResult, secondKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
+
+                Matrix<float> combinedKernel = dialog.ConvolveKernels(firstKernel, secondKernel);
+
+                Mat singleStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+                CvInvoke.Filter2D(this.selectedImageMat, singleStageResult, combinedKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
+
+                DisplayImageInNewWindow(secondStageResult, this.selectedImageFileName, $"Two 3x3 Result {this.selectedImageShortFileName}", true);
+                DisplayImageInNewWindow(singleStageResult, this.selectedImageFileName, $"One 5x5 Result {this.selectedImageShortFileName}", true);
+            }
+        }
+
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");

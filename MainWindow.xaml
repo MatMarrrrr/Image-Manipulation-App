@@ -48,7 +48,10 @@
                 </MenuItem>
                 <MenuItem Header="Posterize" Click="Posterize_Click"/>
                 <MenuItem Header="Convolve" Click="Convolve_Click"/>
-                <MenuItem Header="Median Filter" Click="MedianFilter_Click"/>
+                <MenuItem Header="Filter">
+                    <MenuItem Header="Median Filter" Click="MedianFilter_Click"/>
+                    <MenuItem Header="Single and two stage" Click="SingleAndTwoStage_Click"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="About" Padding="3" Click="About_Click"/>
         </Menu>
