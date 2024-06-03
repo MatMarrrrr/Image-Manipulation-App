@@ -4,6 +4,6 @@
         Title="Image Window"
         Closing="ImageWindow_Closing">
     <Grid>
-        <Image x:Name="imageControl" Stretch="Uniform"/>
+        <Image x:Name="imageControl" Stretch="Uniform" MouseLeftButtonDown="ImageControl_MouseLeftButtonDown"/>
     </Grid>
 </Window>

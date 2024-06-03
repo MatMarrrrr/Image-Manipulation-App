@@ -36,7 +36,41 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            ApplyButton.IsEnabled = AreAllValuesValid();
+            ApplyButton.IsEnabled = false;
+            ResultKernelContainer.Visibility = Visibility.Hidden;
+
+            if (AreAllValuesValid())
+            {
+                (int[] kernel1, int[] kernel2) = ExtractKernelValues();
+                Matrix<float> firstKernel = new Matrix<float>(3, 3);
+                Matrix<float> secondKernel = new Matrix<float>(3, 3);
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        firstKernel[i, j] = kernel1[i * 3 + j];
+                        secondKernel[i, j] = kernel2[i * 3 + j];
+                    }
+                }
+                Matrix<float> combinedKernel = ImageOperations.ConvolveKernels(firstKernel, secondKernel);
+                int textBoxIndex = 0;
+                for (int i = 19; i <= 43; i++)
+                {
+                    TextBlock? textBlock = this.FindName($"Value{i}") as TextBlock;
+                    if (textBlock != null)
+                    {
+                        int j = textBoxIndex / 5;
+                        int k = textBoxIndex % 5;
+                        textBlock.Text = combinedKernel[j, k].ToString();
+                        textBoxIndex++;
+                    }
+                }
+                ApplyButton.IsEnabled = true;
+                ResultKernelContainer.Visibility = Visibility.Visible;
+            }
+
+
+
         }
 
         private bool AreAllValuesValid()
@@ -86,35 +120,6 @@ namespace Image_Manipulation_App
             this.secondKernel = kernel2;
             this.borderMethod = selectedBorderMethod;
             this.DialogResult = true;
-        }
-
-        public Matrix<float> ConvolveKernels(Matrix<float> kernel1, Matrix<float> kernel2)
-        {
-            int finalSize = 5;
-            Matrix<float> result = new Matrix<float>(finalSize, finalSize);
-
-            for (int x = 0; x < finalSize; x++)
-            {
-                for (int y = 0; y < finalSize; y++)
-                {
-                    float sum = 0;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        for (int j = 0; j < 3; j++)
-                        {
-                            int ni = x - i + 1;
-                            int nj = y - j + 1;
-                            if (ni >= 0 && ni < 3 && nj >= 0 && nj < 3)
-                            {
-                                sum += kernel1[i, j] * kernel2[ni, nj];
-                            }
-                        }
-                    }
-                    result[x, y] = sum;
-                }
-            }
-
-            return result;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -334,6 +335,409 @@ namespace Image_Manipulation_App
             CvInvoke.CopyMakeBorder(image2, paddedImage2, image2TopPadding, image2BottomPadding, image2LeftPadding, image2RightPadding, BorderType.Constant, new MCvScalar(0));
 
             return (paddedImage1, paddedImage2, paddedImage1.Size);
+        }
+
+        public static Matrix<float> ConvolveKernels(Matrix<float> kernel1, Matrix<float> kernel2)
+        {
+            int finalSize = 5;
+            Matrix<float> result = new Matrix<float>(finalSize, finalSize);
+
+            for (int x = 0; x < finalSize; x++)
+            {
+                for (int y = 0; y < finalSize; y++)
+                {
+                    float sum = 0;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            int ni = x - i;
+                            int nj = y - j;
+                            if (ni >= 0 && ni < 3 && nj >= 0 && nj < 3)
+                            {
+                                sum += kernel1[i, j] * kernel2[ni, nj];
+                            }
+                        }
+                    }
+                    result[x, y] = sum;
+                }
+            }
+
+            return result;
+        }
+
+        public static (Mat squareElement, Mat diamondElement) CreateStructuringElements(int squareSize, int diamondSize)
+        {
+            Mat squareElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(squareSize, squareSize), new Point(-1, -1));
+
+            Mat diamondElement = new Mat(diamondSize, diamondSize, DepthType.Cv8U, 1);
+            diamondElement.SetTo(new MCvScalar(0));
+            int center = diamondSize / 2;
+
+            for (int i = 0; i <= center; i++)
+            {
+                int offset = center - i;
+                diamondElement.GetData().SetValue((byte)255, center + i, center - offset);
+                diamondElement.GetData().SetValue((byte)255, center - i, center + offset);
+                diamondElement.GetData().SetValue((byte)255, center - i, center - offset);
+                diamondElement.GetData().SetValue((byte)255, center + i, center + offset);
+            }
+
+            return (squareElement, diamondElement);
+        }
+
+        public static Mat CreateDiamondElement(int size)
+        {
+            int center = size / 2;
+            Mat diamond = new Mat(size, size, DepthType.Cv8U, 1);
+            diamond.SetTo(new MCvScalar(0));
+
+            IntPtr dataPointer = diamond.DataPointer;
+            int step = diamond.Step;
+
+            for (int i = 0; i <= center; i++)
+            {
+                for (int j = center - i; j <= center + i; j++)
+                {
+                    Marshal.WriteByte(dataPointer, i * step + j, 1);
+                    Marshal.WriteByte(dataPointer, (size - i - 1) * step + j, 1);
+                }
+            }
+
+            return diamond;
+        }
+
+        public static Mat GetStructuralElement(string shape, int size)
+        {
+            Mat element;
+
+            switch (shape.ToLower())
+            {
+                case "diamond":
+                    element = CreateDiamondElement(size);
+                    break;
+                case "square":
+                    element = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(size, size), new Point(-1, -1));
+                    break;
+                default:
+                    element = CreateDiamondElement(size);
+                    break;
+            }
+
+            return element;
+        }
+        public static Mat Erode(Mat image, Mat structuringElement)
+        {
+            Mat result = new Mat();
+            CvInvoke.Erode(image, result, structuringElement, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
+            return result;
+        }
+        public static Mat Dilate(Mat image, Mat structuringElement)
+        {
+            Mat result = new Mat();
+            CvInvoke.Dilate(image, result, structuringElement, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
+            return result;
+        }
+        public static Mat Open(Mat image, Mat structuringElement)
+        {
+            Mat result = new Mat();
+            CvInvoke.MorphologyEx(image, result, MorphOp.Open, structuringElement, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
+            return result;
+        }
+        public static Mat Close(Mat image, Mat structuringElement)
+        {
+            Mat result = new Mat();
+            CvInvoke.MorphologyEx(image, result, MorphOp.Close, structuringElement, new Point(-1, -1), 1, BorderType.Constant, new MCvScalar(0));
+            return result;
+        }
+
+        public static Mat Skeletonize(Mat image, Mat structuringElement)
+        {
+            Mat skel = new Mat(image.Size, DepthType.Cv8U, 1);
+            skel.SetTo(new MCvScalar(0));
+            Mat temp = new Mat();
+            Mat eroded = new Mat();
+
+            do
+            {
+                eroded = Erode(image, structuringElement);
+                temp = Open(eroded, structuringElement);
+                CvInvoke.Subtract(eroded, temp, temp);
+                CvInvoke.BitwiseOr(skel, temp, skel);
+                eroded.CopyTo(image);
+            } while (CvInvoke.CountNonZero(eroded) != 0);
+
+            return skel;
+        }
+
+        public static Mat ImagePyramidUp(Mat image)
+        {
+            Mat result = new Mat();
+            CvInvoke.PyrUp(image, result);
+            return result;
+        }
+
+        public static Mat ImagePyramidDown(Mat image)
+        {
+            Mat result = new Mat();
+            CvInvoke.PyrDown(image, result);
+            return result;
+        }
+
+        public static void SaveImage(Mat image)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "JPEG Image|*.jpg|PNG Image|*.png|Bitmap Image|*.bmp";
+            saveFileDialog.Title = "Zapisz obraz jako";
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.FileName != "")
+            {
+                CvInvoke.Imwrite(saveFileDialog.FileName, image);
+            }
+        }
+
+        public static void SaveCompressedImage(Mat image)
+        {
+            if (image == null || image.IsEmpty)
+                throw new ArgumentException("Obraz jest pusty.");
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Binary files|*.bin";
+            saveFileDialog.Title = "Zapisz skompresowany obraz jako plik binarny";
+            saveFileDialog.ShowDialog();
+
+            if (!string.IsNullOrEmpty(saveFileDialog.FileName))
+            {
+                byte[] data = new byte[image.Cols]; 
+                Marshal.Copy(image.DataPointer, data, 0, data.Length);
+                System.IO.File.WriteAllBytes(saveFileDialog.FileName, data);
+            }
+        }
+
+        public static Mat ApplyHoughTransform(Mat image)
+        {
+            CvInvoke.GaussianBlur(image, image, new Size(3, 3), 1);
+
+            Mat edges = new Mat();
+            CvInvoke.Canny(image, edges, 50, 150);
+
+            LineSegment2D[] lines = CvInvoke.HoughLinesP(edges, 1, Math.PI / 180, 50, 30, 10);
+
+            foreach (var line in lines)
+            {
+                CvInvoke.Line(image, line.P1, line.P2, new MCvScalar(0, 255, 0), 2, LineType.EightConnected);
+            }
+
+            return image;
+        }
+
+        public static Mat ManualThreshold(Mat inputImage, double thresholdValue)
+        {
+            Mat outputImage = new Mat();
+            CvInvoke.Threshold(inputImage, outputImage, thresholdValue, 255, ThresholdType.Binary);
+            return outputImage;
+        }
+
+        public static Mat AdaptiveThreshold(Mat inputImage)
+        {
+            Mat outputImage = new Mat();
+            CvInvoke.AdaptiveThreshold(inputImage, outputImage, 255, AdaptiveThresholdType.GaussianC, ThresholdType.Binary, 11, 2);
+            return outputImage;
+        }
+
+        public static (Mat, double) OtsuThreshold(Mat inputImage)
+        {
+            Mat outputImage = new Mat();
+            double otsuThreshold = CvInvoke.Threshold(inputImage, outputImage, 0, 255, ThresholdType.Otsu | ThresholdType.Binary);
+            return (outputImage, otsuThreshold);
+        }
+
+        public static Mat PerformInpainting(Mat originalImage, Mat mask)
+        {
+            Mat inpaintedImage = new Mat();
+            CvInvoke.Inpaint(originalImage, mask, inpaintedImage, 3, InpaintType.NS);
+            return inpaintedImage;
+        }
+
+        public static Mat PerformGrabCutWithMask(Mat originalImage, Mat maskImage)
+        {
+            Mat formattedImage = EnsureImageIsCv8Uc3(originalImage);
+
+            Mat grabCutMask = ConvertToGrabCutMask(maskImage);
+
+            Mat bgModel = new Mat();
+            Mat fgModel = new Mat();
+            Rectangle roi = DetectROI(grabCutMask);
+
+            CvInvoke.GrabCut(formattedImage, grabCutMask, roi, bgModel, fgModel, 5, GrabcutInitType.InitWithMask);
+
+            Mat foreground = new Mat(formattedImage.Size, DepthType.Cv8U, 3);
+            foreground.SetTo(new MCvScalar(255, 255, 255));
+            formattedImage.CopyTo(foreground, grabCutMask);
+
+            return foreground;
+        }
+
+        private static Mat EnsureImageIsCv8Uc3(Mat image)
+        {
+            if (image.NumberOfChannels != 3 || image.Depth != DepthType.Cv8U)
+            {
+                Mat result = new Mat();
+                if (image.NumberOfChannels == 1)
+                {
+                    CvInvoke.CvtColor(image, result, ColorConversion.Gray2Bgr);
+                }
+                else
+                {
+                    image.ConvertTo(result, DepthType.Cv8U);
+                    if (result.NumberOfChannels == 1)
+                    {
+                        CvInvoke.CvtColor(result, result, ColorConversion.Gray2Bgr);
+                    }
+                }
+                return result;
+            }
+            return image;
+        }
+
+        private static Mat ConvertToGrabCutMask(Mat inputMask)
+        {
+            Mat grabCutMask = new Mat();
+            if (inputMask.Depth != DepthType.Cv8U)
+            {
+                inputMask.ConvertTo(grabCutMask, DepthType.Cv8U);
+            }
+            else
+            {
+                grabCutMask = inputMask.Clone();
+            }
+
+            unsafe
+            {
+                byte* dataPtr = (byte*)grabCutMask.DataPointer;
+                int step = grabCutMask.Step;
+
+                for (int y = 0; y < grabCutMask.Rows; y++)
+                {
+                    for (int x = 0; x < grabCutMask.Cols; x++)
+                    {
+                        byte* rowPtr = dataPtr + (y * step);
+                        byte pixelValue = rowPtr[x];
+
+                        if (pixelValue == 0)
+                        {
+                            rowPtr[x] = 0;
+                        }
+                        else if (pixelValue == 255)
+                        {
+                            rowPtr[x] = 1;
+                        }
+                    }
+                }
+            }
+
+            return grabCutMask;
+        }
+
+        private static Rectangle DetectROI(Mat mask)
+        {
+            Rectangle roi = Rectangle.Empty;
+            var handle = GCHandle.Alloc(mask.GetData(), GCHandleType.Pinned);
+            try
+            {
+                IntPtr scan0 = handle.AddrOfPinnedObject();
+                byte depth = mask.Depth == DepthType.Cv8U ? (byte)1 :
+                            mask.Depth == DepthType.Cv16U || mask.Depth == DepthType.Cv16S ? (byte)2 : (byte)4;
+
+                int stride = mask.Step;
+                for (int y = 0; y < mask.Rows; y++)
+                {
+                    for (int x = 0; x < mask.Cols; x++)
+                    {
+                        byte value = Marshal.ReadByte(scan0, y * stride + x * depth);
+                        if (value != 0)
+                        {
+                            if (roi == Rectangle.Empty)
+                            {
+                                roi = new Rectangle(x, y, 1, 1);
+                            }
+                            else
+                            {
+                                roi = Rectangle.Union(roi, new Rectangle(x, y, 1, 1));
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (handle.IsAllocated)
+                    handle.Free();
+            }
+
+            return roi;
+        }
+
+        public static (Mat, double) CompressImage(Mat image)
+        {
+            List<byte> compressed = new List<byte>();
+            byte[] imageData = new byte[image.Step * image.Rows];
+            image.CopyTo(imageData);
+
+            byte currentPixel = imageData[0];
+            int count = 1;
+
+            for (int i = 1; i < imageData.Length; i++)
+            {
+                if (imageData[i] == currentPixel)
+                {
+                    count++;
+                }
+                else
+                {
+                    compressed.Add(currentPixel);
+                    compressed.AddRange(BitConverter.GetBytes(count));
+                    currentPixel = imageData[i];
+                    count = 1;
+                }
+            }
+
+            compressed.Add(currentPixel);
+            compressed.AddRange(BitConverter.GetBytes(count));
+
+            Mat compressedMat = new Mat(new Size(compressed.Count, 1), DepthType.Cv8U, 1);
+            compressedMat.SetTo(compressed.ToArray());
+
+            double compressionRatio = (double)compressed.Count / imageData.Length;
+            return (compressedMat, compressionRatio);
+        }
+
+        public static Mat ApplyWatershed(Mat image)
+        {
+            Mat coloredImage = new Mat();
+            if (image.NumberOfChannels == 1)
+            {
+                CvInvoke.CvtColor(image, coloredImage, ColorConversion.Gray2Bgr);
+            }
+            else
+            {
+                coloredImage = image.Clone();
+            }
+
+            Mat binaryImage = new Mat();
+            CvInvoke.CvtColor(coloredImage, binaryImage, ColorConversion.Bgr2Gray);
+            CvInvoke.Threshold(binaryImage, binaryImage, 1, 255, ThresholdType.BinaryInv);
+
+            Mat markers = new Mat();
+            CvInvoke.ConnectedComponents(binaryImage, markers);
+
+            CvInvoke.Watershed(coloredImage, markers);
+
+            Mat result = new Mat(markers.Size, DepthType.Cv8U, 3);
+            markers.ConvertTo(result, DepthType.Cv8U);
+
+            return result;
         }
     }
 }

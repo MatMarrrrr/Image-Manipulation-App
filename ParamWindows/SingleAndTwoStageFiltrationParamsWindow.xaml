@@ -5,20 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Image_Manipulation_App"
         mc:Ignorable="d"
-        Title="SingleAndTwoStageFiltrationParamsWindow" Height="350" Width="600">
+        Title="SingleAndTwoStageFiltrationParamsWindow" Height="450" Width="700">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Margin="0,0,0,30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40 0 0 0">
+            <StackPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="199">
                 <Label x:Name="FirstKernelLabel" Content="First Kernel" FontWeight="Bold" Margin="0,0,0,5" Visibility="Hidden"/>
                 <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
                     <TextBox x:Name="Value1" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
@@ -37,7 +37,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="40 0 0 0">
+            <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="215" Margin="135,0,0,0">
                 <Label x:Name="SecondKernelLabel" Content="Second Kernel" FontWeight="Bold" Margin="0,0,0,5" Visibility="Hidden"/>
                 <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
                     <TextBox x:Name="Value10" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
@@ -55,9 +55,47 @@
                     <TextBox x:Name="Value18" Height="30" Width="50" Padding="0,5" TextAlignment="Center" Text="1" TextChanged="ValueTextBox_TextChanged"/>
                 </StackPanel>
             </StackPanel>
+            <StackPanel x:Name="ResultKernelContainer" HorizontalAlignment="Left" VerticalAlignment="Center" Width="270" Margin="215,0,0,0" Grid.ColumnSpan="2" Height="250">
+                <Label x:Name="SecondKernelLabel1" Content="Second Kernel" FontWeight="Bold" Margin="0,0,0,5" Visibility="Hidden"/>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBlock x:Name="Value19" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value20" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value21" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value22" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value23" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBlock x:Name="Value24" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value25" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value26" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value27" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value28" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBlock x:Name="Value29" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value30" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value31" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value32" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value33" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBlock x:Name="Value34" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value35" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value36" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value37" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value38" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                    <TextBlock x:Name="Value39" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value40" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value41" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="0" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value42" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="-1" FontWeight="Bold"/></TextBlock>
+                    <TextBlock x:Name="Value43" Height="20" Width="40" Padding="0,5" TextAlignment="Center"><Run Language="pl-pl" Text="1" FontWeight="Bold"/></TextBlock>
+                </StackPanel>
+            </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="122">
             <Label Content="Handle Border Pixels Method" Margin="0,10,0,0"/>
             <ComboBox x:Name="EdgeHandlingMethodComboBox" Width="150" SelectedIndex="0">
                 <ComboBoxItem Content="Isolated"/>

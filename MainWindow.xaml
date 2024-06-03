@@ -53,6 +53,33 @@
                     <MenuItem Header="Single and two stage" Click="SingleAndTwoStage_Click"/>
                 </MenuItem>
             </MenuItem>
+            <MenuItem Header="Lab3" Padding="3">
+                <MenuItem Header="Morphological  operations">
+                    <MenuItem Header="Erode" Click="ErodeImage_Click"/>
+                    <MenuItem Header="Dilate" Click="DilateImage_Click"/>
+                    <MenuItem Header="Open" Click="OpenImage_Click"/>
+                    <MenuItem Header="Close" Click="CloseImage_Click"/>
+                </MenuItem>
+                <MenuItem Header="Skeletonize" Click="SkeletizeImage_Click"/>
+                <MenuItem Header="Image Pyramid">
+                    <MenuItem Header="Up" Click="ImagePyramidUp_Click"/>
+                    <MenuItem Header="Down" Click="ImagePyramidDown_Click"/>
+                </MenuItem>
+                <MenuItem Header="Hough" Click="Hough_Click"/>
+                <MenuItem Header="Profile Line (Off)" x:Name="profileLineMenuItem" Padding="3">
+                    <MenuItem Header="On" Click="ProfileLineOn_Click"/>
+                    <MenuItem Header="Off" Click="ProfileLineOff_Click"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Lab4">
+                <MenuItem Header="Threshold" Click="Threshold_Click"/>
+                <MenuItem Header="Inpainting" Click="Inpainting_Click"/>
+                <MenuItem Header="GrabCut" Click="GrabCut_Click"/>
+            </MenuItem>
+            <MenuItem Header="Save as" Padding="3">
+                <MenuItem Header="Without compression" Padding="3" Click="SaveAs_Click"/>
+                <MenuItem Header="With compression" Padding="3" Click="SaveAsCompression_Click"/>
+            </MenuItem>
             <MenuItem Header="About" Padding="3" Click="About_Click"/>
         </Menu>
         <Label Grid.Row="1" x:Name="labelSelectedImage" Content="Selected Image: None" FontSize="14" FontFamily="Arial Black"/>

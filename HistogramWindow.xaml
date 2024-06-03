@@ -8,7 +8,7 @@
             <TabItem Header="Chart">
                 <lvc:CartesianChart x:Name="histogramChart"/>
             </TabItem>
-            <TabItem Header="Table">
+            <TabItem Header="Table" x:Name="tableChart">
                 <DataGrid x:Name="HistogramTable"/>
             </TabItem>
         </TabControl>

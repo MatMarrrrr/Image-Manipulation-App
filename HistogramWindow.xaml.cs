@@ -26,10 +26,14 @@ namespace Image_Manipulation_App
 {
     public partial class HistogramWindow : Window
     {
-        public HistogramWindow(string title)
+        public HistogramWindow(string title, bool profileLine = false)
         {
             InitializeComponent();
             this.Title = title;
+            if (profileLine)
+            {
+                tableChart.Visibility = Visibility.Hidden;
+            }
         }
 
         public void DisplayHistogram(Mat imageMat)
@@ -47,6 +51,22 @@ namespace Image_Manipulation_App
 
             histogramChart.Series = new ISeries[] { series };
             HistogramTable.ItemsSource = histogramTableData;
+
+            this.Show();
+        }
+
+        public void ShowProfileLine(List<int> data)
+        {
+            var lineSeries = new LineSeries<int>
+            {
+                Values = data,
+                GeometrySize = 5,
+                LineSmoothness = 0,
+                Stroke = new SolidColorPaint(SKColors.Blue),
+                Fill = new SolidColorPaint(SKColors.Transparent)
+            };
+
+            histogramChart.Series = new ISeries[] { lineSeries };
 
             this.Show();
         }

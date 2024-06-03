@@ -152,8 +152,20 @@ namespace Image_Manipulation_App
             }
 
             Mat resultImage = new Mat(img.Size, img.Depth, img.NumberOfChannels);
+
+            double kernelSum = CvInvoke.Sum(kernelMatrix).V0;
+
+            if (kernelSum != 0)
+            {
+                kernelMatrix *= (1.0 / kernelSum);
+            }
+
             CvInvoke.Filter2D(img, resultImage, kernelMatrix, new Point(-1, -1), 0, selectedBorderMethod);
             return resultImage;
+
+            //Mat resultImage = new Mat(img.Size, img.Depth, img.NumberOfChannels);
+            //CvInvoke.Filter2D(img, resultImage, kernelMatrix, new Point(-1, -1), 0, selectedBorderMethod);
+            //return resultImage;
         }
 
         private void Canny_Click(object sender, RoutedEventArgs e)

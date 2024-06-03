@@ -19,6 +19,7 @@ using System.Threading.Channels;
 using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
 using Image_Manipulation_App.ParamWindows;
+using static SkiaSharp.HarfBuzz.SKShaper;
 
 namespace Image_Manipulation_App
 {
@@ -250,27 +251,27 @@ namespace Image_Manipulation_App
 
         private void AddImages_Click(object sender, RoutedEventArgs e)
         {
-            this.PerformPointOperation("Add", ImageOperations.AddImages);
+            this.PerformTwoMatOperation("Add", ImageOperations.AddImages);
         }
 
         private void SubtractImages_Click(object sender, RoutedEventArgs e)
         {
-            this.PerformPointOperation("Subtract", ImageOperations.SubtractImages);
+            this.PerformTwoMatOperation("Subtract", ImageOperations.SubtractImages);
         }
 
         private void BlendImages_Click(object sender, RoutedEventArgs e)
         {
-            this.PerformPointOperation("Blend", ImageOperations.BlendImages);
+            this.PerformTwoMatOperation("Blend", ImageOperations.BlendImages);
         }
 
         private void AndImages_Click(object sender, RoutedEventArgs e)
         {
-            this.PerformPointOperation("AND", ImageOperations.AndImages);
+            this.PerformTwoMatOperation("AND", ImageOperations.AndImages);
         }
 
         private void OrImages_Click(object sender, RoutedEventArgs e)
         {
-            this.PerformPointOperation("OR", ImageOperations.OrImages);
+            this.PerformTwoMatOperation("OR", ImageOperations.OrImages);
         }
 
         private void NotImage_Click(object sender, RoutedEventArgs e)
@@ -280,7 +281,7 @@ namespace Image_Manipulation_App
 
         private void XorImages_Click(object sender, RoutedEventArgs e)
         {
-            this.PerformPointOperation("XOR", ImageOperations.XorImages);
+            this.PerformTwoMatOperation("XOR", ImageOperations.XorImages);
         }
 
         private void Posterize_Click(object sender, RoutedEventArgs e)
@@ -437,19 +438,299 @@ namespace Image_Manipulation_App
                 }
 
                 Mat firstStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+
+                double firstKernelSum = CvInvoke.Sum(firstKernel).V0;
+                if (firstKernelSum != 0)
+                {
+                    firstKernel *= (1.0 / firstKernelSum);
+                }
                 CvInvoke.Filter2D(this.selectedImageMat, firstStageResult, firstKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
 
                 Mat secondStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+
+                double secondKernelSum = CvInvoke.Sum(secondKernel).V0;
+                if (secondKernelSum != 0)
+                {
+                    secondKernel *= (1.0 / secondKernelSum);
+                }
                 CvInvoke.Filter2D(firstStageResult, secondStageResult, secondKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
 
-                Matrix<float> combinedKernel = dialog.ConvolveKernels(firstKernel, secondKernel);
+                Matrix<float> combinedKernel = ImageOperations.ConvolveKernels(firstKernel, secondKernel);
+                double combinedKernelSum = CvInvoke.Sum(combinedKernel).V0;
+                if (combinedKernelSum != 0)
+                {
+                    combinedKernel *= (1.0 / combinedKernelSum);
+                }
 
                 Mat singleStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
                 CvInvoke.Filter2D(this.selectedImageMat, singleStageResult, combinedKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
 
+                //Mat firstStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+                //CvInvoke.Filter2D(this.selectedImageMat, firstStageResult, firstKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
+
+                //Mat secondStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+                //CvInvoke.Filter2D(firstStageResult, secondStageResult, secondKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
+
+                //Matrix<float> combinedKernel = ImageOperations.ConvolveKernels(firstKernel, secondKernel);
+
+                //Mat singleStageResult = new Mat(this.selectedImageMat.Size, this.selectedImageMat.Depth, this.selectedImageMat.NumberOfChannels);
+                //CvInvoke.Filter2D(this.selectedImageMat, singleStageResult, combinedKernel, new System.Drawing.Point(-1, -1), 0, borderMethod);
+
                 DisplayImageInNewWindow(secondStageResult, this.selectedImageFileName, $"Two 3x3 Result {this.selectedImageShortFileName}", true);
                 DisplayImageInNewWindow(singleStageResult, this.selectedImageFileName, $"One 5x5 Result {this.selectedImageShortFileName}", true);
             }
+        }
+
+        private void ErodeImage_Click(object sender, EventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Blur can only be applied to grayscale images.");
+                return;
+            }
+
+            StructureSizeParamWindow dialog = new StructureSizeParamWindow("Erode params window", "Erode");
+            if (dialog.ShowDialog() == true)
+            {
+                Mat structureElement = ImageOperations.GetStructuralElement(dialog.structure, dialog.size);
+                this.selectedImageMat = ImageOperations.Erode(this.selectedImageMat, structureElement);
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+        private void DilateImage_Click(object sender, EventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Dilate can only be applied to grayscale images.");
+                return;
+            }
+
+            StructureSizeParamWindow dialog = new StructureSizeParamWindow("Dilate params window", "Dilate");
+            if (dialog.ShowDialog() == true)
+            {
+                Mat structureElement = ImageOperations.GetStructuralElement(dialog.structure, dialog.size);
+                this.selectedImageMat = ImageOperations.Dilate(this.selectedImageMat, structureElement);
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+
+        private void OpenImage_Click(object sender, EventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Open can only be applied to grayscale images.");
+                return;
+            }
+
+            StructureSizeParamWindow dialog = new StructureSizeParamWindow("Open params window", "Open");
+            if (dialog.ShowDialog() == true)
+            {
+                Mat structureElement = ImageOperations.GetStructuralElement(dialog.structure, dialog.size);
+                this.selectedImageMat = ImageOperations.Open(this.selectedImageMat, structureElement);
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+
+        private void CloseImage_Click(object sender, EventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Close can only be applied to grayscale images.");
+                return;
+            }
+
+            StructureSizeParamWindow dialog = new StructureSizeParamWindow("Close params window", "Close");
+            if (dialog.ShowDialog() == true)
+            {
+                Mat structureElement = ImageOperations.GetStructuralElement(dialog.structure, dialog.size);
+                this.selectedImageMat = ImageOperations.Close(this.selectedImageMat, structureElement);
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+
+        private void SkeletizeImage_Click(object sender, EventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Skeletization can only be applied to grayscale images.");
+                return;
+            }
+
+            StructureSizeParamWindow dialog = new StructureSizeParamWindow("Skeletization params window", "Skeletize");
+            if (dialog.ShowDialog() == true)
+            {
+                Mat structureElement = ImageOperations.GetStructuralElement(dialog.structure, dialog.size);
+                this.selectedImageMat = ImageOperations.Skeletonize(this.selectedImageMat, structureElement);
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+
+        private void ImagePyramidUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            Mat result = ImageOperations.ImagePyramidUp(this.selectedImageMat);
+            this.selectedImageMat = result;
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+        }
+
+        private void ImagePyramidDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            Mat result = ImageOperations.ImagePyramidDown(this.selectedImageMat);
+            this.selectedImageMat = result;
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+        }
+
+        private void Hough_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Hough transform can only be applied to grayscale images.");
+                return;
+            }
+
+            Mat result = ImageOperations.ApplyHoughTransform(this.selectedImageMat);
+            this.selectedImageMat = result;
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+        }
+
+        private void ProfileLineOn_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Profile line can only be created for grayscale images.");
+                return;
+            }
+
+            this.activeImageWindow.isProfileLine = true;
+            this.profileLineMenuItem.Header = "Profile Line (On)";
+        }
+
+        private void ProfileLineOff_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            this.activeImageWindow.isProfileLine = false;
+            this.activeImageWindow.profileLineWindow?.Close();
+            this.profileLineMenuItem.Header = "Profile Line (Off)";
+            this.activeImageWindow.profileLineWindow = null;
+            this.activeImageWindow.RestoreImage();
+        }
+
+        private void Threshold_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Thresholding can only be applied for grayscale images.");
+                return;
+            }
+
+            ThresholdWindow thresholdWindow = new ThresholdWindow(this.selectedImageMat);
+            if(thresholdWindow.ShowDialog() == true)
+            {
+                this.selectedImageMat = thresholdWindow.finalImage;
+                activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+            }
+        }
+
+        private void Inpainting_Click(object sender, RoutedEventArgs e)
+        {
+            this.PerformTwoMatOperation("Inpaint", ImageOperations.PerformInpainting);
+        }
+
+        private void GrabCut_Click(object sender, RoutedEventArgs e)
+        {
+            this.PerformTwoMatOperation("GrabCut", ImageOperations.PerformGrabCutWithMask);
+        }
+
+        private void Watershed_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SaveAs_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            ImageOperations.SaveImage(this.selectedImageMat);
+        }
+
+        private void SaveAsCompression_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+            (Mat compressed, double SK) = ImageOperations.CompressImage(this.selectedImageMat);
+            MessageBox.Show($"Stopeń kompresji SK: {SK}");
+            ImageOperations.SaveCompressedImage(compressed);
         }
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -466,7 +747,7 @@ namespace Image_Manipulation_App
             }
         }
 
-        private void PerformPointOperation(string operationName, PointOperation operation)
+        private void PerformTwoMatOperation(string operationName, PointOperation operation)
         {
             int countGrayScaleImages = imageWindows.Count(window => window?.imageMat?.NumberOfChannels == 1);
 
@@ -495,7 +776,7 @@ namespace Image_Manipulation_App
             }
         }
 
-        private void PerformPointOperation(string operationName, PointOperationWithAlpha operation)
+        private void PerformTwoMatOperation(string operationName, PointOperationWithAlpha operation)
         {
             int countGrayScaleImages = imageWindows.Count(window => window?.imageMat?.NumberOfChannels == 1);
 
@@ -573,13 +854,14 @@ namespace Image_Manipulation_App
             return imageWindow;
         }
 
-        private void UpdateSelectedImage(ImageWindow imageWindow, Mat imageMat, string fileName, string shortFileName)
+        private void UpdateSelectedImage(ImageWindow imageWindow, Mat imageMat, string fileName, string shortFileName, bool isProfileLine)
         {
             this.selectedImageMat = imageMat;
             this.selectedImageFileName = fileName;
             this.selectedImageShortFileName = shortFileName;
             this.activeImageWindow = imageWindow;
             this.labelSelectedImage.Content = $"Selected Image: {activeImageWindow?.Title}";
+            this.profileLineMenuItem.Header = isProfileLine ? "Profile Line (On)" : "Profile Line (Off)";
         }
 
         private void ClearSelectedImageMat()
