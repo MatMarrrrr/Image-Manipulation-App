@@ -894,5 +894,71 @@ namespace Image_Manipulation_App
                 }
             }
         }
+
+        private void ColorThreshold_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 3)
+            {
+                MessageBox.Show("Color thresholding can only be applied for color images.");
+                return;
+            }
+
+            ColorThresholdWindow thresholdWindow = new ColorThresholdWindow(this.selectedImageMat);
+            if (thresholdWindow.ShowDialog() == true)
+            {
+                string title = $"Binary {this.selectedImageFileName}";
+                DisplayImageInNewWindow(thresholdWindow.binaryImage, title, null, true);
+            }
+        }
+
+        private void CountBinaryMap_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Counting objects can only be done on a binary map");
+                return;
+            }
+
+            bool isBinary = true;
+
+            IntPtr dataPtr = this.selectedImageMat.DataPointer;
+            int width = this.selectedImageMat.Width;
+            int height = this.selectedImageMat.Height;
+            int step = this.selectedImageMat.Step;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int offset = (y * step) + x;
+                    byte pixelValue = Marshal.ReadByte(dataPtr, offset);
+                    if (pixelValue != 0 && pixelValue != 255)
+                    {
+                        isBinary = false;
+                        break;
+                    }
+                }
+            }
+
+            if (!isBinary)
+            {
+                MessageBox.Show("Counting objects can only be done on a binary map");
+                return;
+            }
+
+            MessageBox.Show($"Object count on binary map: {ImageOperations.CountObjectsUsingContours(this.selectedImageMat)}");
+        }
     }
 }

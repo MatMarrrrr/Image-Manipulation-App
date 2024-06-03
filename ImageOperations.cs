@@ -739,5 +739,16 @@ namespace Image_Manipulation_App
 
             return result;
         }
+
+
+        public static int CountObjectsUsingContours(Mat image)
+        {
+            Mat labels = new Mat();
+            Mat stats = new Mat();
+            Mat centroids = new Mat();
+            int nLabels = CvInvoke.ConnectedComponentsWithStats(image, labels, stats, centroids);
+
+            return nLabels - 1;
+        }
     }
 }
