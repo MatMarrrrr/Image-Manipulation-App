@@ -24,18 +24,18 @@ namespace Image_Manipulation_App
     /// </summary>
     public partial class ColorThresholdWindow : Window
     {
-        private Mat baseImage = new Mat(); // Oryginalny obraz
         public Mat binaryImage = new Mat();
-        private Mat redChannel = new Mat();  // Kanał czerwony obrazu
-        private Mat greenChannel = new Mat(); // Kanał zielony obrazu
-        private Mat blueChannel = new Mat();  // Kanał niebieski obrazu
 
-        private Mat redThresholdChannel = new Mat();  // Kanał czerwony obrazu
-        private Mat greenThresholdChannel = new Mat(); // Kanał zielony obrazu
-        private Mat blueThresholdChannel = new Mat();  // Kanał niebieski obrazu
+        private Mat redChannel = new Mat();
+        private Mat greenChannel = new Mat();
+        private Mat blueChannel = new Mat();
 
-        private Mat originalImage = new Mat(); // Przechowywanie oryginalnego obrazu
-        private Mat thresholdedImage = new Mat(); // Przechowywanie progowanego obrazu
+        private Mat redThresholdChannel = new Mat();
+        private Mat greenThresholdChannel = new Mat();
+        private Mat blueThresholdChannel = new Mat();
+
+        private Mat originalImage = new Mat();
+        private Mat thresholdedImage = new Mat();
 
         /// <summary>
         /// Constructor to initialize the ColorThresholdWindow.
@@ -43,28 +43,25 @@ namespace Image_Manipulation_App
         /// <param name="image">The base image to be processed.</param>
         public ColorThresholdWindow(Mat image)
         {
-            InitializeComponent(); // Initialize the WPF components
+            InitializeComponent();
 
-            this.baseImage = image; // Set the base image
-            this.originalImage = image.Clone(); // Zapisz oryginalny obraz
-            this.processedImage.Source = BitmapSourceConverter.ToBitmapSource(image); // Display the base image in the UI
+            this.originalImage = image.Clone();
+            this.processedImage.Source = BitmapSourceConverter.ToBitmapSource(image);
             
-            List<Mat> channels = SplitChannels(baseImage); // Split the image into color channels
-            
-            blueChannel = channels[0]; // Assign blue channel
-            greenChannel = channels[1]; // Assign green channel
-            redChannel = channels[2]; // Assign red channel
+            List<Mat> channels = SplitChannels(image);
 
-            blueThresholdChannel = channels[0]; // Assign blue channel
-            greenThresholdChannel = channels[1]; // Assign green channel
-            redThresholdChannel = channels[2]; // Assign red channel
+            blueChannel = channels[0];
+            greenChannel = channels[1];
+            redChannel = channels[2];
 
-            // Draw histograms for each color channel
+            blueThresholdChannel = channels[0];
+            greenThresholdChannel = channels[1];
+            redThresholdChannel = channels[2];
+
             DrawHistogram(redChannel, redHistogramImage);
             DrawHistogram(greenChannel, greenHistogramImage);
             DrawHistogram(blueChannel, blueHistogramImage);
 
-            // Update threshold lines once the window is loaded
             this.Loaded += (s, e) =>
             {
                 UpdateThresholdLines();
@@ -80,20 +77,20 @@ namespace Image_Manipulation_App
         /// <returns>A list containing the three color channels (BGR).</returns>
         public List<Mat> SplitChannels(Mat image)
         {
-            List<Mat> channels = new List<Mat>(); // List to hold the three color channels
+            List<Mat> channels = new List<Mat>();
 
-            VectorOfMat vector = new VectorOfMat(); // Vector to hold the split channels
-            CvInvoke.Split(image, vector); // Split the image into separate channels
+            VectorOfMat vector = new VectorOfMat();
+            CvInvoke.Split(image, vector);
 
             // Iterate through each channel and clone it
             for (int i = 0; i < vector.Size; i++)
             {
-                Mat channel = vector[i]; // Get the current channel
-                Mat grayChannel = channel.Clone(); // Clone the channel to avoid modification
-                channels.Add(grayChannel); // Add the cloned channel to the list
+                Mat channel = vector[i];
+                Mat grayChannel = channel.Clone();
+                channels.Add(grayChannel);
             }
 
-            return channels; // Return the list of channels
+            return channels;
         }
 
         /// <summary>
@@ -147,47 +144,40 @@ namespace Image_Manipulation_App
         /// <returns>An array representing the histogram data.</returns>
         public int[] CalculateHistogram(Mat imageMat)
         {
-            int[] histogramData = new int[256]; // Array to hold histogram data
+            int[] histogramData = new int[256];
 
-            IntPtr dataPtr = imageMat.DataPointer; // Pointer to the image data
-            int width = imageMat.Width; // Width of the image
-            int height = imageMat.Height; // Height of the image
-            int step = imageMat.Step; // Step size (number of bytes per row)
+            IntPtr dataPtr = imageMat.DataPointer;
+            int width = imageMat.Width;
+            int height = imageMat.Height;
+            int step = imageMat.Step;
 
-            // Iterate through each pixel in the image
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    int offset = y * step + x; // Calculate the offset of the current pixel
-                    byte intensity = Marshal.ReadByte(dataPtr + offset); // Read the pixel intensity
-                    histogramData[intensity]++; // Increment the corresponding histogram bin
+                    int offset = y * step + x;
+                    byte intensity = Marshal.ReadByte(dataPtr + offset);
+                    histogramData[intensity]++;
                 }
             }
 
-            return histogramData; // Return the histogram data
+            return histogramData;
         }
 
         /// <summary>
-        /// Applies a threshold to the given image.
+        /// Applies thresholding to an image based on the given lower and upper bounds.
         /// </summary>
-        /// <param name="image">The input image to threshold.</param>
-        /// <param name="left">The lower threshold value.</param>
-        /// <param name="right">The upper threshold value.</param>
-        /// <returns>A Mat object representing the thresholded image.</returns>
-        private Mat ApplyThreshold(Mat channel, int threshold1, int threshold2)
+        /// <param name="image">The image to be thresholded.</param>
+        /// <param name="lower">The lower bound of the threshold.</param>
+        /// <param name="upper">The upper bound of the threshold.</param>
+        /// <returns>The thresholded image.</returns>
+        private Mat ThresholdImage(Mat image, int lower, int upper)
         {
-            Mat thresholded = new Mat();
-            CvInvoke.InRange(channel, new ScalarArray(threshold1), new ScalarArray(threshold2), thresholded);
-            return thresholded;
-        }
-
-        private Mat ThresholdImage(Mat image, int left, int right)
-        {
-            IntPtr dataPtr = image.DataPointer;
-            int width = image.Width;
-            int height = image.Height;
-            int step = image.Step;
+            Mat tresholdedImage = image.Clone();
+            IntPtr dataPtr = tresholdedImage.DataPointer;
+            int width = tresholdedImage.Width;
+            int height = tresholdedImage.Height;
+            int step = tresholdedImage.Step;
 
             for (int y = 0; y < height; y++)
             {
@@ -195,45 +185,27 @@ namespace Image_Manipulation_App
                 {
                     int offset = (y * step) + x;
                     byte pixelValue = Marshal.ReadByte(dataPtr, offset);
-                    byte thresholdedPixelValue = (pixelValue >= left && pixelValue <= right) ? (byte)255 : (byte)0;
+                    byte thresholdedPixelValue = (pixelValue >= lower && pixelValue <= upper) ? (byte)255 : (byte)0;
                     Marshal.WriteByte(dataPtr, offset, thresholdedPixelValue);
                 }
             }
 
-            return image;
+            return tresholdedImage;
         }
 
-        public Mat CombineChannelsToBinary(Mat image)
+        /// <summary>
+        /// Combines the thresholded red, green, and blue channels into a binary map.
+        /// </summary>
+        /// <param name="redChannel">The red channel.</param>
+        /// <param name="greenChannel">The green channel.</param>
+        /// <param name="blueChannel">The blue channel.</param>
+        /// <returns>The combined binary map.</returns>
+        public Mat CombineChannelsToBinaryMap(Mat redChannel, Mat greenChannel, Mat blueChannel)
         {
-            Mat[] channels = image.Split();
-
-            Mat binaryImage = new Mat(image.Rows, image.Cols, DepthType.Cv8U, 1);
-
-            IntPtr dataPtrR = channels[2].DataPointer; // Red channel
-            IntPtr dataPtrG = channels[1].DataPointer; // Green channel
-            IntPtr dataPtrB = channels[0].DataPointer; // Blue channel
-            IntPtr dataPtrBinary = binaryImage.DataPointer;
-
-            int step = binaryImage.Step;
-
-            for (int y = 0; y < image.Rows; y++)
-            {
-                for (int x = 0; x < image.Cols; x++)
-                {
-                    int offset = y * step + x;
-
-                    // Get pixel values from each channel
-                    byte pixelR = Marshal.ReadByte(dataPtrR, offset);
-                    byte pixelG = Marshal.ReadByte(dataPtrG, offset);
-                    byte pixelB = Marshal.ReadByte(dataPtrB, offset);
-
-                    // Set binary value if the red channel is 255 and the other channels are 0 (considering only red objects)
-                    byte binaryValue = (pixelR == 255 || pixelG == 255 || pixelB == 255) ? (byte)255 : (byte)0;
-                    Marshal.WriteByte(dataPtrBinary, offset, binaryValue);
-                }
-            }
-
-            return binaryImage;
+            Mat binaryMap = new Mat();
+            CvInvoke.BitwiseAnd(redChannel, greenChannel, binaryMap);
+            CvInvoke.BitwiseAnd(binaryMap, blueChannel, binaryMap);
+            return binaryMap;
         }
 
         /// <summary>
@@ -244,12 +216,11 @@ namespace Image_Manipulation_App
         /// <param name="type">The type of comparison ('more' or 'less').</param>
         private void UpdateThresholdSliders(Slider threshold1, Slider threshold2, String type)
         {
-            // Ensure threshold1 is always less than or equal to threshold2
             if (type == "more" && threshold1.Value > threshold2.Value)
             {
                 threshold2.Value = threshold1.Value;
             }
-            // Ensure threshold2 is always greater than or equal to threshold1
+
             if (type == "less" && threshold2.Value < threshold1.Value)
             {
                 threshold1.Value = threshold2.Value;
@@ -261,18 +232,15 @@ namespace Image_Manipulation_App
         /// </summary>
         private void UpdateThresholdLines()
         {
-            double canvasWidth = 380.0; // Width of the canvas containing the threshold lines
-            double marginMultiplier = canvasWidth / 255.0; // Calculate the margin multiplier
+            double canvasWidth = 380.0;
+            double marginMultiplier = canvasWidth / 255.0;
 
-            // Update red threshold lines
             Canvas.SetLeft(RedLine1, RedThreshold1.Value * marginMultiplier);
             Canvas.SetLeft(RedLine2, RedThreshold2.Value * marginMultiplier);
 
-            // Update green threshold lines
             Canvas.SetLeft(GreenLine1, GreenThreshold1.Value * marginMultiplier);
             Canvas.SetLeft(GreenLine2, GreenThreshold2.Value * marginMultiplier);
 
-            // Update blue threshold lines
             Canvas.SetLeft(BlueLine1, BlueThreshold1.Value * marginMultiplier);
             Canvas.SetLeft(BlueLine2, BlueThreshold2.Value * marginMultiplier);
         }
@@ -282,29 +250,24 @@ namespace Image_Manipulation_App
         /// </summary>
         private void UpdateThresholdLabels()
         {
-            // Update red threshold text
             this.RedThresholdText.Text = $"Choosen range: {RedThreshold1.Value} - {RedThreshold2.Value}";
-            // Update green threshold text
             this.GreenThresholdText.Text = $"Choosen range: {GreenThreshold1.Value} - {GreenThreshold2.Value}";
-            // Update blue threshold text
             this.BlueThresholdText.Text = $"Choosen range: {BlueThreshold1.Value} - {BlueThreshold2.Value}";
         }
 
+        /// <summary>
+        /// Updates the threshold preview by applying the thresholds to the color channels
+        /// and combining them into a binary map.
+        /// </summary>
         private void UpdateThresholdPreview()
         {
-            // Apply thresholds to each channel
-            this.redThresholdChannel = ApplyThreshold(this.redChannel, (int)RedThreshold1.Value, (int)RedThreshold2.Value);
-            this.greenThresholdChannel = ApplyThreshold(this.greenChannel, (int)GreenThreshold1.Value, (int)GreenThreshold2.Value);
-            this.blueThresholdChannel = ApplyThreshold(this.blueChannel, (int)BlueThreshold1.Value, (int)BlueThreshold2.Value);
+            this.redThresholdChannel = ThresholdImage(this.redChannel, (int)RedThreshold1.Value, (int)RedThreshold2.Value);
+            this.greenThresholdChannel = ThresholdImage(this.greenChannel, (int)GreenThreshold1.Value, (int)GreenThreshold2.Value);
+            this.blueThresholdChannel = ThresholdImage(this.blueChannel, (int)BlueThreshold1.Value, (int)BlueThreshold2.Value);
 
-            // Perform logical AND operation on the thresholded channels
-            Mat binaryMap = new Mat();
-            CvInvoke.BitwiseAnd(this.redThresholdChannel, this.greenThresholdChannel, binaryMap);
-            CvInvoke.BitwiseAnd(binaryMap, this.blueThresholdChannel, binaryMap);
+            Mat binaryMap = CombineChannelsToBinaryMap(this.redThresholdChannel, this.greenThresholdChannel, this.blueThresholdChannel);
 
-            // Update the processed image in the UI
             this.processedImage.Source = BitmapSourceConverter.ToBitmapSource(binaryMap);
-
             this.thresholdedImage = binaryMap;
         }
 
@@ -317,22 +280,21 @@ namespace Image_Manipulation_App
         /// </summary>
         private void RedThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            // Ensure the window is fully initialized before handling the event
+
             if (!this.IsInitialized)
             {
                 return;
             }
 
-            var slider = sender as Slider; // Cast the sender to a Slider
+            var slider = sender as Slider;
             if (slider == null) return;
 
-            string compareType = (string)slider.Tag; // Get the comparison type from the slider tag
+            string compareType = (string)slider.Tag;
 
-            UpdateThresholdSliders(RedThreshold1, RedThreshold2, compareType); // Update the red threshold sliders
-            UpdateThresholdLines(); // Update the positions of the threshold lines
-            UpdateThresholdLabels(); // Update the threshold text labels
+            UpdateThresholdSliders(RedThreshold1, RedThreshold2, compareType);
+            UpdateThresholdLines();
+            UpdateThresholdLabels();
 
-            // Update the threshold preview for the red channel
             UpdateThresholdPreview();
         }
 
@@ -341,22 +303,20 @@ namespace Image_Manipulation_App
         /// </summary>
         private void GreenThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            // Ensure the window is fully initialized before handling the event
             if (!this.IsInitialized)
             {
                 return;
             }
 
-            var slider = sender as Slider; // Cast the sender to a Slider
+            var slider = sender as Slider;
             if (slider == null) return;
 
-            string compareType = (string)slider.Tag; // Get the comparison type from the slider tag
+            string compareType = (string)slider.Tag;
 
-            UpdateThresholdSliders(GreenThreshold1, GreenThreshold2, compareType); // Update the green threshold sliders
-            UpdateThresholdLines(); // Update the positions of the threshold lines
-            UpdateThresholdLabels(); // Update the threshold text labels
+            UpdateThresholdSliders(GreenThreshold1, GreenThreshold2, compareType);
+            UpdateThresholdLines();
+            UpdateThresholdLabels();
 
-            // Update the threshold preview for the green channel
             UpdateThresholdPreview();
         }
 
@@ -365,27 +325,28 @@ namespace Image_Manipulation_App
         /// </summary>
         private void BlueThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            // Ensure the window is fully initialized before handling the event
             if (!this.IsInitialized)
             {
                 return;
             }
 
-            var slider = sender as Slider; // Cast the sender to a Slider
+            var slider = sender as Slider;
             if (slider == null) return;
 
-            string compareType = (string)slider.Tag; // Get the comparison type from the slider tag
+            string compareType = (string)slider.Tag;
 
-            UpdateThresholdSliders(BlueThreshold1, BlueThreshold2, compareType); // Update the blue threshold sliders
-            UpdateThresholdLines(); // Update the positions of the threshold lines
-            UpdateThresholdLabels(); // Update the threshold text labels
+            UpdateThresholdSliders(BlueThreshold1, BlueThreshold2, compareType);
+            UpdateThresholdLines();
+            UpdateThresholdLabels();
 
-            // Update the threshold preview for the blue channel
             UpdateThresholdPreview();
         }
 
         #endregion
 
+        /// <summary>
+        /// Event handler for the Apply button click event.
+        /// </summary>
         private void ApplyColorThreshold_Click(object sender, RoutedEventArgs e)
         {
             this.binaryImage = this.thresholdedImage;
