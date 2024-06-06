@@ -917,7 +917,7 @@ namespace Image_Manipulation_App
             }
         }
 
-        private void CountBinaryMap_Click(object sender, RoutedEventArgs e)
+        private void CountWhiteBinaryMap_Click(object sender, RoutedEventArgs e)
         {
             if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
@@ -959,6 +959,53 @@ namespace Image_Manipulation_App
             }
 
             MessageBox.Show($"Object count on binary map: {ImageOperations.CountObjectsUsingContours(this.selectedImageMat)}");
+        }
+
+        private void CountBlackBinaryMap_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 1)
+            {
+                MessageBox.Show("Counting objects can only be done on a binary map");
+                return;
+            }
+
+            bool isBinary = true;
+
+            IntPtr dataPtr = this.selectedImageMat.DataPointer;
+            int width = this.selectedImageMat.Width;
+            int height = this.selectedImageMat.Height;
+            int step = this.selectedImageMat.Step;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int offset = (y * step) + x;
+                    byte pixelValue = Marshal.ReadByte(dataPtr, offset);
+                    if (pixelValue != 0 && pixelValue != 255)
+                    {
+                        isBinary = false;
+                        break;
+                    }
+                }
+            }
+
+            if (!isBinary)
+            {
+                MessageBox.Show("Counting objects can only be done on a binary map");
+                return;
+            }
+
+            Mat invertedImage = new Mat(this.selectedImageMat.Size, DepthType.Cv8U, 1);
+            CvInvoke.BitwiseNot(this.selectedImageMat, invertedImage);
+
+            MessageBox.Show($"Object count on binary map: {ImageOperations.CountObjectsUsingContours(invertedImage)}");
         }
     }
 }

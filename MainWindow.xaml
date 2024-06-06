@@ -78,7 +78,8 @@
             </MenuItem>
             <MenuItem Header="Project">
                 <MenuItem Header="Color image threshold" Click="ColorThreshold_Click"/>
-                <MenuItem Header="Count object from binary map" Click="CountBinaryMap_Click"/>
+                <MenuItem Header="Count white objects from binary map" Click="CountWhiteBinaryMap_Click"/>
+				<MenuItem Header="Count black objects from binary map" Click="CountBlackBinaryMap_Click"/>
             </MenuItem>
             <MenuItem Header="Save as" Padding="3">
                 <MenuItem Header="Without compression" Padding="3" Click="SaveAs_Click"/>

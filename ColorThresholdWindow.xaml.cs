@@ -37,6 +37,8 @@ namespace Image_Manipulation_App
         private Mat originalImage = new Mat();
         private Mat thresholdedImage = new Mat();
 
+        private bool isWhiteObjects = true;
+
         /// <summary>
         /// Constructor to initialize the ColorThresholdWindow.
         /// </summary>
@@ -173,11 +175,12 @@ namespace Image_Manipulation_App
         /// <returns>The thresholded image.</returns>
         private Mat ThresholdImage(Mat image, int lower, int upper)
         {
-            Mat tresholdedImage = image.Clone();
-            IntPtr dataPtr = tresholdedImage.DataPointer;
-            int width = tresholdedImage.Width;
-            int height = tresholdedImage.Height;
-            int step = tresholdedImage.Step;
+            Mat thresholdedImage = new Mat(image.Size, DepthType.Cv8U, 1);
+            IntPtr dataPtr = image.DataPointer;
+            IntPtr outputPtr = thresholdedImage.DataPointer;
+            int width = image.Width;
+            int height = image.Height;
+            int step = image.Step;
 
             for (int y = 0; y < height; y++)
             {
@@ -186,11 +189,11 @@ namespace Image_Manipulation_App
                     int offset = (y * step) + x;
                     byte pixelValue = Marshal.ReadByte(dataPtr, offset);
                     byte thresholdedPixelValue = (pixelValue >= lower && pixelValue <= upper) ? (byte)255 : (byte)0;
-                    Marshal.WriteByte(dataPtr, offset, thresholdedPixelValue);
+                    Marshal.WriteByte(outputPtr, offset, thresholdedPixelValue);
                 }
             }
 
-            return tresholdedImage;
+            return thresholdedImage;
         }
 
         /// <summary>
@@ -206,6 +209,18 @@ namespace Image_Manipulation_App
             CvInvoke.BitwiseAnd(redChannel, greenChannel, binaryMap);
             CvInvoke.BitwiseAnd(binaryMap, blueChannel, binaryMap);
             return binaryMap;
+        }
+
+        /// <summary>
+        /// Inverts a binary image (255 becomes 0 and 0 becomes 255).
+        /// </summary>
+        /// <param name="binaryImage">The binary image to be inverted.</param>
+        /// <returns>The inverted binary image.</returns>
+        private Mat InvertBinaryImage(Mat binaryImage)
+        {
+            Mat invertedImage = new Mat(binaryImage.Size, binaryImage.Depth, binaryImage.NumberOfChannels);
+            CvInvoke.BitwiseNot(binaryImage, invertedImage);
+            return invertedImage;
         }
 
         /// <summary>
@@ -267,6 +282,11 @@ namespace Image_Manipulation_App
 
             Mat binaryMap = CombineChannelsToBinaryMap(this.redThresholdChannel, this.greenThresholdChannel, this.blueThresholdChannel);
 
+            if (!isWhiteObjects)
+            {
+                binaryMap = InvertBinaryImage(binaryMap);
+            }
+
             this.processedImage.Source = BitmapSourceConverter.ToBitmapSource(binaryMap);
             this.thresholdedImage = binaryMap;
         }
@@ -274,6 +294,21 @@ namespace Image_Manipulation_App
         #endregion
 
         #region Event handlers
+
+        /// <summary>
+        /// Event handler for when the background selection changes.
+        /// </summary>
+        private void BackgroundObjectsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!this.IsInitialized)
+            {
+                return;
+            }
+
+            isWhiteObjects = (BackgroundObjectsComboBox.SelectedIndex == 0);
+
+            UpdateThresholdPreview();
+        }
 
         /// <summary>
         /// Event handler for when the value of a red threshold slider changes.

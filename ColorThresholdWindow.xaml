@@ -55,7 +55,13 @@
                 <Slider x:Name="BlueThreshold2" Minimum="0" Maximum="255" TickFrequency="1" Value="255" IsSnapToTickEnabled="True" Width="380" ValueChanged="BlueThreshold_ValueChanged" Tag="less"/>
             </StackPanel>
 
-            <Button Content="Apply" Margin="0,20,0,0" HorizontalAlignment="Center" Click="ApplyColorThreshold_Click"/>
+            <TextBlock Text="Background - Objects" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <ComboBox x:Name="BackgroundObjectsComboBox" SelectedIndex="0" HorizontalAlignment="Center" Width="150" SelectionChanged="BackgroundObjectsComboBox_SelectionChanged">
+                <ComboBoxItem Content="White - Black"/>
+                <ComboBoxItem Content="Black - White"/>
+            </ComboBox>
+
+            <Button Content="Apply" Margin="0,20,0,0" Padding="20 5" HorizontalAlignment="Center" Click="ApplyColorThreshold_Click"/>
         </StackPanel>
 
         <Grid Grid.Column="1">
