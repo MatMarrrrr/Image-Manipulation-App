@@ -14,51 +14,51 @@
 
         <StackPanel Grid.Column="0" VerticalAlignment="Top">
             <StackPanel Orientation="Vertical" Margin="0,0,0,20" Width="380">
-                <TextBlock Text="Red layer" FontWeight="Bold"/>
+                <TextBlock x:Name="firstChannelTextBlock" Text="Red layer" FontWeight="Bold"/>
                 <Grid>
                     <Canvas x:Name="RedCanvas" Width="380" Height="80">
-                        <Image x:Name="redHistogramImage" Stretch="Fill" Width="380" Height="80"/>
+                        <Image x:Name="firstChannelHistogramImage" Stretch="Fill" Width="380" Height="80"/>
                         <Line x:Name="RedLine1" Stroke="Blue" StrokeThickness="2" Y1="0" Y2="80"/>
                         <Line x:Name="RedLine2" Stroke="Blue" StrokeThickness="2" Y1="0" Y2="80"/>
                     </Canvas>
                 </Grid>
                 <TextBlock x:Name="RedThresholdText" Text="Choosen range: 0 - 255" HorizontalAlignment="Center"/>
-                <Slider x:Name="RedThreshold1" Minimum="0" Maximum="255" TickFrequency="1" Value="0" IsSnapToTickEnabled="True" Width="380" ValueChanged="RedThreshold_ValueChanged" Tag="more"/>
-                <Slider x:Name="RedThreshold2" Minimum="0" Maximum="255" TickFrequency="1" Value="255" IsSnapToTickEnabled="True" Width="380" ValueChanged="RedThreshold_ValueChanged" Tag="less"/>
+                <Slider x:Name="FirstChannelThreshold1" Minimum="0" Maximum="255" TickFrequency="1" Value="0" IsSnapToTickEnabled="True" Width="380" ValueChanged="FirstChannelThreshold_ValueChanged" Tag="more"/>
+                <Slider x:Name="FirstChannelThreshold2" Minimum="0" Maximum="255" TickFrequency="1" Value="255" IsSnapToTickEnabled="True" Width="380" ValueChanged="FirstChannelThreshold_ValueChanged" Tag="less"/>
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Margin="0,0,0,20" Width="380">
-                <TextBlock Text="Green layer" FontWeight="Bold"/>
+                <TextBlock x:Name="secondChannelTextBlock" Text="Green layer" FontWeight="Bold"/>
                 <Grid>
                     <Canvas x:Name="GreenCanvas" Width="380" Height="80">
-                        <Image x:Name="greenHistogramImage" Stretch="Fill" Width="380" Height="80"/>
+                        <Image x:Name="secondChannelHistogramImage" Stretch="Fill" Width="380" Height="80"/>
                         <Line x:Name="GreenLine1" Stroke="Blue" StrokeThickness="2" Y1="0" Y2="80"/>
                         <Line x:Name="GreenLine2" Stroke="Blue" StrokeThickness="2" Y1="0" Y2="80"/>
                     </Canvas>
                 </Grid>
                 <TextBlock x:Name="GreenThresholdText" Text="Choosen range: 0 - 255" HorizontalAlignment="Center"/>
-                <Slider x:Name="GreenThreshold1" Minimum="0" Maximum="255" TickFrequency="1" Value="0" IsSnapToTickEnabled="True" Width="380" ValueChanged="GreenThreshold_ValueChanged" Tag="more"/>
-                <Slider x:Name="GreenThreshold2" Minimum="0" Maximum="255" TickFrequency="1" Value="255" IsSnapToTickEnabled="True" Width="380" ValueChanged="GreenThreshold_ValueChanged" Tag="less"/>
+                <Slider x:Name="SecondChannelThreshold1" Minimum="0" Maximum="255" TickFrequency="1" Value="0" IsSnapToTickEnabled="True" Width="380" ValueChanged="SecondThreshold_ValueChanged" Tag="more"/>
+                <Slider x:Name="SecondChannelThreshold2" Minimum="0" Maximum="255" TickFrequency="1" Value="255" IsSnapToTickEnabled="True" Width="380" ValueChanged="SecondThreshold_ValueChanged" Tag="less"/>
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Margin="0,0,0,20" Width="380">
-                <TextBlock Text="Blue layer" FontWeight="Bold"/>
+                <TextBlock x:Name="thirdChannelTextBlock" Text="Blue layer" FontWeight="Bold"/>
                 <Grid>
                     <Canvas x:Name="BlueCanvas" Width="380" Height="80">
-                        <Image x:Name="blueHistogramImage" Stretch="Fill" Width="380" Height="80"/>
+                        <Image x:Name="thirdChannelHistogramImage" Stretch="Fill" Width="380" Height="80"/>
                         <Line x:Name="BlueLine1" Stroke="Blue" StrokeThickness="2" Y1="0" Y2="80"/>
                         <Line x:Name="BlueLine2" Stroke="Blue" StrokeThickness="2" Y1="0" Y2="80"/>
                     </Canvas>
                 </Grid>
                 <TextBlock x:Name="BlueThresholdText" Text="Choosen range: 0 - 255" HorizontalAlignment="Center"/>
-                <Slider x:Name="BlueThreshold1" Minimum="0" Maximum="255" TickFrequency="1" Value="0" IsSnapToTickEnabled="True" Width="380" ValueChanged="BlueThreshold_ValueChanged" Tag="more"/>
-                <Slider x:Name="BlueThreshold2" Minimum="0" Maximum="255" TickFrequency="1" Value="255" IsSnapToTickEnabled="True" Width="380" ValueChanged="BlueThreshold_ValueChanged" Tag="less"/>
+                <Slider x:Name="ThirdChannelThreshold1" Minimum="0" Maximum="255" TickFrequency="1" Value="0" IsSnapToTickEnabled="True" Width="380" ValueChanged="ThirdThreshold_ValueChanged" Tag="more"/>
+                <Slider x:Name="ThirdChannelThreshold2" Minimum="0" Maximum="255" TickFrequency="1" Value="255" IsSnapToTickEnabled="True" Width="380" ValueChanged="ThirdThreshold_ValueChanged" Tag="less"/>
             </StackPanel>
 
             <TextBlock Text="Background - Objects" FontWeight="Bold" HorizontalAlignment="Center"/>
             <ComboBox x:Name="BackgroundObjectsComboBox" SelectedIndex="0" HorizontalAlignment="Center" Width="150" SelectionChanged="BackgroundObjectsComboBox_SelectionChanged">
-                <ComboBoxItem Content="White - Black"/>
                 <ComboBoxItem Content="Black - White"/>
+                <ComboBoxItem Content="White - Black"/>
             </ComboBox>
 
             <Button Content="Apply" Margin="0,20,0,0" Padding="20 5" HorizontalAlignment="Center" Click="ApplyColorThreshold_Click"/>

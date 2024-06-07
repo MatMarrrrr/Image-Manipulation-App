@@ -77,7 +77,9 @@
                 <MenuItem Header="GrabCut" Click="GrabCut_Click"/>
             </MenuItem>
             <MenuItem Header="Project">
-                <MenuItem Header="Color image threshold" Click="ColorThreshold_Click"/>
+                <MenuItem Header="RGB color image threshold" Click="RgbColorThreshold_Click"/>
+                <MenuItem Header="HSV color image threshold" Click="HsvColorThreshold_Click"/>
+                <MenuItem Header="Lab color image threshold" Click="LabColorThreshold_Click"/>
                 <MenuItem Header="Count white objects from binary map" Click="CountWhiteBinaryMap_Click"/>
 				<MenuItem Header="Count black objects from binary map" Click="CountBlackBinaryMap_Click"/>
             </MenuItem>

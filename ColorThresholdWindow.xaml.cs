@@ -26,43 +26,66 @@ namespace Image_Manipulation_App
     {
         public Mat binaryImage = new Mat();
 
-        private Mat redChannel = new Mat();
-        private Mat greenChannel = new Mat();
-        private Mat blueChannel = new Mat();
+        private Mat firstChannel = new Mat();
+        private Mat secondChannel = new Mat();
+        private Mat thirdChannel = new Mat();
 
-        private Mat redThresholdChannel = new Mat();
-        private Mat greenThresholdChannel = new Mat();
-        private Mat blueThresholdChannel = new Mat();
+        private Mat firstThresholdChannel = new Mat();
+        private Mat secondThresholdChannel = new Mat();
+        private Mat thirdThresholdChannel = new Mat();
 
         private Mat originalImage = new Mat();
         private Mat thresholdedImage = new Mat();
 
         private bool isWhiteObjects = true;
+        private string colorSpace = "rgb";
 
         /// <summary>
         /// Constructor to initialize the ColorThresholdWindow.
         /// </summary>
         /// <param name="image">The base image to be processed.</param>
-        public ColorThresholdWindow(Mat image)
+        public ColorThresholdWindow(Mat image, string type = "rgb")
         {
             InitializeComponent();
 
             this.originalImage = image.Clone();
-            this.processedImage.Source = BitmapSourceConverter.ToBitmapSource(image);
-            
-            List<Mat> channels = SplitChannels(image);
+            this.colorSpace = type.ToLower();
 
-            blueChannel = channels[0];
-            greenChannel = channels[1];
-            redChannel = channels[2];
+            Mat convertedImage = new Mat();
+            if (type.ToLower() == "hsv")
+            {
+                this.firstChannelTextBlock.Text = "Hue channel";
+                this.secondChannelTextBlock.Text = "Saturation channel";
+                this.thirdChannelTextBlock.Text = "Value channel";
+                CvInvoke.CvtColor(image, convertedImage, Emgu.CV.CvEnum.ColorConversion.Bgr2Hsv);
+            }
+            else if (type.ToLower() == "lab")
+            {
+                this.firstChannelTextBlock.Text = "L(Lightness) channel";
+                this.secondChannelTextBlock.Text = "a(Green-Red Component) channel";
+                this.thirdChannelTextBlock.Text = "b(Blue-Yellow Component) channel";
+                CvInvoke.CvtColor(image, convertedImage, Emgu.CV.CvEnum.ColorConversion.Bgr2Lab);
+            }
+            else
+            {
+                convertedImage = image.Clone();
+            }
 
-            blueThresholdChannel = channels[0];
-            greenThresholdChannel = channels[1];
-            redThresholdChannel = channels[2];
+            this.processedImage.Source = BitmapSourceConverter.ToBitmapSource(convertedImage);
 
-            DrawHistogram(redChannel, redHistogramImage);
-            DrawHistogram(greenChannel, greenHistogramImage);
-            DrawHistogram(blueChannel, blueHistogramImage);
+            List<Mat> channels = SplitChannels(convertedImage);
+
+            thirdChannel = channels[0];
+            secondChannel = channels[1];
+            firstChannel = channels[2];
+
+            thirdThresholdChannel = channels[0];
+            secondThresholdChannel = channels[1];
+            firstThresholdChannel = channels[2];
+
+            DrawHistogram(firstChannel, firstChannelHistogramImage);
+            DrawHistogram(secondChannel, secondChannelHistogramImage);
+            DrawHistogram(thirdChannel, thirdChannelHistogramImage);
 
             this.Loaded += (s, e) =>
             {
@@ -84,7 +107,6 @@ namespace Image_Manipulation_App
             VectorOfMat vector = new VectorOfMat();
             CvInvoke.Split(image, vector);
 
-            // Iterate through each channel and clone it
             for (int i = 0; i < vector.Size; i++)
             {
                 Mat channel = vector[i];
@@ -93,24 +115,6 @@ namespace Image_Manipulation_App
             }
 
             return channels;
-        }
-
-        /// <summary>
-        /// Combines three separate Mat objects (red, green, blue) into a single color image.
-        /// </summary>
-        /// <param name="redChannel">The red channel Mat.</param>
-        /// <param name="greenChannel">The green channel Mat.</param>
-        /// <param name="blueChannel">The blue channel Mat.</param>
-        /// <returns>A single Mat object representing the combined color image.</returns>
-        public Mat CombineChannels(Mat redChannel, Mat greenChannel, Mat blueChannel)
-        {
-            VectorOfMat channels = new VectorOfMat(blueChannel, greenChannel, redChannel);
-
-            Mat colorImage = new Mat();
-
-            CvInvoke.Merge(channels, colorImage);
-
-            return colorImage;
         }
 
         /// <summary>
@@ -172,9 +176,14 @@ namespace Image_Manipulation_App
         /// <param name="image">The image to be thresholded.</param>
         /// <param name="lower">The lower bound of the threshold.</param>
         /// <param name="upper">The upper bound of the threshold.</param>
+        /// <param name="minRange">The minimum range of the channel.</param>
+        /// <param name="maxRange">The maximum range of the channel.</param>
         /// <returns>The thresholded image.</returns>
-        private Mat ThresholdImage(Mat image, int lower, int upper)
+        private Mat ThresholdImage(Mat image, int lower, int upper, int minRange, int maxRange)
         {
+            int adjustedLower = (int)(((double)(lower - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
+            int adjustedUpper = (int)(((double)(upper - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
+
             Mat thresholdedImage = new Mat(image.Size, DepthType.Cv8U, 1);
             IntPtr dataPtr = image.DataPointer;
             IntPtr outputPtr = thresholdedImage.DataPointer;
@@ -188,7 +197,7 @@ namespace Image_Manipulation_App
                 {
                     int offset = (y * step) + x;
                     byte pixelValue = Marshal.ReadByte(dataPtr, offset);
-                    byte thresholdedPixelValue = (pixelValue >= lower && pixelValue <= upper) ? (byte)255 : (byte)0;
+                    byte thresholdedPixelValue = (pixelValue >= adjustedLower && pixelValue <= adjustedUpper) ? (byte)255 : (byte)0;
                     Marshal.WriteByte(outputPtr, offset, thresholdedPixelValue);
                 }
             }
@@ -250,14 +259,14 @@ namespace Image_Manipulation_App
             double canvasWidth = 380.0;
             double marginMultiplier = canvasWidth / 255.0;
 
-            Canvas.SetLeft(RedLine1, RedThreshold1.Value * marginMultiplier);
-            Canvas.SetLeft(RedLine2, RedThreshold2.Value * marginMultiplier);
+            Canvas.SetLeft(RedLine1, FirstChannelThreshold1.Value * marginMultiplier);
+            Canvas.SetLeft(RedLine2, FirstChannelThreshold2.Value * marginMultiplier);
 
-            Canvas.SetLeft(GreenLine1, GreenThreshold1.Value * marginMultiplier);
-            Canvas.SetLeft(GreenLine2, GreenThreshold2.Value * marginMultiplier);
+            Canvas.SetLeft(GreenLine1, SecondChannelThreshold1.Value * marginMultiplier);
+            Canvas.SetLeft(GreenLine2, SecondChannelThreshold2.Value * marginMultiplier);
 
-            Canvas.SetLeft(BlueLine1, BlueThreshold1.Value * marginMultiplier);
-            Canvas.SetLeft(BlueLine2, BlueThreshold2.Value * marginMultiplier);
+            Canvas.SetLeft(BlueLine1, ThirdChannelThreshold1.Value * marginMultiplier);
+            Canvas.SetLeft(BlueLine2, ThirdChannelThreshold2.Value * marginMultiplier);
         }
 
         /// <summary>
@@ -265,9 +274,9 @@ namespace Image_Manipulation_App
         /// </summary>
         private void UpdateThresholdLabels()
         {
-            this.RedThresholdText.Text = $"Choosen range: {RedThreshold1.Value} - {RedThreshold2.Value}";
-            this.GreenThresholdText.Text = $"Choosen range: {GreenThreshold1.Value} - {GreenThreshold2.Value}";
-            this.BlueThresholdText.Text = $"Choosen range: {BlueThreshold1.Value} - {BlueThreshold2.Value}";
+            this.RedThresholdText.Text = $"Choosen range: {FirstChannelThreshold1.Value} - {FirstChannelThreshold2.Value}";
+            this.GreenThresholdText.Text = $"Choosen range: {SecondChannelThreshold1.Value} - {SecondChannelThreshold2.Value}";
+            this.BlueThresholdText.Text = $"Choosen range: {ThirdChannelThreshold1.Value} - {ThirdChannelThreshold2.Value}";
         }
 
         /// <summary>
@@ -276,11 +285,25 @@ namespace Image_Manipulation_App
         /// </summary>
         private void UpdateThresholdPreview()
         {
-            this.redThresholdChannel = ThresholdImage(this.redChannel, (int)RedThreshold1.Value, (int)RedThreshold2.Value);
-            this.greenThresholdChannel = ThresholdImage(this.greenChannel, (int)GreenThreshold1.Value, (int)GreenThreshold2.Value);
-            this.blueThresholdChannel = ThresholdImage(this.blueChannel, (int)BlueThreshold1.Value, (int)BlueThreshold2.Value);
 
-            Mat binaryMap = CombineChannelsToBinaryMap(this.redThresholdChannel, this.greenThresholdChannel, this.blueThresholdChannel);
+            int[] minRanges = { 0, 0, 0 };
+            int[] maxRanges = { 255, 255, 255 };
+            if (colorSpace == "hsv")
+            {
+                minRanges = new int[] { 0, 0, 0 };
+                maxRanges = new int[] { 180, 255, 255 };
+            }
+            else if (colorSpace == "lab")
+            {
+                minRanges = new int[] { 0, -128, -128 };
+                maxRanges = new int[] { 255, 127, 127 };
+            }
+
+            this.firstThresholdChannel = ThresholdImage(this.firstChannel, (int)FirstChannelThreshold1.Value, (int)FirstChannelThreshold2.Value, minRanges[0], maxRanges[0]);
+            this.secondThresholdChannel = ThresholdImage(this.secondChannel, (int)SecondChannelThreshold1.Value, (int)SecondChannelThreshold2.Value, minRanges[1], maxRanges[1]);
+            this.thirdThresholdChannel = ThresholdImage(this.thirdChannel, (int)ThirdChannelThreshold1.Value, (int)ThirdChannelThreshold2.Value, minRanges[2], maxRanges[2]);
+
+            Mat binaryMap = CombineChannelsToBinaryMap(this.firstThresholdChannel, this.secondThresholdChannel, this.thirdThresholdChannel);
 
             if (!isWhiteObjects)
             {
@@ -313,7 +336,7 @@ namespace Image_Manipulation_App
         /// <summary>
         /// Event handler for when the value of a red threshold slider changes.
         /// </summary>
-        private void RedThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void FirstChannelThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
             if (!this.IsInitialized)
@@ -326,7 +349,7 @@ namespace Image_Manipulation_App
 
             string compareType = (string)slider.Tag;
 
-            UpdateThresholdSliders(RedThreshold1, RedThreshold2, compareType);
+            UpdateThresholdSliders(FirstChannelThreshold1, FirstChannelThreshold2, compareType);
             UpdateThresholdLines();
             UpdateThresholdLabels();
 
@@ -336,7 +359,7 @@ namespace Image_Manipulation_App
         /// <summary>
         /// Event handler for when the value of a green threshold slider changes.
         /// </summary>
-        private void GreenThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void SecondThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (!this.IsInitialized)
             {
@@ -348,7 +371,7 @@ namespace Image_Manipulation_App
 
             string compareType = (string)slider.Tag;
 
-            UpdateThresholdSliders(GreenThreshold1, GreenThreshold2, compareType);
+            UpdateThresholdSliders(SecondChannelThreshold1, SecondChannelThreshold2, compareType);
             UpdateThresholdLines();
             UpdateThresholdLabels();
 
@@ -358,7 +381,7 @@ namespace Image_Manipulation_App
         /// <summary>
         /// Event handler for when the value of a blue threshold slider changes.
         /// </summary>
-        private void BlueThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void ThirdThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (!this.IsInitialized)
             {
@@ -370,7 +393,7 @@ namespace Image_Manipulation_App
 
             string compareType = (string)slider.Tag;
 
-            UpdateThresholdSliders(BlueThreshold1, BlueThreshold2, compareType);
+            UpdateThresholdSliders(ThirdChannelThreshold1, ThirdChannelThreshold2, compareType);
             UpdateThresholdLines();
             UpdateThresholdLabels();
 

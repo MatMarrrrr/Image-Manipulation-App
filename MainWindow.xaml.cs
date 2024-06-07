@@ -735,7 +735,19 @@ namespace Image_Manipulation_App
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show($"Image Manipulation App{Environment.NewLine}{Environment.NewLine}Created by: Mateusz Marek");
+            MessageBox.Show(
+                $"Aplikacja zbiorcza z ćwiczeń laboratoryjnych i projektu" +
+                $"{Environment.NewLine}" +
+                $"Tytuł projektu: Image Manipulation App" +
+                $"{Environment.NewLine}" +
+                $"Autor: Mateusz Marek" +
+                $"{Environment.NewLine}" +
+                $"Prowadzący: mgr inż. Łukasz Roszkowiak" +
+                $"{Environment.NewLine}" +
+                $"Algorytmy Przetwarzania Obrazów 2024" +
+                $"{Environment.NewLine}" +
+                $"WIT grupa ID06IO01"
+                );
         }
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
@@ -895,7 +907,7 @@ namespace Image_Manipulation_App
             }
         }
 
-        private void ColorThreshold_Click(object sender, RoutedEventArgs e)
+        private void RgbColorThreshold_Click(object sender, RoutedEventArgs e)
         {
             if (this.selectedImageMat == null || this.activeImageWindow == null)
             {
@@ -910,6 +922,50 @@ namespace Image_Manipulation_App
             }
 
             ColorThresholdWindow thresholdWindow = new ColorThresholdWindow(this.selectedImageMat);
+            if (thresholdWindow.ShowDialog() == true)
+            {
+                string title = $"Binary {this.selectedImageFileName}";
+                DisplayImageInNewWindow(thresholdWindow.binaryImage, title, null, true);
+            }
+        }
+
+        private void HsvColorThreshold_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 3)
+            {
+                MessageBox.Show("Color thresholding can only be applied for color images.");
+                return;
+            }
+
+            ColorThresholdWindow thresholdWindow = new ColorThresholdWindow(this.selectedImageMat, "hsv");
+            if (thresholdWindow.ShowDialog() == true)
+            {
+                string title = $"Binary {this.selectedImageFileName}";
+                DisplayImageInNewWindow(thresholdWindow.binaryImage, title, null, true);
+            }
+        }
+
+        private void LabColorThreshold_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            if (this.selectedImageMat.NumberOfChannels != 3)
+            {
+                MessageBox.Show("Color thresholding can only be applied for color images.");
+                return;
+            }
+
+            ColorThresholdWindow thresholdWindow = new ColorThresholdWindow(this.selectedImageMat, "lab");
             if (thresholdWindow.ShowDialog() == true)
             {
                 string title = $"Binary {this.selectedImageFileName}";
