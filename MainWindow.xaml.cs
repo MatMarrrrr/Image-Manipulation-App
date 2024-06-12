@@ -20,6 +20,7 @@ using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
 using Image_Manipulation_App.ParamWindows;
 using static SkiaSharp.HarfBuzz.SKShaper;
+using static Image_Manipulation_App.ImageOperations;
 
 namespace Image_Manipulation_App
 {
@@ -707,8 +708,33 @@ namespace Image_Manipulation_App
 
         private void Watershed_Click(object sender, RoutedEventArgs e)
         {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
 
+            Mat result = ImageOperations.ApplyWatershed(this.selectedImageMat);
+            this.selectedImageMat = result;
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
         }
+
+        private void AnalyzeImage_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedImageMat == null || this.activeImageWindow == null)
+            {
+                MessageBox.Show("No image selected");
+                return;
+            }
+
+            Tuple<Mat, List<AnalysisResult>> result = ImageOperations.AnalyzeImage(this.selectedImageMat);
+            this.selectedImageMat = result.Item1;
+            activeImageWindow.UpdateImageAndHistogram(this.selectedImageMat);
+
+            AnalyzedImageDataWindow dataWindow = new AnalyzedImageDataWindow(result.Item2);
+            dataWindow.Show();
+        }
+
 
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {

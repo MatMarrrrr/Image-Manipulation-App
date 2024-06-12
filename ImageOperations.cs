@@ -713,6 +713,9 @@ namespace Image_Manipulation_App
             return (compressedMat, compressionRatio);
         }
 
+
+
+
         public static Mat ApplyWatershed(Mat image)
         {
             Mat coloredImage = new Mat();
@@ -725,19 +728,109 @@ namespace Image_Manipulation_App
                 coloredImage = image.Clone();
             }
 
-            Mat binaryImage = new Mat();
-            CvInvoke.CvtColor(coloredImage, binaryImage, ColorConversion.Bgr2Gray);
-            CvInvoke.Threshold(binaryImage, binaryImage, 1, 255, ThresholdType.BinaryInv);
+            Mat gray = new Mat();
+            CvInvoke.CvtColor(coloredImage, gray, ColorConversion.Bgr2Gray);
+
+            Mat binary = new Mat();
+            CvInvoke.Threshold(gray, binary, 0, 255, ThresholdType.BinaryInv | ThresholdType.Otsu);
+
+            Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(-1, -1));
+            Mat opening = new Mat();
+            CvInvoke.MorphologyEx(binary, opening, MorphOp.Open, kernel, new Point(-1, -1), 2, BorderType.Default, new MCvScalar());
+
+            Mat sureBg = new Mat();
+            CvInvoke.Dilate(opening, sureBg, kernel, new Point(-1, -1), 3, BorderType.Default, new MCvScalar());
+
+            Mat distTransform = new Mat();
+            CvInvoke.DistanceTransform(opening, distTransform, null, DistType.L2, 5);
+            double minVal = 0;
+            double maxVal = 0;
+            Point minLoc = new Point();
+            Point maxLoc = new Point();
+            CvInvoke.MinMaxLoc(distTransform, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
+
+            Mat sureFg = new Mat();
+            CvInvoke.Threshold(distTransform, sureFg, 0.7 * maxVal, 255, ThresholdType.Binary);
+            sureFg.ConvertTo(sureFg, DepthType.Cv8U);
+
+            Mat unknown = new Mat();
+            CvInvoke.Subtract(sureBg, sureFg, unknown);
 
             Mat markers = new Mat();
-            CvInvoke.ConnectedComponents(binaryImage, markers);
+            CvInvoke.ConnectedComponents(sureFg, markers);
+            markers += 1;
+
+            Mat zeros = new Mat();
+            markers.CopyTo(zeros);
+            zeros.SetTo(new MCvScalar(0));
+            zeros.CopyTo(markers, unknown);
 
             CvInvoke.Watershed(coloredImage, markers);
 
-            Mat result = new Mat(markers.Size, DepthType.Cv8U, 3);
-            markers.ConvertTo(result, DepthType.Cv8U);
+            Mat result = new Mat(markers.Size, DepthType.Cv8U, 1);
+            result.SetTo(new MCvScalar(0));
 
-            return result;
+            Mat mask = new Mat();
+            zeros.SetTo(new MCvScalar(-1));
+            CvInvoke.Compare(markers, zeros, mask, CmpType.Equal);
+            mask.ConvertTo(mask, DepthType.Cv8U);
+
+            return mask;
+        }
+
+        public static Tuple<Mat, List<AnalysisResult>> AnalyzeImage(Mat inputImage)
+        {
+            List<AnalysisResult> results = new List<AnalysisResult>();
+            Mat img = inputImage.Clone();
+            Mat cntImg = new Mat(img.Size, DepthType.Cv8U, 3);
+
+            Mat grayImage = new Mat();
+            if (img.NumberOfChannels != 1)
+            {
+                CvInvoke.CvtColor(img, grayImage, ColorConversion.Bgr2Gray);
+            }
+            else
+            {
+                grayImage = img;
+            }
+
+            Mat binary = new Mat();
+            CvInvoke.Threshold(grayImage, binary, 127, 255, ThresholdType.Binary);
+
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            CvInvoke.FindContours(binary, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                Random r = new Random();
+                CvInvoke.DrawContours(cntImg, new VectorOfVectorOfPoint(contours[i]), -1, new MCvScalar(r.Next(255), r.Next(255), r.Next(255)), 1, LineType.EightConnected, null, -1, default);
+                double area = CvInvoke.ContourArea(contours[i]);
+                double perimeter = CvInvoke.ArcLength(contours[i], true);
+                Rectangle rect = CvInvoke.BoundingRectangle(contours[i]);
+                double aspectRatio = (double)rect.Width / (double)rect.Height;
+                double extent = (double)area / (double)(rect.Width * rect.Height);
+
+                var vf = new PointF[contours[i].Size];
+                for (int ii = 0; ii < contours[i].Size; ii++) vf[ii] = contours[i][ii];
+                var hull = CvInvoke.ConvexHull(vf);
+                double hull_area = CvInvoke.ContourArea(new VectorOfPointF(hull), true);
+                double solidity = area / hull_area;
+                double equivalentDiameter = Math.Sqrt(4 * area / Math.PI);
+
+                results.Add(new AnalysisResult
+                {
+                    No = i,
+                    Moments = contours[i].Size,
+                    Area = area,
+                    Perimeter = perimeter,
+                    AspectRatio = aspectRatio,
+                    Extent = extent,
+                    Solidity = solidity,
+                    EquivalentDiameter = equivalentDiameter
+                });
+            }
+
+            return new Tuple<Mat, List<AnalysisResult>>(cntImg, results);
         }
 
 

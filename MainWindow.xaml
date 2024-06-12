@@ -75,6 +75,8 @@
                 <MenuItem Header="Threshold" Click="Threshold_Click"/>
                 <MenuItem Header="Inpainting" Click="Inpainting_Click"/>
                 <MenuItem Header="GrabCut" Click="GrabCut_Click"/>
+                <MenuItem Header="Watershed" Click="Watershed_Click"/>
+                <MenuItem Header="Analyze Image" Click="AnalyzeImage_Click"/>
             </MenuItem>
             <MenuItem Header="Project">
                 <MenuItem Header="RGB color image threshold" Click="RgbColorThreshold_Click"/>
