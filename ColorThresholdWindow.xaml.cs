@@ -179,10 +179,16 @@ namespace Image_Manipulation_App
         /// <param name="minRange">The minimum range of the channel.</param>
         /// <param name="maxRange">The maximum range of the channel.</param>
         /// <returns>The thresholded image.</returns>
-        private Mat ThresholdImage(Mat image, int lower, int upper, int minRange, int maxRange)
+        private Mat ThresholdImage(Mat image, int lower, int upper, int minRange, int maxRange, bool normalized = true)
         {
-            int adjustedLower = (int)(((double)(lower - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
-            int adjustedUpper = (int)(((double)(upper - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
+            int adjustedLower = lower;
+            int adjustedUpper = upper;
+
+            if (!normalized)
+            {
+                adjustedLower = (int)(((double)(lower - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
+                adjustedUpper = (int)(((double)(upper - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
+            }
 
             Mat thresholdedImage = new Mat(image.Size, DepthType.Cv8U, 1);
             IntPtr dataPtr = image.DataPointer;
@@ -291,12 +297,12 @@ namespace Image_Manipulation_App
             if (colorSpace == "hsv")
             {
                 minRanges = new int[] { 0, 0, 0 };
-                maxRanges = new int[] { 180, 255, 255 };
+                maxRanges = new int[] { 360, 100, 100 };
             }
             else if (colorSpace == "lab")
             {
                 minRanges = new int[] { 0, -128, -128 };
-                maxRanges = new int[] { 255, 127, 127 };
+                maxRanges = new int[] { 100, 127, 127 };
             }
 
             this.firstThresholdChannel = ThresholdImage(this.firstChannel, (int)FirstChannelThreshold1.Value, (int)FirstChannelThreshold2.Value, minRanges[0], maxRanges[0]);
