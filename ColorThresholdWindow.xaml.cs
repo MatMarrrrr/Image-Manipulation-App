@@ -124,23 +124,22 @@ namespace Image_Manipulation_App
         /// <param name="imageControl">The image control where the histogram will be displayed.</param>
         public void DrawHistogram(Mat channel, Image imageControl)
         {
-            int[] histogramData = CalculateHistogram(channel); // Calculate histogram data
-            int histHeight = 256; // Height of the histogram image
-            int histWidth = 256; // Width of the histogram image
-            int binWidth = (int)Math.Floor((double)histWidth / 256); // Width of each bin in the histogram
+            int[] histogramData = CalculateHistogram(channel);
+            int histHeight = 256;
+            int histWidth = 256;
+            int binWidth = (int)Math.Floor((double)histWidth / 256);
 
-            Mat histImage = new Mat(histHeight, histWidth, DepthType.Cv8U, 1); // Create a Mat to hold the histogram image
-            histImage.SetTo(new MCvScalar(255)); // Set background to white
+            Mat histImage = new Mat(histHeight, histWidth, DepthType.Cv8U, 1);
+            histImage.SetTo(new MCvScalar(255));
 
-            int maxVal = histogramData.Max(); // Find the maximum value in the histogram data
+            int maxVal = histogramData.Max();
             for (int i = 0; i < 256; i++)
             {
-                int intensity = (int)(histogramData[i] * histHeight / (double)maxVal); // Normalize intensity
-                // Draw a line for each bin in the histogram
+                int intensity = (int)(histogramData[i] * histHeight / (double)maxVal);
                 CvInvoke.Line(histImage, new System.Drawing.Point(i * binWidth, histHeight), new System.Drawing.Point(i * binWidth, histHeight - intensity), new MCvScalar(0), 1);
             }
 
-            imageControl.Source = BitmapSourceConverter.ToBitmapSource(histImage); // Display the histogram image in the UI
+            imageControl.Source = BitmapSourceConverter.ToBitmapSource(histImage);
         }
 
         /// <summary>
@@ -176,19 +175,9 @@ namespace Image_Manipulation_App
         /// <param name="image">The image to be thresholded.</param>
         /// <param name="lower">The lower bound of the threshold.</param>
         /// <param name="upper">The upper bound of the threshold.</param>
-        /// <param name="minRange">The minimum range of the channel.</param>
-        /// <param name="maxRange">The maximum range of the channel.</param>
         /// <returns>The thresholded image.</returns>
-        private Mat ThresholdImage(Mat image, int lower, int upper, int minRange, int maxRange, bool normalized = true)
+        private Mat ThresholdImage(Mat image, int lower, int upper)
         {
-            int adjustedLower = lower;
-            int adjustedUpper = upper;
-
-            if (!normalized)
-            {
-                adjustedLower = (int)(((double)(lower - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
-                adjustedUpper = (int)(((double)(upper - 0) / (255 - 0)) * (maxRange - minRange) + minRange);
-            }
 
             Mat thresholdedImage = new Mat(image.Size, DepthType.Cv8U, 1);
             IntPtr dataPtr = image.DataPointer;
@@ -203,7 +192,7 @@ namespace Image_Manipulation_App
                 {
                     int offset = (y * step) + x;
                     byte pixelValue = Marshal.ReadByte(dataPtr, offset);
-                    byte thresholdedPixelValue = (pixelValue >= adjustedLower && pixelValue <= adjustedUpper) ? (byte)255 : (byte)0;
+                    byte thresholdedPixelValue = (pixelValue >= lower && pixelValue <= upper) ? (byte)255 : (byte)0;
                     Marshal.WriteByte(outputPtr, offset, thresholdedPixelValue);
                 }
             }
@@ -291,23 +280,9 @@ namespace Image_Manipulation_App
         /// </summary>
         private void UpdateThresholdPreview()
         {
-
-            int[] minRanges = { 0, 0, 0 };
-            int[] maxRanges = { 255, 255, 255 };
-            if (colorSpace == "hsv")
-            {
-                minRanges = new int[] { 0, 0, 0 };
-                maxRanges = new int[] { 360, 100, 100 };
-            }
-            else if (colorSpace == "lab")
-            {
-                minRanges = new int[] { 0, -128, -128 };
-                maxRanges = new int[] { 100, 127, 127 };
-            }
-
-            this.firstThresholdChannel = ThresholdImage(this.firstChannel, (int)FirstChannelThreshold1.Value, (int)FirstChannelThreshold2.Value, minRanges[0], maxRanges[0]);
-            this.secondThresholdChannel = ThresholdImage(this.secondChannel, (int)SecondChannelThreshold1.Value, (int)SecondChannelThreshold2.Value, minRanges[1], maxRanges[1]);
-            this.thirdThresholdChannel = ThresholdImage(this.thirdChannel, (int)ThirdChannelThreshold1.Value, (int)ThirdChannelThreshold2.Value, minRanges[2], maxRanges[2]);
+            this.firstThresholdChannel = ThresholdImage(this.firstChannel, (int)FirstChannelThreshold1.Value, (int)FirstChannelThreshold2.Value);
+            this.secondThresholdChannel = ThresholdImage(this.secondChannel, (int)SecondChannelThreshold1.Value, (int)SecondChannelThreshold2.Value);
+            this.thirdThresholdChannel = ThresholdImage(this.thirdChannel, (int)ThirdChannelThreshold1.Value, (int)ThirdChannelThreshold2.Value);
 
             Mat binaryMap = CombineChannelsToBinaryMap(this.firstThresholdChannel, this.secondThresholdChannel, this.thirdThresholdChannel);
 

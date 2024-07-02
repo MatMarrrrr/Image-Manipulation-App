@@ -1040,7 +1040,7 @@ namespace Image_Manipulation_App
                 return;
             }
 
-            MessageBox.Show($"Object count on binary map: {ImageOperations.CountObjectsUsingContours(this.selectedImageMat)}");
+            MessageBox.Show($"Object count on binary map: {ImageOperations.CountObjectsFromBinaryMap(this.selectedImageMat)}");
         }
 
         private void CountBlackBinaryMap_Click(object sender, RoutedEventArgs e)
@@ -1087,7 +1087,7 @@ namespace Image_Manipulation_App
             Mat invertedImage = new Mat(this.selectedImageMat.Size, DepthType.Cv8U, 1);
             CvInvoke.BitwiseNot(this.selectedImageMat, invertedImage);
 
-            MessageBox.Show($"Object count on binary map: {ImageOperations.CountObjectsUsingContours(invertedImage)}");
+            MessageBox.Show($"Object count on binary map: {ImageOperations.CountObjectsFromBinaryMap(invertedImage)}");
         }
     }
 }

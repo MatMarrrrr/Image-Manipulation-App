@@ -834,14 +834,12 @@ namespace Image_Manipulation_App
         }
 
 
-        public static int CountObjectsUsingContours(Mat image)
+        public static int CountObjectsFromBinaryMap(Mat binaryImage)
         {
-            Mat labels = new Mat();
-            Mat stats = new Mat();
-            Mat centroids = new Mat();
-            int nLabels = CvInvoke.ConnectedComponentsWithStats(image, labels, stats, centroids);
+            Mat componentLabels = new Mat();
+            int numberOfLabels = CvInvoke.ConnectedComponents(binaryImage, componentLabels);
 
-            return nLabels - 1;
+            return numberOfLabels - 1;
         }
     }
 }
