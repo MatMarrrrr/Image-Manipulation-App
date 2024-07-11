@@ -762,18 +762,15 @@ namespace Image_Manipulation_App
         private void About_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(
-                $"Aplikacja zbiorcza z ćwiczeń laboratoryjnych i projektu" +
-                $"{Environment.NewLine}" +
-                $"Tytuł projektu: Image Manipulation App" +
-                $"{Environment.NewLine}" +
-                $"Autor: Mateusz Marek" +
-                $"{Environment.NewLine}" +
-                $"Prowadzący: mgr inż. Łukasz Roszkowiak" +
-                $"{Environment.NewLine}" +
-                $"Algorytmy Przetwarzania Obrazów 2024" +
-                $"{Environment.NewLine}" +
-                $"WIT grupa ID06IO01"
-                );
+                "Author: Mateusz Marek" + Environment.NewLine +
+                Environment.NewLine +
+                "This project is a comprehensive image manipulation application designed to provide a wide range of image processing and analysis tools. " +
+                "The application allows users to perform various operations on images, such as conversion, filtering, morphological operations, " +
+                "and more, all through an intuitive graphical user interface.",
+                "About Image Manipulation App",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
         }
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)

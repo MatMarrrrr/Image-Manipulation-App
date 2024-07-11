@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Image Manipulation App" Height="90" Width="800"
+        Title="Image Manipulation App" Height="90" Width="600"
         KeyDown="Window_KeyDown">
     <Grid Background="#ECECED">
         <Grid.ColumnDefinitions>
@@ -14,30 +14,44 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Background="#ECECED" FontSize="14" FontFamily="Arial">
-            <MenuItem Header="Lab1" Padding="3">
+            <MenuItem Header="File" Padding="3">
                 <MenuItem Header="Open">
                     <MenuItem Header="Color" Click="OpenColor_Click"/>
                     <MenuItem Header="Gray Scale" Click="OpenGrayScale_Click"/>
                 </MenuItem>
-                <MenuItem Header="Create Histogram" Click="CreateHistogram_Click"/>
+                <MenuItem Header="Save as">
+                    <MenuItem Header="Without compression" Click="SaveAs_Click"/>
+                    <MenuItem Header="With compression" Click="SaveAsCompression_Click"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Image Processing" Padding="3">
                 <MenuItem Header="Convert">
                     <MenuItem Header="Gray Scale" Click="ConvertToGrayScale_Click"/>
+                    <MenuItem Header="HSV and Split Channels" Click="ConvertToHSVAndSplitChannels_Click"/>
+                    <MenuItem Header="Lab and Split Channels" Click="ConvertToLabAndSplitChannels_Click"/>
                 </MenuItem>
-                <MenuItem Header="Convert and split channels">
-                    <MenuItem Header="HSV" Click="ConvertToHSVAndSplitChannels_Click"/>
-                    <MenuItem Header="Lab" Click="ConvertToLabAndSplitChannels_Click"/>
+                <MenuItem Header="Transform">
+                    <MenuItem Header="Negate" Click="Negate_Click"/>
+                    <MenuItem Header="Stretch Contrast" Click="StretchContrast_Click"/>
+                    <MenuItem Header="Split Channels" Click="SplitChannels_Click"/>
                 </MenuItem>
-                <MenuItem Header="Negate" Click="Negate_Click"/>
-                <MenuItem Header="Stretch Contrast" Click="StretchContrast_Click"/>
-                <MenuItem Header="Split Channels" Click="SplitChannels_Click"/>
-                <MenuItem Header="Stretch Histogram" Click="StretchHistogram_Click"/>
-                <MenuItem Header="Equalize Histogram" Click="EqualizeHistogram_Click"/>
-                <MenuItem Header="Duplicate Image" Click="DuplicateImage_Click"/>
-            </MenuItem>
-            <MenuItem Header="Lab2" Padding="3">
-                <MenuItem Header="Blur" Click="Blur_Click"/>
-                <MenuItem Header="Gaussian Blur" Click="GaussianBlur_Click"/>
-                <MenuItem Header="Point operations">
+                <MenuItem Header="Histogram">
+                    <MenuItem Header="Create Histogram" Click="CreateHistogram_Click"/>
+                    <MenuItem Header="Stretch Histogram" Click="StretchHistogram_Click"/>
+                    <MenuItem Header="Equalize Histogram" Click="EqualizeHistogram_Click"/>
+                </MenuItem>
+                <MenuItem Header="Operations">
+                    <MenuItem Header="Duplicate Image" Click="DuplicateImage_Click"/>
+                    <MenuItem Header="Blur" Click="Blur_Click"/>
+                    <MenuItem Header="Gaussian Blur" Click="GaussianBlur_Click"/>
+                    <MenuItem Header="Posterize" Click="Posterize_Click"/>
+                    <MenuItem Header="Convolve" Click="Convolve_Click"/>
+                </MenuItem>
+                <MenuItem Header="Filters">
+                    <MenuItem Header="Median Filter" Click="MedianFilter_Click"/>
+                    <MenuItem Header="Single and Two Stage" Click="SingleAndTwoStage_Click"/>
+                </MenuItem>
+                <MenuItem Header="Point Operations">
                     <MenuItem Header="Add" Click="AddImages_Click"/>
                     <MenuItem Header="Subtract" Click="SubtractImages_Click"/>
                     <MenuItem Header="Blend" Click="BlendImages_Click"/>
@@ -46,50 +60,38 @@
                     <MenuItem Header="NOT" Click="NotImage_Click"/>
                     <MenuItem Header="XOR" Click="XorImages_Click"/>
                 </MenuItem>
-                <MenuItem Header="Posterize" Click="Posterize_Click"/>
-                <MenuItem Header="Convolve" Click="Convolve_Click"/>
-                <MenuItem Header="Filter">
-                    <MenuItem Header="Median Filter" Click="MedianFilter_Click"/>
-                    <MenuItem Header="Single and two stage" Click="SingleAndTwoStage_Click"/>
-                </MenuItem>
             </MenuItem>
-            <MenuItem Header="Lab3" Padding="3">
-                <MenuItem Header="Morphological  operations">
-                    <MenuItem Header="Erode" Click="ErodeImage_Click"/>
-                    <MenuItem Header="Dilate" Click="DilateImage_Click"/>
-                    <MenuItem Header="Open" Click="OpenImage_Click"/>
-                    <MenuItem Header="Close" Click="CloseImage_Click"/>
-                </MenuItem>
+            <MenuItem Header="Morphological Operations" Padding="3">
+                <MenuItem Header="Erode" Click="ErodeImage_Click"/>
+                <MenuItem Header="Dilate" Click="DilateImage_Click"/>
+                <MenuItem Header="Open" Click="OpenImage_Click"/>
+                <MenuItem Header="Close" Click="CloseImage_Click"/>
                 <MenuItem Header="Skeletonize" Click="SkeletizeImage_Click"/>
+            </MenuItem>
+            <MenuItem Header="Image Analysis" Padding="3">
                 <MenuItem Header="Image Pyramid">
                     <MenuItem Header="Up" Click="ImagePyramidUp_Click"/>
                     <MenuItem Header="Down" Click="ImagePyramidDown_Click"/>
                 </MenuItem>
                 <MenuItem Header="Hough" Click="Hough_Click"/>
-                <MenuItem Header="Profile Line (Off)" x:Name="profileLineMenuItem" Padding="3">
+                <MenuItem x:Name="profileLineMenuItem" Header="Profile Line">
                     <MenuItem Header="On" Click="ProfileLineOn_Click"/>
                     <MenuItem Header="Off" Click="ProfileLineOff_Click"/>
                 </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Lab4">
                 <MenuItem Header="Threshold" Click="Threshold_Click"/>
+                <MenuItem Header="Color Threshold">
+                    <MenuItem Header="RGB Color Image Threshold" Click="RgbColorThreshold_Click"/>
+                    <MenuItem Header="HSV Color Image Threshold" Click="HsvColorThreshold_Click"/>
+                    <MenuItem Header="Lab Color Image Threshold" Click="LabColorThreshold_Click"/>
+                    <MenuItem Header="Count White Objects from Binary Map" Click="CountWhiteBinaryMap_Click"/>
+                    <MenuItem Header="Count Black Objects from Binary Map" Click="CountBlackBinaryMap_Click"/>
+                </MenuItem>
                 <MenuItem Header="Inpainting" Click="Inpainting_Click"/>
                 <MenuItem Header="GrabCut" Click="GrabCut_Click"/>
                 <MenuItem Header="Watershed" Click="Watershed_Click"/>
                 <MenuItem Header="Analyze Image" Click="AnalyzeImage_Click"/>
             </MenuItem>
-            <MenuItem Header="Project">
-                <MenuItem Header="RGB color image threshold" Click="RgbColorThreshold_Click"/>
-                <MenuItem Header="HSV color image threshold" Click="HsvColorThreshold_Click"/>
-                <MenuItem Header="Lab color image threshold" Click="LabColorThreshold_Click"/>
-                <MenuItem Header="Count white objects from binary map" Click="CountWhiteBinaryMap_Click"/>
-				<MenuItem Header="Count black objects from binary map" Click="CountBlackBinaryMap_Click"/>
-            </MenuItem>
-            <MenuItem Header="Save as" Padding="3">
-                <MenuItem Header="Without compression" Padding="3" Click="SaveAs_Click"/>
-                <MenuItem Header="With compression" Padding="3" Click="SaveAsCompression_Click"/>
-            </MenuItem>
-            <MenuItem Header="About" Padding="3" Click="About_Click"/>
+            <MenuItem Header="About" Click="About_Click" Padding="3"/>
         </Menu>
         <Label Grid.Row="1" x:Name="labelSelectedImage" Content="Selected Image: None" FontSize="14" FontFamily="Arial Black"/>
     </Grid>
